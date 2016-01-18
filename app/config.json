@@ -1,0 +1,4 @@
+{
+  "scrapydApiEndpoint":"http://spider.souche-inc.com/scrapyd",
+  "serviceApiEndpoint":"http://spider.souche-inc.com"
+}
