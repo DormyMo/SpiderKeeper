@@ -7,10 +7,11 @@
     设置 scrapyd 服务地址
     运行index.html,或将dist下文件部署至web服务器
 
-##Build & development
+##构建
 
-    Run `grunt` for building and `grunt serve` for preview.
-
-##Testing
-
-    Running `grunt test` will run the unit tests with karma.
+    1.安装 [node和npm](http://nodejs.org/)
+    2.安装 bower `npm install -g bower`
+    3.安装 grunt `npm install -g grunt`
+    4.$ `bower install`
+    5.$ `npm install`
+    6.Run `grunt` for building and `grunt serve` for preview.
