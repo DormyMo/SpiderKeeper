@@ -15,9 +15,15 @@ spider管理
 
 ##运行
 
-    修改 dist/scripts/scripts.*.js
-    设置 scrapyd 服务地址
+    修改 dist/scripts/scripts.*.js , 设置 scrapyd 服务地址
     运行index.html,或将dist下文件部署至web服务器
+
+or
+
+    修改 dist/scripts/scripts.*.js , 设置 scrapyd 服务地址
+    修改 SKWebService.py SKMonitor.py, 配置 scrapyd 服务地址
+    启动 start.sh 
+
 
 ##构建
 
