@@ -113,7 +113,7 @@ angular.module('spiderKeeperApp')
         function cancel(project, jobId, daemons) {
             var request = $http({
                 method: "get",
-                url: daemonServicePrefix + "/schedule/cancel/",
+                url: daemonServicePrefix + "/spider/cancel/",
                 params: {
                     "project": project,
                     "job": jobId,

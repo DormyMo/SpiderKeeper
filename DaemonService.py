@@ -215,7 +215,7 @@ def spider_start():
 def spider_cancel():
     daemons = [{'name':daemonName,'server':scrapydMapping[daemonName]} for daemonName in (request.args.get('daemons').split(u',') if request.args.get('daemons') else [])]
     for daemon in daemons:
-        res =  _request("%s/cancel.json?%s"    %(daemon['server'],request.query_string))
+        res =  _request_post("%s/cancel.json?%s"    %(daemon['server'],request.query_string))
     if res:
         return json.dumps(res.json())
     else: 
