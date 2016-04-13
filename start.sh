@@ -1,3 +1,3 @@
-nohup python SKMonitor.py >>log_monitor 2>&1 &
-nohup python SKWebService.py >>log_skwebservice 2>&1 &
+nohup python DaemonService.py >>daemonService.log 2>&1 &
+nohup python ScheduleMonitor.py >>daemonService.log 2>&1 &
 

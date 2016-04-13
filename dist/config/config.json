@@ -1,0 +1,17 @@
+{
+  "server": "http://localhost:8080",
+  "scrapyd": [
+    {
+      "name": "machine01",
+      "server": "http://localhost:6800"
+    },
+    {
+      "name": "machine02",
+      "server": "http://localhost:6800"
+    },
+    {
+      "name": "machine03",
+      "server": "http://localhost:6800"
+    }
+  ]
+}
