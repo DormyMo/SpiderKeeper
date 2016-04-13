@@ -4,10 +4,15 @@
 ##截图
 spider管理
 ![spider管理](https://raw.githubusercontent.com/DormyMo/SpiderKeeper/master/screenshot/screenshot_1.png)
+实例选择
+![spider管理](https://raw.githubusercontent.com/DormyMo/SpiderKeeper/master/screenshot/screenshot_6.png)
+运行任务
+![spider管理](https://raw.githubusercontent.com/DormyMo/SpiderKeeper/master/screenshot/screenshot_7.png)
 添加定时任务
-![添加定时任务](https://raw.githubusercontent.com/DormyMo/SpiderKeeper/master/screenshot/screenshot_2.png)
+![添加定时任务](https://raw.githubusercontent.com/DormyMo/SpiderKeeper/master/screenshot/screenshot_8.png)
 抓取状态
-![抓取状态](https://raw.githubusercontent.com/DormyMo/SpiderKeeper/master/screenshot/screenshot_3.png)
+![抓取状态](https://raw.githubusercontent.com/DormyMo/SpiderKeeper/master/screenshot/screenshot_9.png)
+![抓取状态](https://raw.githubusercontent.com/DormyMo/SpiderKeeper/master/screenshot/screenshot_10.png)
 查看/取消定时任务
 ![查看/取消定时任务](https://raw.githubusercontent.com/DormyMo/SpiderKeeper/master/screenshot/screenshot_4.png)
 服务器状态监控
