@@ -47,7 +47,7 @@ angular.module('spiderKeeperApp')
             }
 
             $scope.btnLogClick = function (item) {
-                $scope.logUrl = daemonService.getLogSceUrl($rootScope.currProject, item.spider, item.id, $rootScope.currDaemon)
+                $scope.logUrl = daemonService.getLogSceUrl($rootScope.currProject, item.spider, item.id, item.daemon)
                 $('#modelLog').show()
             }
         }

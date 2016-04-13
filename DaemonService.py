@@ -228,7 +228,7 @@ def log():
     project = request.args['project']
     spider = request.args['spider']
     jobId = request.args['jobId']
-    res =  _request("%s//logs/%s/%s/%s.log"    %(scrapydMapping[daemon],project,spider,jobId))
+    res =  _request("%s/logs/%s/%s/%s.log"    %(scrapydMapping[daemon],project,spider,jobId))
     return res.content.replace('\n','<br>')
 
 @app.route('/job/list/<status>/')

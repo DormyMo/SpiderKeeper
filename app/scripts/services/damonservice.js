@@ -124,8 +124,8 @@ angular.module('spiderKeeperApp')
             return request
         }
 
-        function getLogSceUrl(project, spider, jobId, daemons) {
-            return $sce.trustAsResourceUrl(daemonServicePrefix + "/log/?project=" + project + "&spider=" + spider + "&jobId=" + jobId + "&daemons=" + daemons.join(','));
+        function getLogSceUrl(project, spider, jobId, daemon) {
+            return $sce.trustAsResourceUrl(daemonServicePrefix + "/log/?project=" + project + "&spider=" + spider + "&jobId=" + jobId + "&daemon=" + daemon);
         }
 
 
