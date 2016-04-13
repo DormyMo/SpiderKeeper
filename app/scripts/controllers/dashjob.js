@@ -28,10 +28,10 @@ angular.module('spiderKeeperApp')
             $scope.listJobs('running')
             $interval(function () {
                 $scope.listJobs('pending')
-            }, 20000);//refresh data
+            }, 5000);//refresh data
             $interval(function () {
                 $scope.listJobs('running')
-            }, 10000);//refresh data
+            }, 3000);//refresh data
 
             //$interval(function(){$scope.listJobs('finished')},50000);//refresh data
 

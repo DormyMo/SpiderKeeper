@@ -2,6 +2,10 @@
     .panel {
         margin-bottom: 20px;
     }
+    .nopadding {
+        padding: 0 !important;
+        margin: 0 !important;
+    }
 </style>
 <div ng-controller="DashjobCtrl">
     <div class="page-header">
@@ -19,6 +23,9 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title">Pending</h3>
+            <div class="form-group label-floating nopadding">
+                <input class="form-control" style="color:#fff" placeholder="Free Search" type="text" ng-model="searchPending">
+            </div>
         </div>
         <div class="panel-body" style="overflow: scroll">
             <div class="bs-component" style="max-width:100%">
@@ -35,7 +42,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr ng-repeat="item in jobs.pending">
+                    <tr ng-repeat="item in jobs.pending | filter:searchPending">
                         {{item}}
                         <td>{{$index}}</td>
                         <td>{{item.daemon}}</td>
@@ -56,7 +63,11 @@
 
     <div class="panel panel-info">
         <div class="panel-heading">
-            <h3 class="panel-title">Running</h3>
+            <h3 class="panel-title">Running </h3>
+            <div class="form-group label-floating nopadding">
+                <input class="form-control" style="color:#fff" placeholder="Free Search" type="text" ng-model="searchRunning">
+            </div>
+
         </div>
         <div class="panel-body" style="overflow: scroll">
             <div class="bs-component" style="max-width:100%">
@@ -74,7 +85,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr ng-repeat="item in jobs.running">
+                    <tr ng-repeat="item in jobs.running | filter:searchRunning">
                         {{item}}
                         <td>{{$index}}</td>
                         <td>{{item.daemon}}</td>
@@ -101,7 +112,9 @@
         <div class="panel-heading">
             <h3 class="panel-title">Finished<a href="javascript:void(0)" ng-click="btnJobFinishedClick()"
                                                style="float:right;"><i class="material-icons">refresh</i></a></h3>
-
+            <div class="form-group label-floating nopadding">
+                <input class="form-control" style="color:#fff" placeholder="Free Search" type="text" ng-model="searchFinished">
+            </div>
         </div>
         <div class="panel-body" style="overflow: scroll">
             <div class="bs-component" style="max-width:100%">
@@ -121,7 +134,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr ng-repeat="item in jobs.finished">
+                    <tr ng-repeat="item in jobs.finished | filter:searchFinished">
                         {{item}}
                         <td>{{$index}}</td>
                         <td>{{item.daemon}}</td>
