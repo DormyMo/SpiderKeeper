@@ -14,16 +14,9 @@ spider管理
 ![spider管理](https://raw.githubusercontent.com/DormyMo/SpiderKeeper/master/screenshot/screenshot_5.png)
 
 ##运行
-
-    修改 dist/scripts/scripts.*.js , 设置 scrapyd 服务地址
-    运行index.html,或将dist下文件部署至web服务器
-
-or
-
-    修改 dist/scripts/scripts.*.js , 设置 scrapyd 服务地址
-    修改 SKWebService.py SKMonitor.py, 配置 scrapyd 服务地址
-    启动 start.sh 
-
+	
+1.    修改 dist/config/config.json , 配置 DaemonService 服务部署地址 ， 配置 scrapyd 服务地址
+2.    ~ bash start.sh
 
 ##构建
 
@@ -32,4 +25,4 @@ or
     3.安装 grunt `npm install -g grunt`
     4.$ `bower install`
     5.$ `npm install`
-    6.Run `grunt` for building and `grunt serve` for preview.
+    6.Run `grunt build` for build and `grunt serve` for preview.
