@@ -229,7 +229,9 @@ def log():
     spider = request.args['spider']
     jobId = request.args['jobId']
     res =  _request("%s/logs/%s/%s/%s.log"    %(scrapydMapping[daemon],project,spider,jobId))
-    return res.content.replace('\n','<br>')
+    html = '<html><body style="background-color:#F3F2EE;"><p style="font-size: 12px;line-height: 1.5em;color: #1f0909;text-align: left">'
+    html += res.content.replace('\n', '<br>') + '</p></body></html>'
+    return html
 
 @app.route('/job/list/<status>/')
 @allow_cross_domain

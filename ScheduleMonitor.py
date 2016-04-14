@@ -58,7 +58,7 @@ def scanTask():
                 else:
                     logger.error('processing : id : %d time : %s' % (id, datetime.datetime.today()))
 
-                time.sleep(5)  # checking each 5s
+    time.sleep(5)  # checking each 5s
 
-                if __name__ == '__main__':
-                    threading.Thread(target=scanTask).start()
+if __name__ == '__main__':
+    threading.Thread(target=scanTask).start()
