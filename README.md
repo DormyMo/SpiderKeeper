@@ -24,9 +24,15 @@ spider管理
 ![spider管理](https://raw.githubusercontent.com/DormyMo/SpiderKeeper/master/screenshot/screenshot_5.png)
 
 ##运行
-	
-1.    修改 dist/config/config.json , 配置 DaemonService 服务部署地址 ， 配置 scrapyd 服务地址
-2.    ~ bash start.sh
+
+安装依赖
+
+1.	pip install requests
+
+	pip install flask
+
+2.    修改 dist/config/config.json , 配置 DaemonService 服务部署地址 ， 配置 scrapyd 服务地址
+3.    ~ bash start.sh
 
 ##构建
 
