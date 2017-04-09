@@ -6,6 +6,8 @@ import os
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
+UPLOAD_FOLDER = BASE_DIR + '/upload'
+
 SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(BASE_DIR, 'app/data/SpiderKeeper.db')
 DATABASE_CONNECT_OPTIONS = {}
 

@@ -11,7 +11,7 @@ def request_get(url, retry_times=5):
     '''
     for i in range(retry_times):
         try:
-            res = requests.get(url)
+            res = requests.get(url, proxies={'http': 'localhost:8888'})
         except Exception as e:
             logging.warning('request error retry %s' % url)
             continue
@@ -26,7 +26,7 @@ def request_post(url, data, retry_times=5):
     '''
     for i in range(retry_times):
         try:
-            res = requests.post(url, data)
+            res = requests.post(url, data, proxies={'http': 'localhost:8888'})
         except Exception as e:
             logging.warning('request error retry %s' % url)
             continue

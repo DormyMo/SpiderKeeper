@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>AdminLTE 2 | Blank Page</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- Bootstrap 3.3.6 -->
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="/static/css/font-awesome.min.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="/static/css/ionicons.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="/static/css/AdminLTE.min.css">
+    <!-- AdminLTE Skins. Choose a skin from the css/skins
+         folder instead of downloading all of them to reduce the load. -->
+    <link rel="stylesheet" href="/static/css/skins/skin-black-light.min.css">
+    <!--custom css-->
+    <link rel="stylesheet" href="/static/css/skins/app.css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="/static/js/html5shiv.min.js"></script>
+    <script src="/static/js/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+<!-- Site wrapper -->
+<div class="wrapper">
+    <header class="main-header">
+        <!-- Logo -->
+        <!-- mini logo for sidebar mini 50x50 pixels -->
+        <a href="/" class="logo">
+            <span class="logo-mini"><b>S</b>K</span>
+            <!-- logo for regular state and mobile devices -->
+            <span class="logo-lg"><b>Spider</b>Keeper</span>
+        </a>
+        <!-- Header Navbar: style can be found in header.less -->
+        <nav class="navbar navbar-static-top">
+            <!-- Sidebar toggle button-->
+            <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </a>
+            <div>
+                <ul class="nav navbar-nav nav-xs">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <span>Projects</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            {% for project in project_list %}
+                            <li><a href="/project/{{ project.id }}">{{ project.project_name }}</a></li>
+                            {% endfor %}
+                            <li role="separator" class="divider"></li>
+                            <li><a href="#" data-toggle="modal" data-target="#project-create-modal">Create Project</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+
+        </nav>
+    </header>
+
+    <!-- =============================================== -->
+
+    <!-- Left side column. contains the sidebar -->
+    <aside class="main-sidebar">
+        <!-- sidebar: style can be found in sidebar.less -->
+        <section class="sidebar">
+            <!-- sidebar menu: : style can be found in sidebar.less -->
+            <div style="position: relative;width: 100%;padding: 10px;overflow: hidden;height: 35px;">
+                <div style="padding: 5px 5px 5px 15px;line-height: 1;position: absolute;left: 65px;">
+                    <p><b>{{ project.project_name }}</b></p>
+                </div>
+            </div>
+            <ul class="sidebar-menu">
+                <li class="header">JOBS</li>
+                <li><a href="/project/{{ project.id }}/job/dashboard"><i
+                        class="fa fa-dashboard text-blue"></i>
+                    <span>Dashboard</span></a></li>
+                <li><a href="/project/{{ project.id }}/job/periodic"><i class="fa fa-tasks text-green"></i>
+                    <span>Periodic Jobs</span></a></li>
+                <li class="header">SPIDERS</li>
+                <li><a href="/project/{{ project.id }}/spider/dashboard"><i class="fa fa-flask text-red"></i>
+                    <span>Dashboard</span></a>
+                </li>
+                <li><a href="/project/{{ project.id }}/spider/deploy"><i class="fa fa-server text-orange"></i>
+                    <span>Deploy</span></a></li>
+                <!--<li><a href="#"><i class="fa fa-circle-o text-red"></i> <span>Settings</span></a></li>-->
+                <li class="header">PROJECT</li>
+                <!--<li><a href="#"><i class="fa fa-circle-o text-red"></i> <span>Activity</span></a></li>-->
+                <!--<li><a href="#"><i class="fa fa-circle-o text-red"></i> <span>Members</span></a></li>-->
+                <!--<li><a href="#"><i class="fa fa-circle-o text-red"></i> <span>Settings</span></a></li>-->
+            </ul>
+        </section>
+        <!-- /.sidebar -->
+    </aside>
+
+    <!-- =============================================== -->
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            {% block content_header %}{% endblock %}
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+            {% block content_body %}{% endblock %}
+        </section>
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+
+    <footer class="main-footer">
+        <div class="pull-right hidden-xs">
+            <b>Version</b> 2.0.0
+        </div>
+        <strong><a href="https://github.com/DormyMo/SpiderKeeper">SpiderKeeper</a>.</strong>
+    </footer>
+
+    <div class="modal fade" role="dialog" id="project-create-modal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form action="/project/create" method="post">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span></button>
+                        <h4 class="modal-title">Create Project</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="project-name">Project Name</label>
+                            <input type="text" name="project_name" id="project-name" class="form-control"
+                                   placeholder="Project Name">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Create</button>
+                    </div>
+                </form>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+</div>
+<!-- ./wrapper -->
+
+<!-- jQuery 2.2.3 -->
+<script src="/static/js/jquery-2.2.3.min.js"></script>
+<!-- Bootstrap 3.3.6 -->
+<script src="/static/js/bootstrap.min.js"></script>
+<!-- SlimScroll -->
+<script src="/static/js/jquery.slimscroll.min.js"></script>
+<!-- FastClick -->
+<script src="/static/js/fastclick.min.js"></script>
+<!-- AdminLTE App -->
+<script src="/static/js/AdminLTE.min.js"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="/static/js/demo.js"></script>
+</body>
+</html>

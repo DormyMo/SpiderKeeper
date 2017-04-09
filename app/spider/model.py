@@ -115,17 +115,39 @@ class JobExecution(Base):
     running_on = db.Column(db.Text)
 
     def to_dict(self):
+        job_instance = JobInstance.query.filter_by(id=self.job_instance_id).first()
         return {
             'project_id': self.project_id,
             'job_execution_id': self.id,
+            'job_instance_id': self.job_instance_id,
             'service_job_execution_id': self.service_job_execution_id,
             'create_time': self.create_time.strftime('%Y-%m-%d %H:%M:%S') if self.create_time else None,
             'start_time': self.start_time.strftime('%Y-%m-%d %H:%M:%S') if self.start_time else None,
             'end_time': self.end_time.strftime('%Y-%m-%d %H:%M:%S') if self.end_time else None,
             'running_status': self.running_status,
-            'running_on': self.running_on
+            'running_on': self.running_on,
+            'job_instance': job_instance.to_dict() if job_instance else {}
         }
 
     @classmethod
     def find_job_execution_by_service_job_execution_id(cls, service_job_execution_id):
         return cls.query.filter_by(service_job_execution_id=service_job_execution_id).first()
+
+    @classmethod
+    def list_jobs(cls, project_id, each_status_limit=100):
+        result = {}
+        result['PENDING'] = [job_execution.to_dict() for job_execution in
+                             JobExecution.query.filter_by(project_id=project_id,
+                                                          running_status=SpiderStatus.PENDING).limit(each_status_limit)]
+        result['RUNNING'] = [job_execution.to_dict() for job_execution in
+                             JobExecution.query.filter_by(project_id=project_id,
+                                                          running_status=SpiderStatus.RUNNING).limit(each_status_limit)]
+        result['FINISHED'] = [job_execution.to_dict() for job_execution in
+                              JobExecution.query.filter_by(project_id=project_id,
+                                                           running_status=SpiderStatus.FINISHED).limit(
+                                  each_status_limit)]
+        result['CANCELD'] = [job_execution.to_dict() for job_execution in
+                             JobExecution.query.filter_by(project_id=project_id,
+                                                          running_status=SpiderStatus.CANCELED).limit(
+                                 each_status_limit)]
+        return result

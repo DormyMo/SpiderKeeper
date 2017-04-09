@@ -1,6 +1,8 @@
 import datetime
 import random
 
+import requests
+
 from app import db
 from app.spider.model import SpiderStatus, JobExecution, JobInstance, Project, SpiderInstance, JobPriority
 
@@ -50,6 +52,9 @@ class SpiderServiceProxy():
     def cancel_spider(self, *args, **kwargs):
         return NotImplementedError
 
+    def deploy(self, *args, **kwargs):
+        pass
+
     @property
     def service_id(self):
         return self._service_id
@@ -73,7 +78,7 @@ class SpiderAgent():
         for spider_instance in spider_instance_list:
             spider_instance.project_id = project.id
         SpiderInstance.load_spider(spider_instance_list)
-        return [spider.to_dict() for spider in SpiderInstance.query.all()]
+        return [spider.to_dict() for spider in SpiderInstance.query.filter_by(project_id=project.id).all()]
 
     def get_daemon_status(self):
         pass
@@ -149,6 +154,12 @@ class SpiderAgent():
                     job_execution.running_status = SpiderStatus.CANCELED
                     db.session.commit()
                 break
+
+    def deploy(self, project, file_path):
+        for spider_service_instance in self.spider_service_instances:
+            if not spider_service_instance.deploy(project.project_name, file_path):
+                return False
+        return True
 
 
 if __name__ == '__main__':

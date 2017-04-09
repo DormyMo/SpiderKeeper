@@ -5,7 +5,7 @@ import traceback
 from apscheduler.schedulers.background import BackgroundScheduler
 from flask import Flask
 from flask import jsonify
-from flask.ext.restful import Api, abort
+from flask.ext.restful import Api
 from flask.ext.restful_swagger import swagger
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.exceptions import HTTPException
@@ -43,9 +43,9 @@ class Base(db.Model):
 
 
 # Sample HTTP error handling
-@app.errorhandler(404)
-def not_found(error):
-    abort(404)
+# @app.errorhandler(404)
+# def not_found(error):
+#     abort(404)
 
 
 @app.errorhandler(Exception)
@@ -83,6 +83,6 @@ app.register_blueprint(api_spider_bp)
 # start sync job status scheduler
 from app.schedulers.common import sync_job_execution_status_job, reload_runnable_spider_job_execution
 
-scheduler.add_job(sync_job_execution_status_job, 'interval', seconds=3)
-scheduler.add_job(reload_runnable_spider_job_execution, 'interval', seconds=5)
+scheduler.add_job(sync_job_execution_status_job, 'interval', seconds=3, id='sys_sync_status')
+scheduler.add_job(reload_runnable_spider_job_execution, 'interval', seconds=5, id='sys_reload_job')
 scheduler.start()

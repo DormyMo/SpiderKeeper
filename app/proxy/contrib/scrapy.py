@@ -1,4 +1,6 @@
-import datetime
+import datetime, time
+
+import requests
 
 from app.proxy.spiderctrl import SpiderServiceProxy
 from app.spider.model import SpiderStatus, Project, SpiderInstance
@@ -33,7 +35,7 @@ class ScrapydProxy(SpiderServiceProxy):
         data = request("get", self._scrapyd_url() + "/listspiders.json?project=%s" % project_name,
                        return_type="json")
         result = []
-        if data:
+        if data and data['status'] != 'error':
             for spider_name in data['spiders']:
                 spider_instance = SpiderInstance()
                 spider_instance.spider_name = spider_name
@@ -67,3 +69,13 @@ class ScrapydProxy(SpiderServiceProxy):
         post_data = dict(project=project_name, job=job_id)
         data = request("post", self._scrapyd_url() + "/schedule.json", data=post_data, return_type="json")
         return data != None
+
+    def deploy(self, project_name, file_path):
+        with open(file_path, 'rb') as f:
+            eggdata = f.read()
+        res = requests.post(self._scrapyd_url() + '/addversion.json', data={
+            'project': project_name,
+            'version': int(time.time()),
+            'egg': ('project.egg', eggdata),
+        })
+        return res.text if res.status_code == 200 else None
