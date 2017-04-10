@@ -19,7 +19,7 @@
     <div class="box-header">
         <h3 class="box-title">Periodic jobs (Spiders)</h3>
     </div>
-    <div class="box-body no-padding">
+    <div class="box-body">
         <table class="table table-striped">
             <tr>
                 <th style="width: 10px">#</th>
@@ -36,7 +36,7 @@
             </tr>
             {% for job_instance in job_instance_list %}
             <tr>
-                <td>#</td>
+                <td>{{ job_instance.job_instance_id }}</td>
                 <td>{{ job_instance.cron_day_of_month }}</td>
                 <td>{{ job_instance.cron_day_of_month }}</td>
                 <td>{{ job_instance.cron_day_of_week }}</td>
@@ -63,14 +63,21 @@
                 <td>{{ job_instance.tags }}</td>
                 {% if job_instance.enabled %}
                 <td>
-                    <span class="label label-success">Enabled</span>
+                    <a href="/project/{{ project.id }}/job/{{ job_instance.job_instance_id }}/switch"><span
+                            class="label label-success">Enabled</span></a>
                 </td>
                 {% else %}
                 <td>
-                    <span class="label label-danger">Disabled</span>
+                    <a href="/project/{{ project.id }}/job/{{ job_instance.job_instance_id }}/switch"><span
+                            class="label label-danger">Disabled</span></a>
                 </td>
                 {% endif %}
-                <td>==</td>
+                <td>
+                    <a href="/project/{{ project.id }}/job/{{ job_instance.job_instance_id }}/run"><span
+                            class="label label-info">Run</span></a>
+                    <a href="/project/{{ project.id }}/job/{{ job_instance.job_instance_id }}/remove"><span
+                            class="label label-danger">Remove</span></a>
+                </td>
             </tr>
             {% endfor %}
         </table>

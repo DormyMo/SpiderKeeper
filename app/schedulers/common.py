@@ -32,6 +32,7 @@ def reload_runnable_spider_job_execution():
     :return:
     '''
     running_job_ids = set([job.id for job in scheduler.get_jobs()])
+    app.logger.info('[running_job_ids] %s' % ','.join(running_job_ids))
     available_job_ids = set()
     # add new job to schedule
     for job_instance in JobInstance.query.filter_by(enabled=0, run_type="periodic").all():

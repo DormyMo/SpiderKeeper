@@ -19,8 +19,12 @@
 <div class="box">
     <div class="box-header">
         <h3 class="box-title">Next Jobs</h3>
+        <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+            </button>
+        </div>
     </div>
-    <div class="box-body no-padding">
+    <div class="box-body">
         <table class="table table-striped">
             <tr>
                 <th style="width: 10px">#</th>
@@ -35,7 +39,7 @@
                 <td>{{ job.job_execution_id }}</td>
                 <td><a href="#">{{ job.job_instance_id }}</a></td>
                 <td>{{ job.job_instance.spider_name }}</td>
-                <td>{{ job.job_instance.args }}</td>
+                <td style="font-size: 10px;">{{ job.job_instance.spider_arguments }}</td>
                 {% if job.job_instance.priority == -1 %}
                 <td>
                     <span class="label label-default">LOW</span>
@@ -64,8 +68,12 @@
 <div class="box">
     <div class="box-header">
         <h3 class="box-title">Running Jobs</h3>
+        <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+            </button>
+        </div>
     </div>
-    <div class="box-body no-padding">
+    <div class="box-body">
         <table class="table table-striped">
             <tr>
                 <th style="width: 10px">#</th>
@@ -74,15 +82,17 @@
                 <th style="width: 80px">Args</th>
                 <th style="width: 20px">Priority</th>
                 <th style="width: 40px">Runtime</th>
-                <th style="width: 40px">Started</th>
+                <th style="width: 120px">Started</th>
                 <th style="width: 40px">Log</th>
+                <th style="width: 40px">Running On</th>
+                <th style="width: 40px">Action</th>
             </tr>
             {% for job in job_status.RUNNING %}
             <tr>
                 <td>{{ job.job_execution_id }}</td>
                 <td>{{ job.job_instance_id }}</td>
                 <td>{{ job.job_instance.spider_name }}</td>
-                <td>{{ job.job_instance.args }}</td>
+                <td style="font-size: 10px;">{{ job.job_instance.spider_arguments }}</td>
                 {% if job.job_instance.priority == -1 %}
                 <td>
                     <span class="label label-default">LOW</span>
@@ -103,6 +113,11 @@
                 <td>{{ timedelta(now,job.start_time) }}</td>
                 <td>{{ job.start_time }}</td>
                 <td><a href="#">Log</a></td>
+                <td style="font-size: 10px;">{{ job.running_on }}</td>
+                <td>
+                    <a href="/project/{{ project.id }}/jobexecs/{{ job.job_execution_id }}/stop"><span
+                            class="label label-danger">Stop</span></a>
+                </td>
             </tr>
             {% endfor %}
         </table>
@@ -113,8 +128,12 @@
 <div class="box">
     <div class="box-header">
         <h3 class="box-title">Completed Jobs</h3>
+        <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+            </button>
+        </div>
     </div>
-    <div class="box-body no-padding">
+    <div class="box-body">
         <table class="table table-striped">
             <tr>
                 <th style="width: 10px">#</th>
@@ -123,16 +142,16 @@
                 <th style="width: 80px">Args</th>
                 <th style="width: 20px">Priority</th>
                 <th style="width: 40px">Runtime</th>
-                <th style="width: 40px">Started</th>
+                <th style="width: 120px">Started</th>
                 <th style="width: 10px">Log</th>
                 <th style="width: 10px">Status</th>
             </tr>
-            {% for job in job_status.FINISHED %}
+            {% for job in job_status.COMPLETED %}
             <tr>
                 <td>{{ job.job_execution_id }}</td>
                 <td>{{ job.job_instance_id }}</td>
                 <td>{{ job.job_instance.spider_name }}</td>
-                <td>{{ job.job_instance.spider_arguments }}</td>
+                <td style="font-size: 10px;">{{ job.job_instance.spider_arguments }}</td>
                 {% if job.job_instance.priority == -1 %}
                 <td>
                     <span class="label label-default">LOW</span>

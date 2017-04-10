@@ -151,7 +151,7 @@ class JobExecutionCtrl(flask_restful.Resource):
         return agent.get_job_status(project)
 
 
-class JobExecutionOperationCtrl(flask_restful.Resource):
+class JobExecutionStopCtrl(flask_restful.Resource):
     @swagger.operation(
         summary='operate job',
         notes='args: operation: [run/stop]',
@@ -171,16 +171,10 @@ class JobExecutionOperationCtrl(flask_restful.Resource):
                 "dataType": 'string'
             }
         ])
-    def get(self, project_id, job_id):
-        operation = request.args.get("operation")
-        job_instance = JobInstance.query.filter_by(project_id=project_id, id=job_id).first()
-        if operation and job_instance:
-            if operation == 'run':
-                agent.start_spider(job_instance)
-                return True
-            if operation == 'stop':
-                agent.cancel_spider(job_instance)
-                return True
+    def get(self, project_id, job_exec_id):
+        job_execution = JobExecution.query.filter_by(project_id=project_id, id=job_exec_id).first()
+        agent.cancel_spider(job_execution)
+        return True
 
 
 api.add_resource(ProjectCtrl, "/api/projects")
@@ -188,7 +182,7 @@ api.add_resource(SpiderCtrl, "/api/projects/<project_id>/spiders")
 api.add_resource(JobCtrl, "/api/projects/<project_id>/jobs")
 api.add_resource(JobDetailCtrl, "/api/projects/<project_id>/jobs/<job_id>")
 api.add_resource(JobExecutionCtrl, "/api/projects/<project_id>/jobexecs")
-api.add_resource(JobExecutionOperationCtrl, "/api/projects/<project_id>/jobexecs/<job_exec_id>")
+api.add_resource(JobExecutionStopCtrl, "/api/projects/<project_id>/jobexecs/<job_exec_id>/stop")
 
 '''
 ========= Router =========
@@ -197,7 +191,8 @@ api.add_resource(JobExecutionOperationCtrl, "/api/projects/<project_id>/jobexecs
 
 @app.context_processor
 def inject_common():
-    return dict(now=datetime.datetime.now())
+    return dict(now=datetime.datetime.now(),
+                service_ids=agent.service_ids)
 
 
 @app.context_processor
@@ -223,6 +218,8 @@ def utility_processor():
         :param unit: s m h
         :return:
         '''
+        if not end_time or not start_time:
+            return ''
         if type(end_time) == str:
             end_time = datetime.datetime.strptime(end_time, '%Y-%m-%d %H:%M:%S')
         if type(start_time) == str:
@@ -258,7 +255,7 @@ def project_create():
     project.project_name = project_name
     db.session.add(project)
     db.session.commit()
-    return redirect("/", code=302)
+    return redirect("/project/%s/spider/deploy" % project.id, code=302)
 
 
 @app.route("/project/<project_id>/job/dashboard")
@@ -300,6 +297,36 @@ def job_add(project_id):
     return redirect(request.referrer, code=302)
 
 
+@app.route("/project/<project_id>/jobexecs/<job_exec_id>/stop")
+def job_stop(project_id, job_exec_id):
+    job_execution = JobExecution.query.filter_by(project_id=project_id, id=job_exec_id).first()
+    agent.cancel_spider(job_execution)
+    return redirect(request.referrer, code=302)
+
+
+@app.route("/project/<project_id>/job/<job_instance_id>/run")
+def job_run(project_id, job_instance_id):
+    job_instance = JobInstance.query.filter_by(project_id=project_id, id=job_instance_id).first()
+    agent.start_spider(job_instance)
+    return redirect(request.referrer, code=302)
+
+
+@app.route("/project/<project_id>/job/<job_instance_id>/remove")
+def job_remove(project_id, job_instance_id):
+    job_instance = JobInstance.query.filter_by(project_id=project_id, id=job_instance_id).first()
+    db.session.delete(job_instance)
+    db.session.commit()
+    return redirect(request.referrer, code=302)
+
+
+@app.route("/project/<project_id>/job/<job_instance_id>/switch")
+def job_switch(project_id, job_instance_id):
+    job_instance = JobInstance.query.filter_by(project_id=project_id, id=job_instance_id).first()
+    job_instance.enabled = -1 if job_instance.enabled == 0 else 0
+    db.session.commit()
+    return redirect(request.referrer, code=302)
+
+
 @app.route("/project/<project_id>/spider/dashboard")
 def spider_dashboard(project_id):
     project = Project.find_project_by_id(project_id)
@@ -311,6 +338,8 @@ def spider_dashboard(project_id):
 @app.route("/project/<project_id>/spider/deploy")
 def spider_deploy(project_id):
     project = Project.find_project_by_id(project_id)
+    spider_instance_list = agent.get_spider_list(project)
+    SpiderInstance.update_spider_instances(spider_instance_list)
     return render_template("spider_deploy.html")
 
 
@@ -333,3 +362,17 @@ def spider_egg_upload(project_id):
         agent.deploy(project, dst)
         flash('deploy success!')
     return redirect(request.referrer)
+
+
+@app.route("/project/<project_id>/project/stats")
+def project_stats(project_id):
+    project = Project.find_project_by_id(project_id)
+    run_stats = JobExecution.list_run_stats_by_hours(project_id)
+    return render_template("project_stats.html", run_stats=run_stats)
+
+
+@app.route("/project/<project_id>/service/stats")
+def service_stats(project_id):
+    project = Project.find_project_by_id(project_id)
+    run_stats = JobExecution.list_run_stats_by_hours(project_id)
+    return render_template("service_stats.html", run_stats=run_stats)

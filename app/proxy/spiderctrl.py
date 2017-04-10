@@ -77,8 +77,7 @@ class SpiderAgent():
         spider_instance_list = self.spider_service_instances[0].get_spider_list(project.project_name)
         for spider_instance in spider_instance_list:
             spider_instance.project_id = project.id
-        SpiderInstance.load_spider(spider_instance_list)
-        return [spider.to_dict() for spider in SpiderInstance.query.filter_by(project_id=project.id).all()]
+        return spider_instance_list
 
     def get_daemon_status(self):
         pass
@@ -148,6 +147,7 @@ class SpiderAgent():
     def cancel_spider(self, job_execution):
         job_instance = JobInstance.find_job_instance_by_id(job_execution.job_instance_id)
         project = Project.find_project_by_id(job_instance.project_id)
+        # TODO multi service
         for spider_service_instance in self.spider_service_instances:
             if spider_service_instance.service_id == job_execution.running_on:
                 if spider_service_instance.cancel_spider(project.project_name, job_execution.service_job_execution_id):
@@ -160,6 +160,11 @@ class SpiderAgent():
             if not spider_service_instance.deploy(project.project_name, file_path):
                 return False
         return True
+
+    @property
+    def service_ids(self):
+        return [self.spider_service_instance.service_id for self.spider_service_instance in
+                self.spider_service_instances]
 
 
 if __name__ == '__main__':

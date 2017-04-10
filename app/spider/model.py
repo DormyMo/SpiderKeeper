@@ -1,3 +1,8 @@
+import datetime
+
+from sqlalchemy import desc
+from sqlalchemy import or_
+
 from app import db, Base
 
 
@@ -32,12 +37,12 @@ class SpiderInstance(Base):
     project_id = db.Column(db.INTEGER, nullable=False, index=True)
 
     @classmethod
-    def load_spider(cls, spider_model_list):
-        for spider_model in spider_model_list:
-            existed_spider_model = cls.query.filter_by(project_id=spider_model.project_id,
-                                                       spider_name=spider_model.spider_name).first()
-            if not existed_spider_model:
-                db.session.add(spider_model)
+    def update_spider_instances(cls, spider_instance_list):
+        for spider_instance in spider_instance_list:
+            existed_spider_instance = cls.query.filter_by(project_id=spider_instance.project_id,
+                                                          spider_name=spider_instance.spider_name).first()
+            if not existed_spider_instance:
+                db.session.add(spider_instance)
                 db.session.commit()
 
     @classmethod
@@ -138,16 +143,32 @@ class JobExecution(Base):
         result = {}
         result['PENDING'] = [job_execution.to_dict() for job_execution in
                              JobExecution.query.filter_by(project_id=project_id,
-                                                          running_status=SpiderStatus.PENDING).limit(each_status_limit)]
+                                                          running_status=SpiderStatus.PENDING).order_by(
+                                 desc(JobExecution.date_modified)).limit(each_status_limit)]
         result['RUNNING'] = [job_execution.to_dict() for job_execution in
                              JobExecution.query.filter_by(project_id=project_id,
-                                                          running_status=SpiderStatus.RUNNING).limit(each_status_limit)]
-        result['FINISHED'] = [job_execution.to_dict() for job_execution in
-                              JobExecution.query.filter_by(project_id=project_id,
-                                                           running_status=SpiderStatus.FINISHED).limit(
-                                  each_status_limit)]
-        result['CANCELD'] = [job_execution.to_dict() for job_execution in
-                             JobExecution.query.filter_by(project_id=project_id,
-                                                          running_status=SpiderStatus.CANCELED).limit(
-                                 each_status_limit)]
+                                                          running_status=SpiderStatus.RUNNING).order_by(
+                                 desc(JobExecution.date_modified)).limit(each_status_limit)]
+        result['COMPLETED'] = [job_execution.to_dict() for job_execution in
+                               JobExecution.query.filter(JobExecution.project_id == project_id).filter(
+                                   (JobExecution.running_status == SpiderStatus.FINISHED) | (
+                                       JobExecution.running_status == SpiderStatus.CANCELED)).order_by(
+                                   desc(JobExecution.date_modified)).limit(each_status_limit)]
         return result
+
+    @classmethod
+    def list_run_stats_by_hours(cls, project_id):
+        result = {}
+        hour_keys = []
+        last_time = datetime.datetime.now() - datetime.timedelta(hours=23)
+        last_time = datetime.datetime(last_time.year, last_time.month, last_time.day, last_time.hour)
+        for hour in range(23, -1, -1):
+            time_tmp = datetime.datetime.now() - datetime.timedelta(hours=hour)
+            hour_key = time_tmp.strftime('%Y-%m-%d %H:00:00')
+            hour_keys.append(hour_key)
+            result[hour_key] = 0  # init
+        for job_execution in JobExecution.query.filter(JobExecution.project_id == project_id,
+                                                       JobExecution.date_created >= last_time).all():
+            hour_key = job_execution.create_time.strftime('%Y-%m-%d %H:00:00')
+            result[hour_key] += 1
+        return [dict(key=hour_key, value=result[hour_key]) for hour_key in hour_keys]

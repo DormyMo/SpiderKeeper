@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>AdminLTE 2 | Blank Page</title>
+    <title>SpiderKeeper</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <!-- Bootstrap 3.3.6 -->
@@ -18,7 +18,7 @@
          folder instead of downloading all of them to reduce the load. -->
     <link rel="stylesheet" href="/static/css/skins/skin-black-light.min.css">
     <!--custom css-->
-    <link rel="stylesheet" href="/static/css/skins/app.css">
+    <link rel="stylesheet" href="/static/css/app.css">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -27,7 +27,7 @@
     <script src="/static/js/respond.min.js"></script>
     <![endif]-->
 </head>
-<body class="hold-transition skin-blue sidebar-mini">
+<body class="hold-transition skin-black-light sidebar-mini">
 <!-- Site wrapper -->
 <div class="wrapper">
     <header class="main-header">
@@ -95,9 +95,13 @@
                     <span>Deploy</span></a></li>
                 <!--<li><a href="#"><i class="fa fa-circle-o text-red"></i> <span>Settings</span></a></li>-->
                 <li class="header">PROJECT</li>
-                <!--<li><a href="#"><i class="fa fa-circle-o text-red"></i> <span>Activity</span></a></li>-->
+                <li><a href="/project/{{ project.id }}/project/stats"><i class="fa  fa-area-chart text-gray"></i> <span>Running Stats</span></a>
+                </li>
                 <!--<li><a href="#"><i class="fa fa-circle-o text-red"></i> <span>Members</span></a></li>-->
                 <!--<li><a href="#"><i class="fa fa-circle-o text-red"></i> <span>Settings</span></a></li>-->
+                <li class="header">SERVICE</li>
+                <li><a href="/project/{{ project.id }}/service/stats"><i class="fa fa-bolt text-red"></i> <span>Usage Stats</span></a>
+                </li>
             </ul>
         </section>
         <!-- /.sidebar -->
@@ -169,5 +173,6 @@
 <script src="/static/js/AdminLTE.min.js"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="/static/js/demo.js"></script>
+{% block script %}{% endblock %}
 </body>
 </html>

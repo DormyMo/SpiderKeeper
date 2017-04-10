@@ -16,9 +16,12 @@ app = Flask(__name__)
 app.config.from_object('config')
 
 # Logging
+log = logging.getLogger('werkzeug')
+log.setLevel(logging.ERROR)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 file_handler = logging.FileHandler(app.config.get('BASE_DIR') + '/app/logs/%s' % 'sk.log', 'w', 'utf-8')
 file_handler.setLevel(logging.INFO)
-file_handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
+file_handler.setFormatter(formatter)
 app.logger.setLevel(logging.INFO)
 app.logger.addHandler(file_handler)
 

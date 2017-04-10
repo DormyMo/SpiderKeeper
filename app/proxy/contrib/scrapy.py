@@ -35,7 +35,7 @@ class ScrapydProxy(SpiderServiceProxy):
         data = request("get", self._scrapyd_url() + "/listspiders.json?project=%s" % project_name,
                        return_type="json")
         result = []
-        if data and data['status'] != 'error':
+        if data and data['status'] == 'ok':
             for spider_name in data['spiders']:
                 spider_instance = SpiderInstance()
                 spider_instance.spider_name = spider_name
@@ -49,7 +49,7 @@ class ScrapydProxy(SpiderServiceProxy):
         data = request("get", self._scrapyd_url() + "/listjobs.json?project=%s" % project_name,
                        return_type="json")
         result = []
-        if data:
+        if data and data['status'] == 'ok':
             for item in data[self.spider_status_name_dict[spider_status]]:
                 start_time, end_time = None, None
                 if item.get('start_time'):
@@ -63,7 +63,7 @@ class ScrapydProxy(SpiderServiceProxy):
         post_data = dict(project=project_name, spider=spider_name)
         post_data.update(arguments)
         data = request("post", self._scrapyd_url() + "/schedule.json", data=post_data, return_type="json")
-        return data['jobid'] if data else None
+        return data['jobid'] if data and data['status'] == 'ok' else None
 
     def cancel_spider(self, project_name, job_id):
         post_data = dict(project=project_name, job=job_id)
@@ -76,6 +76,6 @@ class ScrapydProxy(SpiderServiceProxy):
         res = requests.post(self._scrapyd_url() + '/addversion.json', data={
             'project': project_name,
             'version': int(time.time()),
-            'egg': ('project.egg', eggdata),
+            'egg': eggdata,
         })
         return res.text if res.status_code == 200 else None
