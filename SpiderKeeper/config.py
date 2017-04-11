@@ -6,9 +6,7 @@ import os
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
-UPLOAD_FOLDER = BASE_DIR + '/upload'
-
-SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(BASE_DIR, 'app/data/SpiderKeeper.db')
+SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(BASE_DIR, 'SpiderKeeper.db')
 DATABASE_CONNECT_OPTIONS = {}
 
 # Application threads. A common general assumption is
@@ -27,5 +25,6 @@ CSRF_SESSION_KEY = "secret"
 # Secret key for signing cookies
 SECRET_KEY = "secret"
 
-# scrapyd services
-SCRAPYD_SERVICES = [('localhost', 6800)]
+# spider services
+SERVER_TYPE = 'scrapyd'
+SERVERS = ['http://localhost:6800']

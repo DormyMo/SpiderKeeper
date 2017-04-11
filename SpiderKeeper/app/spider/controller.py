@@ -189,10 +189,17 @@ api.add_resource(JobExecutionStopCtrl, "/api/projects/<project_id>/jobexecs/<job
 '''
 
 
+@app.before_request
+def intercept_no_project():
+    if request.path.find('/project//') > -1:
+        flash("create project first")
+        return redirect("/project/manage", code=302)
+
+
 @app.context_processor
 def inject_common():
     return dict(now=datetime.datetime.now(),
-                service_ids=agent.service_ids)
+                servers=agent.servers)
 
 
 @app.context_processor
@@ -238,8 +245,10 @@ def utility_processor():
 @app.route("/")
 def index():
     project = Project.query.first()
-    return render_template("job_dashboard.html",
-                           job_status=agent.get_job_status(project))
+    if project:
+        return render_template("job_dashboard.html",
+                               job_status=agent.get_job_status(project))
+    return redirect("/project/manage", code=302)
 
 
 @app.route("/project/<project_id>")
@@ -256,6 +265,19 @@ def project_create():
     db.session.add(project)
     db.session.commit()
     return redirect("/project/%s/spider/deploy" % project.id, code=302)
+
+
+@app.route("/project/<project_id>/delete")
+def project_delete(project_id):
+    project = Project.find_project_by_id(project_id)
+    db.session.delete(project)
+    db.session.commit()
+    return redirect("/project/manage", code=302)
+
+
+@app.route("/project/manage")
+def project_manage():
+    return render_template("project_manage.html")
 
 
 @app.route("/project/<project_id>/job/dashboard")
@@ -371,8 +393,8 @@ def project_stats(project_id):
     return render_template("project_stats.html", run_stats=run_stats)
 
 
-@app.route("/project/<project_id>/service/stats")
+@app.route("/project/<project_id>/server/stats")
 def service_stats(project_id):
     project = Project.find_project_by_id(project_id)
     run_stats = JobExecution.list_run_stats_by_hours(project_id)
-    return render_template("service_stats.html", run_stats=run_stats)
+    return render_template("server_stats.html", run_stats=run_stats)

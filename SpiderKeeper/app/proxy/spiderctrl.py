@@ -8,9 +8,9 @@ from app.spider.model import SpiderStatus, JobExecution, JobInstance, Project, S
 
 
 class SpiderServiceProxy():
-    def __init__(self, service_id):
+    def __init__(self, server):
         # service machine id
-        self._service_id = service_id
+        self._server = server
 
     def get_project_list(self):
         '''
@@ -56,8 +56,8 @@ class SpiderServiceProxy():
         pass
 
     @property
-    def service_id(self):
-        return self._service_id
+    def server(self):
+        return self._server
 
 
 class SpiderAgent():
@@ -90,7 +90,7 @@ class SpiderAgent():
                 if job_execution and job_execution.running_status == SpiderStatus.PENDING:
                     job_execution.start_time = job_execution_dict['start_time']
                     job_execution.running_status = SpiderStatus.RUNNING
-                    job_execution.running_on = spider_service_instance.service_id
+                    job_execution.running_on = spider_service_instance.server
                     db.session.commit()
 
             # finished
@@ -140,7 +140,7 @@ class SpiderAgent():
             job_execution.service_job_execution_id = serviec_job_id
             job_execution.job_instance_id = job_instance.id
             job_execution.create_time = datetime.datetime.now()
-            job_execution.running_on = leader.service_id
+            job_execution.running_on = leader.server
             db.session.add(job_execution)
             db.session.commit()
 
@@ -149,7 +149,7 @@ class SpiderAgent():
         project = Project.find_project_by_id(job_instance.project_id)
         # TODO multi service
         for spider_service_instance in self.spider_service_instances:
-            if spider_service_instance.service_id == job_execution.running_on:
+            if spider_service_instance.server == job_execution.running_on:
                 if spider_service_instance.cancel_spider(project.project_name, job_execution.service_job_execution_id):
                     job_execution.running_status = SpiderStatus.CANCELED
                     db.session.commit()
@@ -162,8 +162,8 @@ class SpiderAgent():
         return True
 
     @property
-    def service_ids(self):
-        return [self.spider_service_instance.service_id for self.spider_service_instance in
+    def servers(self):
+        return [self.spider_service_instance.server for self.spider_service_instance in
                 self.spider_service_instances]
 
 

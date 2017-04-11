@@ -8,18 +8,16 @@ from app.util.http import request
 
 
 class ScrapydProxy(SpiderServiceProxy):
-    def __init__(self, host="localhost", port=6800):
-        self.host = host
-        self.port = port
+    def __init__(self, server):
         self.spider_status_name_dict = {
             SpiderStatus.PENDING: 'pending',
             SpiderStatus.RUNNING: 'running',
             SpiderStatus.FINISHED: 'finished'
         }
-        super(ScrapydProxy, self).__init__("%s:%d" % (host, port))
+        super(ScrapydProxy, self).__init__(server)
 
     def _scrapyd_url(self):
-        return "http://%s:%d" % (self.host, self.port)
+        return self.server
 
     def get_project_list(self):
         data = request("get", self._scrapyd_url() + "/listprojects.json", return_type="json")

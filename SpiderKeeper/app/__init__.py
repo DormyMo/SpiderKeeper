@@ -19,15 +19,14 @@ app.config.from_object('config')
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.ERROR)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-file_handler = logging.FileHandler(app.config.get('BASE_DIR') + '/app/logs/%s' % 'sk.log', 'w', 'utf-8')
-file_handler.setLevel(logging.INFO)
-file_handler.setFormatter(formatter)
+handler = logging.StreamHandler()
+handler.setFormatter(formatter)
 app.logger.setLevel(logging.INFO)
-app.logger.addHandler(file_handler)
+app.logger.addHandler(handler)
 
 # swagger
-api = swagger.docs(Api(app), apiVersion='2.0.0', api_spec_url="/api",
-                   description='SpiderKeeper v2.0')
+api = swagger.docs(Api(app), apiVersion='1.0.0', api_spec_url="/api",
+                   description='SpiderKeeper')
 # Define the database object which is imported
 # by modules and controllers
 db = SQLAlchemy(app)
@@ -75,8 +74,9 @@ from app.proxy.spiderctrl import SpiderAgent
 from app.proxy.contrib.scrapy import ScrapydProxy
 
 agent = SpiderAgent()
-for host, port in app.config.get("SCRAPYD_SERVICES"):
-    agent.regist(ScrapydProxy(host=host, port=port))
+if app.config.get('SERVER_TYPE') == 'scrapyd':
+    for server in app.config.get("SERVERS"):
+        agent.regist(ScrapydProxy(server))
 
 from app.spider.controller import api_spider_bp
 
