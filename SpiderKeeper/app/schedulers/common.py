@@ -1,8 +1,8 @@
 import datetime
 import time
 
-from app import scheduler, app, agent
-from app.spider.model import Project, JobInstance
+from SpiderKeeper.app import scheduler, app, agent
+from SpiderKeeper.app.spider.model import Project, JobInstance
 
 
 def sync_job_execution_status_job():

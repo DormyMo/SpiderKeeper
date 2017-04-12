@@ -1,0 +1,2 @@
+recursive-include SpiderKeeper/app/templates *
+recursive-include SpiderKeeper/app/static *

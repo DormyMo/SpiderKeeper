@@ -1,10 +1,8 @@
 import datetime
 import random
 
-import requests
-
-from app import db
-from app.spider.model import SpiderStatus, JobExecution, JobInstance, Project, SpiderInstance, JobPriority
+from SpiderKeeper.app import db
+from SpiderKeeper.app.spider.model import SpiderStatus, JobExecution, JobInstance, Project, JobPriority
 
 
 class SpiderServiceProxy():

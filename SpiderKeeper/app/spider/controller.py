@@ -11,8 +11,8 @@ from flask import session
 from flask.ext.restful_swagger import swagger
 from werkzeug.utils import secure_filename
 
-from app import db, api, agent, app
-from app.spider.model import JobInstance, Project, JobExecution, SpiderInstance
+from SpiderKeeper.app import db, api, agent, app
+from SpiderKeeper.app.spider.model import JobInstance, Project, JobExecution, SpiderInstance
 
 api_spider_bp = Blueprint('spider', __name__)
 

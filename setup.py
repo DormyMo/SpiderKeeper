@@ -27,9 +27,9 @@ setup(
     ],
 
     entry_points={
-        'console_scripts': [
-            'spiderkeeper = spiderkeeper.run:main'
-        ],
+        'console_scripts': {
+            'spiderkeeper = SpiderKeeper.run:main'
+        },
     },
 
     classifiers=[

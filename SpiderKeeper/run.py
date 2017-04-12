@@ -1,6 +1,6 @@
 from optparse import OptionParser
 
-from app import app
+from SpiderKeeper.app import app
 
 
 def main():
@@ -13,7 +13,7 @@ def main():
 
 def parse_opts():
     parser = OptionParser(usage="%prog [options]",
-                          description="Deploy Scrapy project to Scrapyd server")
+                          description="Admin ui for spider service")
     parser.add_option("--type",
                       help="access spider server type, default:scrapyd",
                       dest='server_type',

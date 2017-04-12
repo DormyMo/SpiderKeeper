@@ -9,11 +9,12 @@ from flask.ext.restful import Api
 from flask.ext.restful_swagger import swagger
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.exceptions import HTTPException
+from SpiderKeeper import config
 
 # Define the WSGI application object
 app = Flask(__name__)
 # Configurations
-app.config.from_object('config')
+app.config.from_object(config)
 
 # Logging
 log = logging.getLogger('werkzeug')
@@ -65,26 +66,26 @@ def handle_error(e):
 
 
 # Build the database:
-from app.spider.model import *
+from SpiderKeeper.app.spider.model import *
 
 db.create_all()
 
 # regist spider service proxy
-from app.proxy.spiderctrl import SpiderAgent
-from app.proxy.contrib.scrapy import ScrapydProxy
+from SpiderKeeper.app.proxy.spiderctrl import SpiderAgent
+from SpiderKeeper.app.proxy.contrib.scrapy import ScrapydProxy
 
 agent = SpiderAgent()
 if app.config.get('SERVER_TYPE') == 'scrapyd':
     for server in app.config.get("SERVERS"):
         agent.regist(ScrapydProxy(server))
 
-from app.spider.controller import api_spider_bp
+from SpiderKeeper.app.spider.controller import api_spider_bp
 
 # Register blueprint(s)
 app.register_blueprint(api_spider_bp)
 
 # start sync job status scheduler
-from app.schedulers.common import sync_job_execution_status_job, reload_runnable_spider_job_execution
+from SpiderKeeper.app.schedulers.common import sync_job_execution_status_job, reload_runnable_spider_job_execution
 
 scheduler.add_job(sync_job_execution_status_job, 'interval', seconds=3, id='sys_sync_status')
 scheduler.add_job(reload_runnable_spider_job_execution, 'interval', seconds=5, id='sys_reload_job')

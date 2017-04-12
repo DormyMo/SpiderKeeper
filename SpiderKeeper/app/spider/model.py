@@ -1,9 +1,8 @@
 import datetime
 
 from sqlalchemy import desc
-from sqlalchemy import or_
 
-from app import db, Base
+from SpiderKeeper.app import db, Base
 
 
 class Project(Base):
