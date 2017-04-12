@@ -206,12 +206,15 @@ def inject_common():
 def inject_project():
     project_context = {}
     project_context['project_list'] = Project.query.all()
-    if not session.get('project_id'):
+    if project_context['project_list'] and (not session.get('project_id')):
         project = Project.query.first()
         session['project_id'] = project.id
-    project_context['project'] = Project.find_project_by_id(session['project_id'])
-    project_context['spider_list'] = [spider_instance.to_dict() for spider_instance in
-                                      SpiderInstance.query.filter_by(project_id=session['project_id']).all()]
+    if session.get('project_id'):
+        project_context['project'] = Project.find_project_by_id(session['project_id'])
+        project_context['spider_list'] = [spider_instance.to_dict() for spider_instance in
+                                          SpiderInstance.query.filter_by(project_id=session['project_id']).all()]
+    else:
+        project_context['project'] = {}
     return project_context
 
 

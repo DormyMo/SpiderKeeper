@@ -66,8 +66,10 @@ def handle_error(e):
 
 
 # Build the database:
+from SpiderKeeper.app.spider.model import *
+
+
 def init_database():
-    from SpiderKeeper.app.spider.model import *
     db.create_all()
 
 

@@ -49,4 +49,10 @@ def request(request_type, url, data=None, retry_times=5, return_type="text"):
         res = request_post(url, data, retry_times)
     if not res: return res
     if return_type == 'text': return res.text
-    if return_type == 'json': return res.json()
+    if return_type == 'json':
+        try:
+            res = res.json()
+            return res
+        except Exception as e:
+            logging.warning('parse json error %s' % str(e))
+            return None
