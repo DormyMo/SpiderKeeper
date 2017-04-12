@@ -30,11 +30,12 @@ pip install spiderkeeper
 ## Deployment
 
 ```
-Usage: run.py [options]
+Usage: 
 
-Deploy Scrapy project to Scrapyd server
+spiderkeeper [options]
 
 Options:
+
   -h, --help          show this help message and exit
   --type=SERVER_TYPE  access spider server type, default:scrapyd
   --host=HOST         host, default:0.0.0.0
@@ -42,6 +43,11 @@ Options:
   --server=SERVERS    servers, default:http://localhost:6800
 
 ```
+
+## TODO
+- [ ] User Authentication
+- [ ] Collect & Show scrapy crawl stats
+- [ ] Optimize load balancing
 
 ## Contributing
 
