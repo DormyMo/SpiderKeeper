@@ -61,6 +61,8 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 
 - *Initial work* - [DormyMo](https://github.com/DormyMo)
 
+![Contact](https://raw.githubusercontent.com/DormyMo/SpiderKeeper/master/screenshot/qqgroup_qrcode.png)
+
 See also the list of [contributors](https://github.com/DormyMo/SpiderKeeper/contributors) who participated in this project.
 
 ## License
