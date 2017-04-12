@@ -1,13 +1,18 @@
+import os
 from optparse import OptionParser
 
-from SpiderKeeper.app import app
+from SpiderKeeper.app import app, init_database
 
 
 def main():
     opts, args = parse_opts()
     exitcode = 0
-    app.config.SERVER_TYPE = opts.server_type
-    app.config.SERVERS = opts.servers or ['http://localhost:6800']
+    app.config.update(dict(
+        SERVER_TYPE=opts.server_type,
+        SERVERS=opts.servers or ['http://localhost:6800'],
+        SQLALCHEMY_DATABASE_URI=opts.database_url
+    ))
+    init_database()
     app.run(host=opts.host, port=opts.port, debug=True, threaded=True)
 
 
@@ -32,6 +37,11 @@ def parse_opts():
                       dest='servers',
                       action='append',
                       default=[])
+    default_database_url = 'sqlite:///' + os.path.join(os.path.abspath('.'), 'SpiderKeeper.db')
+    parser.add_option("--database_url",
+                      help='SpiderKeeper metadata database default:' + default_database_url,
+                      dest='database_url',
+                      default=default_database_url)
     return parser.parse_args()
 
 

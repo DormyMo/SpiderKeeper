@@ -1,4 +1,5 @@
 # Statement for enabling the development environment
+
 DEBUG = True
 
 # Define the application directory
@@ -6,7 +7,7 @@ import os
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
-SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(BASE_DIR, 'SpiderKeeper.db')
+SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(os.path.abspath('.'), 'SpiderKeeper.db')
 DATABASE_CONNECT_OPTIONS = {}
 
 # Application threads. A common general assumption is
