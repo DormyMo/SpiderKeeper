@@ -44,7 +44,7 @@ Options:
   --type=SERVER_TYPE  access spider server type, default:scrapyd
   --host=HOST         host, default:0.0.0.0
   --port=PORT         port, default:5000
-  --server=SERVERS    servers, default:http://localhost:6800
+  --server=SERVERS    servers (support multiply server), default:http://localhost:6800
 
 ```
 
