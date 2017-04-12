@@ -15,7 +15,7 @@ A scalable admin ui for spider service
 
 
 Current Support spider service
-- [Scrapy](https://github.com/scrapy/scrapy)
+- [Scrapy](https://github.com/scrapy/scrapy) ( with [scrapyd](https://github.com/scrapy/scrapyd))
 
 ## Screenshot
 ![job dashboard](https://raw.githubusercontent.com/DormyMo/SpiderKeeper/master/screenshot/screenshot_1.png)
@@ -61,7 +61,7 @@ Visit:
 
    scrapyd-deploy --build-egg output.egg
 
-2. upload egg file
+2. upload egg file (make sure you have been started [scrapyd](https://github.com/scrapy/scrapyd) server)
 
 3. Done & Enjoy it
 
