@@ -1,5 +1,9 @@
 # SpiderKeeper
 
+[![Latest Version](http://img.shields.io/pypi/v/SpiderKeeper.svg)](https://pypi.python.org/pypi/SpiderKeeper)
+[![Python Versions](http://img.shields.io/pypi/pyversions/SpiderKeeper.svg)](https://pypi.python.org/pypi/SpiderKeeper)
+[![The MIT License](http://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/DormyMo/SpiderKeeper/blob/master/LICENSE)
+   
 A scalable admin ui for spider service 
 
 ## Features
@@ -7,6 +11,7 @@ A scalable admin ui for spider service
 - Manage your spiders from a dashboard. Schedule them to run automatically
 - With a single click deploy the scrapy project
 - Show spider running stats
+- Provide api
 
 
 Current Support spider service
@@ -41,6 +46,11 @@ Options:
   --host=HOST         host, default:0.0.0.0
   --port=PORT         port, default:5000
   --server=SERVERS    servers, default:http://localhost:6800
+  
+ 
+Visit: 
+- web ui : http://localhost:5000
+- api swagger: http://localhost:5000/api.html
 
 ```
 
@@ -48,10 +58,6 @@ Options:
 - [ ] User Authentication
 - [ ] Collect & Show scrapy crawl stats
 - [ ] Optimize load balancing
-
-## Contributing
-
-Contributions are welcomed!
 
 ## Versioning
 
@@ -61,10 +67,14 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 
 - *Initial work* - [DormyMo](https://github.com/DormyMo)
 
-![Contact](https://raw.githubusercontent.com/DormyMo/SpiderKeeper/master/screenshot/qqgroup_qrcode.png)
-
 See also the list of [contributors](https://github.com/DormyMo/SpiderKeeper/contributors) who participated in this project.
 
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+
+## Contributing
+
+Contributions are welcomed!
+
+![Contact](https://raw.githubusercontent.com/DormyMo/SpiderKeeper/master/screenshot/qqgroup_qrcode.png)

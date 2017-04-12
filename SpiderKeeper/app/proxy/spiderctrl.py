@@ -5,7 +5,7 @@ from SpiderKeeper.app import db
 from SpiderKeeper.app.spider.model import SpiderStatus, JobExecution, JobInstance, Project, JobPriority
 
 
-class SpiderServiceProxy():
+class SpiderServiceProxy(object):
     def __init__(self, server):
         # service machine id
         self._server = server
