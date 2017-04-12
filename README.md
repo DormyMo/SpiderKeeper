@@ -61,7 +61,7 @@ Visit:
 
    scrapyd-deploy --build-egg output.egg
 
-2. upload egg file (make sure you have been started [scrapyd](https://github.com/scrapy/scrapyd) server)
+2. upload egg file (make sure you started scrapyd server)
 
 3. Done & Enjoy it
 
