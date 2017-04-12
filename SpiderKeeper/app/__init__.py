@@ -1,0 +1,92 @@
+# Import flask and template operators
+import logging
+import traceback
+
+from apscheduler.schedulers.background import BackgroundScheduler
+from flask import Flask
+from flask import jsonify
+from flask.ext.restful import Api
+from flask.ext.restful_swagger import swagger
+from flask_sqlalchemy import SQLAlchemy
+from werkzeug.exceptions import HTTPException
+from SpiderKeeper import config
+
+# Define the WSGI application object
+app = Flask(__name__)
+# Configurations
+app.config.from_object(config)
+
+# Logging
+log = logging.getLogger('werkzeug')
+log.setLevel(logging.ERROR)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+handler = logging.StreamHandler()
+handler.setFormatter(formatter)
+app.logger.setLevel(logging.INFO)
+app.logger.addHandler(handler)
+
+# swagger
+api = swagger.docs(Api(app), apiVersion='1.0.0', api_spec_url="/api",
+                   description='SpiderKeeper')
+# Define the database object which is imported
+# by modules and controllers
+db = SQLAlchemy(app)
+
+# Define apscheduler
+scheduler = BackgroundScheduler()
+
+
+class Base(db.Model):
+    __abstract__ = True
+
+    id = db.Column(db.Integer, primary_key=True)
+    date_created = db.Column(db.DateTime, default=db.func.current_timestamp())
+    date_modified = db.Column(db.DateTime, default=db.func.current_timestamp(),
+                              onupdate=db.func.current_timestamp())
+
+
+# Sample HTTP error handling
+# @app.errorhandler(404)
+# def not_found(error):
+#     abort(404)
+
+
+@app.errorhandler(Exception)
+def handle_error(e):
+    code = 500
+    if isinstance(e, HTTPException):
+        code = e.code
+    app.logger.error(traceback.print_exc())
+    return jsonify({
+        'code': code,
+        'success': False,
+        'msg': str(e),
+        'data': None
+    })
+
+
+# Build the database:
+from SpiderKeeper.app.spider.model import *
+
+db.create_all()
+
+# regist spider service proxy
+from SpiderKeeper.app.proxy.spiderctrl import SpiderAgent
+from SpiderKeeper.app.proxy.contrib.scrapy import ScrapydProxy
+
+agent = SpiderAgent()
+if app.config.get('SERVER_TYPE') == 'scrapyd':
+    for server in app.config.get("SERVERS"):
+        agent.regist(ScrapydProxy(server))
+
+from SpiderKeeper.app.spider.controller import api_spider_bp
+
+# Register blueprint(s)
+app.register_blueprint(api_spider_bp)
+
+# start sync job status scheduler
+from SpiderKeeper.app.schedulers.common import sync_job_execution_status_job, reload_runnable_spider_job_execution
+
+scheduler.add_job(sync_job_execution_status_job, 'interval', seconds=3, id='sys_sync_status')
+scheduler.add_job(reload_runnable_spider_job_execution, 'interval', seconds=5, id='sys_reload_job')
+scheduler.start()

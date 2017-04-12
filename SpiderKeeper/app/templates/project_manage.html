@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content_header %}
+<h1>Project Manage</h1>
+{% endblock %}
+{% block content_body %}
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<div class="callout callout-warning">
+    <ul>
+        {% for message in messages %}
+        <li><h4>{{ message }}</h4></li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+{% endwith %}
+<div class="box">
+    <div class="box-header">
+        {% if project %}
+        <h3 class="box-title">{{ project.project_name }}</h3>
+        {% endif %}
+    </div>
+    <div class="box-body">
+    </div>
+    <div class="box-footer text-black">
+        {% if project %}
+        <a href="/project/{{ project.id }}/delete" class="btn btn-block btn-danger btn-flat">Delete Project</a>
+        {% else %}
+        <a class="btn btn-block btn-info btn-flat" data-toggle="modal"
+           data-target="#project-create-modal">Create Project
+        </a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
