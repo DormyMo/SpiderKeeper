@@ -34,8 +34,7 @@ pip install spiderkeeper
 
 ### Deployment
 
-```
-Usage: 
+``` 
 
 spiderkeeper [options]
 
@@ -46,10 +45,26 @@ Options:
   --host=HOST         host, default:0.0.0.0
   --port=PORT         port, default:5000
   --server=SERVERS    servers, default:http://localhost:6800
-  
- 
+
+```
+
+## Usage
+
+```
 Visit: 
+
 - web ui : http://localhost:5000
+
+1. Create Project
+
+2. Use [scrapyd-client](https://github.com/scrapy/scrapyd-client) to generate egg file 
+
+   scrapyd-deploy --build-egg output.egg
+
+2. upload egg file
+
+3. Done & Enjoy it
+
 - api swagger: http://localhost:5000/api.html
 
 ```
