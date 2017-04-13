@@ -32,7 +32,7 @@ class Project(Base):
 class SpiderInstance(Base):
     __tablename__ = 'sk_spider'
 
-    spider_name = db.Column(db.String)
+    spider_name = db.Column(db.String(100))
     project_id = db.Column(db.INTEGER, nullable=False, index=True)
 
     @classmethod
