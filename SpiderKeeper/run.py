@@ -1,7 +1,7 @@
 import os
 from optparse import OptionParser
 
-from SpiderKeeper.app import app, init_database
+from SpiderKeeper.app import app, init_database, regist_server, start_scheduler
 
 
 def main():
@@ -13,6 +13,10 @@ def main():
         SQLALCHEMY_DATABASE_URI=opts.database_url
     ))
     init_database()
+    regist_server()
+    start_scheduler()
+    app.logger.info("SpiderKeeper start on %s:%s with %s servers:%s" % (
+        opts.host, opts.port, opts.server_type, ','.join(app.config.get('SERVERS', []))))
     app.run(host=opts.host, port=opts.port, debug=True, threaded=True)
 
 

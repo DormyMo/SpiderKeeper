@@ -78,9 +78,13 @@ from SpiderKeeper.app.proxy.spiderctrl import SpiderAgent
 from SpiderKeeper.app.proxy.contrib.scrapy import ScrapydProxy
 
 agent = SpiderAgent()
-if app.config.get('SERVER_TYPE') == 'scrapyd':
-    for server in app.config.get("SERVERS"):
-        agent.regist(ScrapydProxy(server))
+
+
+def regist_server():
+    if app.config.get('SERVER_TYPE') == 'scrapyd':
+        for server in app.config.get("SERVERS"):
+            agent.regist(ScrapydProxy(server))
+
 
 from SpiderKeeper.app.spider.controller import api_spider_bp
 
@@ -92,4 +96,7 @@ from SpiderKeeper.app.schedulers.common import sync_job_execution_status_job, re
 
 scheduler.add_job(sync_job_execution_status_job, 'interval', seconds=3, id='sys_sync_status')
 scheduler.add_job(reload_runnable_spider_job_execution, 'interval', seconds=5, id='sys_reload_job')
-scheduler.start()
+
+
+def start_scheduler():
+    scheduler.start()
