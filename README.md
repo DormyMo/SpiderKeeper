@@ -45,6 +45,11 @@ Options:
   --host=HOST         host, default:0.0.0.0
   --port=PORT         port, default:5000
   --server=SERVERS    servers (support multiply server), default:http://localhost:6800
+  
+
+example:
+
+spiderkeeper --server=http://localhost:6800
 
 ```
 
