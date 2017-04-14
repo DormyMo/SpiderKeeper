@@ -58,6 +58,11 @@ class JobPriority():
     LOW, NORMAL, HIGH, HIGHEST = range(-1, 3)
 
 
+class JobRunType():
+    ONETIME = 'onetime'
+    PERIODIC = 'periodic'
+
+
 class JobInstance(Base):
     __tablename__ = 'sk_job_instance'
 

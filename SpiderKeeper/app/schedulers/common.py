@@ -2,7 +2,7 @@ import datetime
 import time
 
 from SpiderKeeper.app import scheduler, app, agent
-from SpiderKeeper.app.spider.model import Project, JobInstance
+from SpiderKeeper.app.spider.model import Project, JobInstance, SpiderInstance
 
 
 def sync_job_execution_status_job():
@@ -13,6 +13,16 @@ def sync_job_execution_status_job():
     for project in Project.query.all():
         app.logger.info('[sync_job_execution_status][project:%s]' % project.id)
         agent.sync_job_status(project)
+
+
+def sync_spiders():
+    '''
+    sync spiders
+    :return:
+    '''
+    for project in Project.query.all():
+        spider_instance_list = agent.get_spider_list(project)
+        SpiderInstance.update_spider_instances(spider_instance_list)
 
 
 def run_spider_job(job_instance):
