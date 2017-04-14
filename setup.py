@@ -23,20 +23,7 @@ setup(
         'flask-restful-swagger==0.19',
         'Flask-SQLAlchemy==2.2',
         'PyMySQL==0.7.11',
-        'requests==2.13.0',
-        'aniso8601==1.2.0',
-        'click==6.7',
-        'itsdangerous==0.24',
-        'Jinja2==2.9.6',
-        'MarkupSafe==1.0',
-        'PyMySQL==0.7.11',
-        'python-dateutil==2.6.0',
-        'pytz==2017.2',
-        'requests==2.13.0',
-        'six==1.10.0',
-        'SQLAlchemy',
-        'tzlocal',
-        'Werkzeug'
+        'requests==2.13.0'
     ],
 
     entry_points={
