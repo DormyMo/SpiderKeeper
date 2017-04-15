@@ -26,6 +26,9 @@ CSRF_SESSION_KEY = "secret"
 # Secret key for signing cookies
 SECRET_KEY = "secret"
 
+# log
+LOG_LEVEL = 'INFO'
+
 # spider services
 SERVER_TYPE = 'scrapyd'
 SERVERS = ['http://localhost:6800']

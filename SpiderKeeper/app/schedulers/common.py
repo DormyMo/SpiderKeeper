@@ -11,7 +11,7 @@ def sync_job_execution_status_job():
     :return:
     '''
     for project in Project.query.all():
-        app.logger.info('[sync_job_execution_status][project:%s]' % project.id)
+        app.logger.debug('[sync_job_execution_status][project:%s]' % project.id)
         agent.sync_job_status(project)
 
 
@@ -42,7 +42,7 @@ def reload_runnable_spider_job_execution():
     :return:
     '''
     running_job_ids = set([job.id for job in scheduler.get_jobs()])
-    app.logger.info('[running_job_ids] %s' % ','.join(running_job_ids))
+    app.logger.debug('[running_job_ids] %s' % ','.join(running_job_ids))
     available_job_ids = set()
     # add new job to schedule
     for job_instance in JobInstance.query.filter_by(enabled=0, run_type="periodic").all():

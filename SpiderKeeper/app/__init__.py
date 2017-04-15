@@ -2,6 +2,7 @@
 import logging
 import traceback
 
+import SpiderKeeper
 from apscheduler.schedulers.background import BackgroundScheduler
 from flask import Flask
 from flask import jsonify
@@ -22,11 +23,11 @@ log.setLevel(logging.ERROR)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 handler = logging.StreamHandler()
 handler.setFormatter(formatter)
-app.logger.setLevel(logging.INFO)
+app.logger.setLevel(app.config.get('LOG_LEVEL', "INFO"))
 app.logger.addHandler(handler)
 
 # swagger
-api = swagger.docs(Api(app), apiVersion='1.0.0', api_spec_url="/api",
+api = swagger.docs(Api(app), apiVersion=SpiderKeeper.__version__, api_spec_url="/api",
                    description='SpiderKeeper')
 # Define the database object which is imported
 # by modules and controllers
@@ -102,3 +103,9 @@ scheduler.add_job(reload_runnable_spider_job_execution, 'interval', seconds=5, i
 
 def start_scheduler():
     scheduler.start()
+
+
+def initialize():
+    init_database()
+    regist_server()
+    start_scheduler()

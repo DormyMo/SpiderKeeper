@@ -1,23 +1,23 @@
+import logging
 import os
 from optparse import OptionParser
 
-from SpiderKeeper.app import app, init_database, regist_server, start_scheduler
+from SpiderKeeper.app import app, initialize
 
 
 def main():
     opts, args = parse_opts()
-    exitcode = 0
     app.config.update(dict(
         SERVER_TYPE=opts.server_type,
         SERVERS=opts.servers or ['http://localhost:6800'],
         SQLALCHEMY_DATABASE_URI=opts.database_url
     ))
-    init_database()
-    regist_server()
-    start_scheduler()
-    app.logger.info("SpiderKeeper start on %s:%s with %s servers:%s" % (
+    if opts.verbose:
+        app.logger.setLevel(logging.DEBUG)
+    initialize()
+    app.logger.info("SpiderKeeper startd on %s:%s with %s servers:%s" % (
         opts.host, opts.port, opts.server_type, ','.join(app.config.get('SERVERS', []))))
-    app.run(host=opts.host, port=opts.port, debug=True, threaded=True)
+    app.run(host=opts.host, port=opts.port, use_reloader=False, threaded=True)
 
 
 def parse_opts():
@@ -46,6 +46,10 @@ def parse_opts():
                       help='SpiderKeeper metadata database default:' + default_database_url,
                       dest='database_url',
                       default=default_database_url)
+    parser.add_option("-v", "--verbose",
+                      help="log level",
+                      dest='verbose',
+                      action='store_true')
     return parser.parse_args()
 
 
