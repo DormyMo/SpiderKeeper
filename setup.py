@@ -34,9 +34,9 @@ setup(
         'pytz==2017.2',
         'requests==2.13.0',
         'six==1.10.0',
-        'SQLAlchemy',
-        'tzlocal',
-        'Werkzeug'
+        'SQLAlchemy==1.1.9',
+        'tzlocal==1.3',
+        'Werkzeug==0.12.1'
     ],
 
     entry_points={
