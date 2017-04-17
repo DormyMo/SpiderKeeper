@@ -388,8 +388,7 @@ class JobExecutionCtrl(flask_restful.Resource):
             "dataType": 'int'
         }])
     def get(self, project_id):
-        project = Project.find_project_by_id(project_id)
-        return agent.get_job_status(project)
+        return JobExecution.list_jobs(project_id)
 
 
 class JobExecutionDetailCtrl(flask_restful.Resource):

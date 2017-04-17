@@ -37,7 +37,7 @@
             {% for job in job_status.PENDING %}
             <tr>
                 <td>{{ job.job_execution_id }}</td>
-                <td><a href="#">{{ job.job_instance_id }}</a></td>
+                <td><a href="/project/1/job/periodic#{{ job.job_instance_id }}">{{ job.job_instance_id }}</a></td>
                 <td>{{ job.job_instance.spider_name }}</td>
                 <td style="font-size: 10px;">{{ job.job_instance.spider_arguments }}</td>
                 {% if job.job_instance.priority == -1 %}
@@ -90,7 +90,7 @@
             {% for job in job_status.RUNNING %}
             <tr>
                 <td>{{ job.job_execution_id }}</td>
-                <td>{{ job.job_instance_id }}</td>
+                <td><a href="/project/1/job/periodic#{{ job.job_instance_id }}">{{ job.job_instance_id }}</a></td>
                 <td>{{ job.job_instance.spider_name }}</td>
                 <td style="font-size: 10px;">{{ job.job_instance.spider_arguments }}</td>
                 {% if job.job_instance.priority == -1 %}
@@ -149,7 +149,7 @@
             {% for job in job_status.COMPLETED %}
             <tr>
                 <td>{{ job.job_execution_id }}</td>
-                <td>{{ job.job_instance_id }}</td>
+                <td><a href="/project/1/job/periodic#{{ job.job_instance_id }}">{{ job.job_instance_id }}</a></td>
                 <td>{{ job.job_instance.spider_name }}</td>
                 <td style="font-size: 10px;">{{ job.job_instance.spider_arguments }}</td>
                 {% if job.job_instance.priority == -1 %}

@@ -36,7 +36,7 @@
             </tr>
             {% for job_instance in job_instance_list %}
             <tr>
-                <td>{{ job_instance.job_instance_id }}</td>
+                <td><a name="{{ job_instance.job_instance_id }}">{{ job_instance.job_instance_id }}</a></td>
                 <td>{{ job_instance.cron_day_of_month }}</td>
                 <td>{{ job_instance.cron_day_of_month }}</td>
                 <td>{{ job_instance.cron_day_of_week }}</td>
