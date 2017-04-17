@@ -1,6 +1,8 @@
 import datetime
 import random
 
+from sqlalchemy import desc
+
 from SpiderKeeper.app import db
 from SpiderKeeper.app.spider.model import SpiderStatus, JobExecution, JobInstance, Project, JobPriority
 
@@ -53,6 +55,9 @@ class SpiderServiceProxy(object):
     def deploy(self, *args, **kwargs):
         pass
 
+    def log_url(self, *args, **kwargs):
+        pass
+
     @property
     def server(self):
         return self._server
@@ -82,8 +87,9 @@ class SpiderAgent():
 
     def sync_job_status(self, project):
         for spider_service_instance in self.spider_service_instances:
+            job_status = spider_service_instance.get_job_list(project.project_name)
             # running
-            for job_execution_dict in spider_service_instance.get_job_list(project.project_name, SpiderStatus.RUNNING):
+            for job_execution_dict in job_status[SpiderStatus.RUNNING]:
                 job_execution = JobExecution.find_job_execution_by_service_job_execution_id(job_execution_dict['id'])
                 if job_execution and job_execution.running_status == SpiderStatus.PENDING:
                     job_execution.start_time = job_execution_dict['start_time']
@@ -91,27 +97,13 @@ class SpiderAgent():
                     db.session.commit()
 
             # finished
-            for job_execution_dict in spider_service_instance.get_job_list(project.project_name, SpiderStatus.FINISHED):
+            for job_execution_dict in job_status[SpiderStatus.FINISHED]:
                 job_execution = JobExecution.find_job_execution_by_service_job_execution_id(job_execution_dict['id'])
-                if job_execution:
+                if job_execution and job_execution.running_status != SpiderStatus.FINISHED:
                     job_execution.start_time = job_execution_dict['start_time']
                     job_execution.end_time = job_execution_dict['end_time']
                     job_execution.running_status = SpiderStatus.FINISHED
                     db.session.commit()
-
-    def get_job_status(self, project):
-        result = {"PENDING": [], "RUNNING": [], "FINISHED": [], "CANCELED": []}
-        for jobExecution in JobExecution.query.filter(JobExecution.running_status != SpiderStatus.FINISHED,
-                                                      JobExecution.running_status != SpiderStatus.CANCELED,
-                                                      JobExecution.project_id == project.id).all():
-            if jobExecution.running_status == SpiderStatus.PENDING:
-                result['PENDING'].append(jobExecution.to_dict())
-            if jobExecution.running_status == SpiderStatus.RUNNING:
-                result['RUNNING'].append(jobExecution.to_dict())
-        for jobExecution in JobExecution.query.filter(JobExecution.running_status == SpiderStatus.FINISHED,
-                                                      JobExecution.project_id == project.id).limit(100):
-            result['FINISHED'].append(jobExecution.to_dict())
-        return result
 
     def start_spider(self, job_instance):
         project = Project.find_project_by_id(job_instance.project_id)
@@ -145,10 +137,10 @@ class SpiderAgent():
     def cancel_spider(self, job_execution):
         job_instance = JobInstance.find_job_instance_by_id(job_execution.job_instance_id)
         project = Project.find_project_by_id(job_instance.project_id)
-        # TODO multi service
         for spider_service_instance in self.spider_service_instances:
             if spider_service_instance.server == job_execution.running_on:
                 if spider_service_instance.cancel_spider(project.project_name, job_execution.service_job_execution_id):
+                    job_execution.end_time = datetime.datetime.now()
                     job_execution.running_status = SpiderStatus.CANCELED
                     db.session.commit()
                 break
@@ -158,6 +150,14 @@ class SpiderAgent():
             if not spider_service_instance.deploy(project.project_name, file_path):
                 return False
         return True
+
+    def log_url(self, job_execution):
+        job_instance = JobInstance.find_job_instance_by_id(job_execution.job_instance_id)
+        project = Project.find_project_by_id(job_instance.project_id)
+        for spider_service_instance in self.spider_service_instances:
+            if spider_service_instance.server == job_execution.running_on:
+                return spider_service_instance.log_url(project.project_name, job_instance.spider_name,
+                                                       job_execution.service_job_execution_id)
 
     @property
     def servers(self):

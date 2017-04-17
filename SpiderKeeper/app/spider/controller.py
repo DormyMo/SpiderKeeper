@@ -3,6 +3,7 @@ import os
 import tempfile
 
 import flask_restful
+import requests
 from flask import Blueprint, request
 from flask import abort
 from flask import flash
@@ -491,8 +492,7 @@ def utility_processor():
 def index():
     project = Project.query.first()
     if project:
-        return render_template("job_dashboard.html",
-                               job_status=agent.get_job_status(project))
+        return redirect("/project/%s/job/dashboard" % project.id, code=302)
     return redirect("/project/manage", code=302)
 
 
@@ -569,6 +569,14 @@ def job_stop(project_id, job_exec_id):
     job_execution = JobExecution.query.filter_by(project_id=project_id, id=job_exec_id).first()
     agent.cancel_spider(job_execution)
     return redirect(request.referrer, code=302)
+
+
+@app.route("/project/<project_id>/jobexecs/<job_exec_id>/log")
+def job_log(project_id, job_exec_id):
+    job_execution = JobExecution.query.filter_by(project_id=project_id, id=job_exec_id).first()
+    raw = requests.get(agent.log_url(job_execution)).text
+    if raw:
+        return raw
 
 
 @app.route("/project/<project_id>/job/<job_instance_id>/run")

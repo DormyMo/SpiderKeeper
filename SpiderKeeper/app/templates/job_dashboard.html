@@ -112,7 +112,7 @@
                 {% endif %}
                 <td>{{ timedelta(now,job.start_time) }}</td>
                 <td>{{ job.start_time }}</td>
-                <td><a href="#">Log</a></td>
+                <td><a href="/project/{{ project.id }}/jobexecs/{{ job.job_execution_id }}/log" target="_blank" data-toggle="tooltip" data-placement="top" title="{{ job.service_job_execution_id }}">Log</a></td>
                 <td style="font-size: 10px;">{{ job.running_on }}</td>
                 <td>
                     <a href="/project/{{ project.id }}/jobexecs/{{ job.job_execution_id }}/stop"><span
@@ -171,7 +171,7 @@
                 {% endif %}
                 <td>{{ timedelta(job.end_time,job.start_time) }}</td>
                 <td>{{ job.start_time }}</td>
-                <td><a href="#">Log</a></td>
+                <td><a href="/project/{{ project.id }}/jobexecs/{{ job.job_execution_id }}/log" target="_blank" data-toggle="tooltip" data-placement="top" title="{{ job.service_job_execution_id }}">Log</a></td>
                 {% if job.running_status == 2 %}
                 <td>
                     <span class="label label-success">FINISHED</span>

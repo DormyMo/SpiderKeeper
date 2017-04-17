@@ -43,19 +43,20 @@ class ScrapydProxy(SpiderServiceProxy):
     def get_daemon_status(self):
         pass
 
-    def get_job_list(self, project_name, spider_status):
+    def get_job_list(self, project_name, spider_status=None):
         data = request("get", self._scrapyd_url() + "/listjobs.json?project=%s" % project_name,
                        return_type="json")
-        result = []
+        result = {SpiderStatus.PENDING: [], SpiderStatus.RUNNING: [], SpiderStatus.FINISHED: []}
         if data and data['status'] == 'ok':
-            for item in data[self.spider_status_name_dict[spider_status]]:
-                start_time, end_time = None, None
-                if item.get('start_time'):
-                    start_time = datetime.datetime.strptime(item['start_time'], '%Y-%m-%d %H:%M:%S.%f')
-                if item.get('end_time'):
-                    end_time = datetime.datetime.strptime(item['end_time'], '%Y-%m-%d %H:%M:%S.%f')
-                result.append(dict(id=item['id'], start_time=start_time, end_time=end_time))
-        return result
+            for _status in self.spider_status_name_dict.keys():
+                for item in data[self.spider_status_name_dict[_status]]:
+                    start_time, end_time = None, None
+                    if item.get('start_time'):
+                        start_time = datetime.datetime.strptime(item['start_time'], '%Y-%m-%d %H:%M:%S.%f')
+                    if item.get('end_time'):
+                        end_time = datetime.datetime.strptime(item['end_time'], '%Y-%m-%d %H:%M:%S.%f')
+                    result[_status].append(dict(id=item['id'], start_time=start_time, end_time=end_time))
+        return result if not spider_status else result[spider_status]
 
     def start_spider(self, project_name, spider_name, arguments):
         post_data = dict(project=project_name, spider=spider_name)
@@ -77,3 +78,6 @@ class ScrapydProxy(SpiderServiceProxy):
             'egg': eggdata,
         })
         return res.text if res.status_code == 200 else None
+
+    def log_url(self, project_name, spider_name, job_id):
+        return self._scrapyd_url() + '/logs/%s/%s/%s.log' % (project_name, spider_name, job_id)
