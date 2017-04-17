@@ -87,16 +87,18 @@ class SpiderAgent():
                 job_execution = JobExecution.find_job_execution_by_service_job_execution_id(job_execution_dict['id'])
                 if job_execution and job_execution.running_status == SpiderStatus.PENDING:
                     job_execution.start_time = job_execution_dict['start_time']
-                    job_execution.running_status = SpiderStatus.RUNNING
                     job_execution.running_on = spider_service_instance.server
+                    job_execution.running_status = SpiderStatus.RUNNING
                     db.session.commit()
 
             # finished
             for job_execution_dict in spider_service_instance.get_job_list(project.project_name, SpiderStatus.FINISHED):
                 job_execution = JobExecution.find_job_execution_by_service_job_execution_id(job_execution_dict['id'])
-                if job_execution and job_execution.running_status == SpiderStatus.RUNNING:
-                    job_execution.running_status = SpiderStatus.FINISHED
+                if job_execution:
+                    job_execution.start_time = job_execution_dict['start_time']
                     job_execution.end_time = job_execution_dict['end_time']
+                    job_execution.running_on = spider_service_instance.server
+                    job_execution.running_status = SpiderStatus.FINISHED
                     db.session.commit()
 
     def get_job_status(self, project):

@@ -71,6 +71,7 @@ from SpiderKeeper.app.spider.model import *
 
 
 def init_database():
+    db = SQLAlchemy(app)
     db.create_all()
 
 
@@ -98,7 +99,7 @@ from SpiderKeeper.app.schedulers.common import sync_job_execution_status_job, sy
 
 scheduler.add_job(sync_job_execution_status_job, 'interval', seconds=3, id='sys_sync_status')
 scheduler.add_job(sync_spiders, 'interval', seconds=10, id='sys_sync_spiders')
-scheduler.add_job(reload_runnable_spider_job_execution, 'interval', seconds=5, id='sys_reload_job')
+scheduler.add_job(reload_runnable_spider_job_execution, 'interval', seconds=60, id='sys_reload_job')
 
 
 def start_scheduler():

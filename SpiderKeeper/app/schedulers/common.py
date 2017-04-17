@@ -1,4 +1,5 @@
 import datetime
+import threading
 import time
 
 from SpiderKeeper.app import scheduler, app, agent
@@ -12,7 +13,7 @@ def sync_job_execution_status_job():
     '''
     for project in Project.query.all():
         app.logger.debug('[sync_job_execution_status][project:%s]' % project.id)
-        agent.sync_job_status(project)
+        threading.Thread(target=agent.sync_job_status, args=(project,)).start()
 
 
 def sync_spiders():
@@ -31,7 +32,7 @@ def run_spider_job(job_instance):
     :param job_instance:
     :return:
     '''
-    agent.start_spider(job_instance)
+    threading.Thread(target=agent.start_spider, args=(job_instance,)).start()
     app.logger.info('[run_spider_job][project:%s][spider_name:%s][job_instance_id:%s]' % (
         job_instance.project_id, job_instance.spider_name, job_instance.id))
 
