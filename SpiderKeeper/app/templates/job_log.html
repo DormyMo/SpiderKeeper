@@ -1,0 +1,15 @@
+<html>
+<style>
+    .p-log {
+        font-size: 12px;
+        line-height: 1.5em;
+        color: #1f0909;
+        text-align: left
+    }
+</style>
+<body style="background-color:#F3F2EE;">
+{% for line in log_lines %}
+<p class="p-log">{{ line }}</p>
+{% endfor %}
+</body>
+</html>

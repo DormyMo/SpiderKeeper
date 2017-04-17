@@ -574,9 +574,8 @@ def job_stop(project_id, job_exec_id):
 @app.route("/project/<project_id>/jobexecs/<job_exec_id>/log")
 def job_log(project_id, job_exec_id):
     job_execution = JobExecution.query.filter_by(project_id=project_id, id=job_exec_id).first()
-    raw = requests.get(agent.log_url(job_execution)).text
-    if raw:
-        return raw
+    raw = requests.get(agent.log_url(job_execution)).text or ""
+    return render_template("job_log.html", log_lines=raw.split('\n'))
 
 
 @app.route("/project/<project_id>/job/<job_instance_id>/run")

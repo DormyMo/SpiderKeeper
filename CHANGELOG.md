@@ -1,4 +1,7 @@
 # SpiderKeeper Changelog
+## 1.0.3 (2017-04-17)
+- support view log
+
 ## 1.0.0 (2017-03-30)
 - refactor
 - support py3
