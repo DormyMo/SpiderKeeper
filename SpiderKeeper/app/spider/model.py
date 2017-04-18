@@ -147,6 +147,11 @@ class JobExecution(Base):
         return cls.query.filter(cls.service_job_execution_id.in_(service_job_execution_ids)).all()
 
     @classmethod
+    def list_uncomplete_job(cls):
+        return cls.query.filter(cls.running_status != SpiderStatus.FINISHED,
+                                cls.running_status != SpiderStatus.CANCELED).all()
+
+    @classmethod
     def list_jobs(cls, project_id, each_status_limit=100):
         result = {}
         result['PENDING'] = [job_execution.to_dict() for job_execution in

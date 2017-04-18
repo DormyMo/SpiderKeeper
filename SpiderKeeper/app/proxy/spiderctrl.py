@@ -87,8 +87,7 @@ class SpiderAgent():
     def sync_job_status(self, project):
         for spider_service_instance in self.spider_service_instances:
             job_status = spider_service_instance.get_job_list(project.project_name)
-            service_ids = [item['id'] for item in reduce(lambda x, y: x + y, job_status.values())]
-            job_execution_list = JobExecution.list_job_by_service_ids(service_ids)
+            job_execution_list = JobExecution.list_uncomplete_job()
             job_execution_dict = dict(
                 [(job_execution.service_job_execution_id, job_execution) for job_execution in job_execution_list])
             # running
