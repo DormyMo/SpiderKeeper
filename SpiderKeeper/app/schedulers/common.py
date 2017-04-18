@@ -12,8 +12,9 @@ def sync_job_execution_status_job():
     :return:
     '''
     for project in Project.query.all():
+        time.sleep(3)
         app.logger.debug('[sync_job_execution_status][project:%s]' % project.id)
-        threading.Thread(target=agent.sync_job_status, args=(project,)).start()
+        agent.sync_job_status(project)
 
 
 def sync_spiders():
@@ -32,7 +33,7 @@ def run_spider_job(job_instance):
     :param job_instance:
     :return:
     '''
-    threading.Thread(target=agent.start_spider, args=(job_instance,)).start()
+    agent.start_spider(job_instance)
     app.logger.info('[run_spider_job][project:%s][spider_name:%s][job_instance_id:%s]' % (
         job_instance.project_id, job_instance.spider_name, job_instance.id))
 

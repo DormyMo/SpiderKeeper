@@ -1,7 +1,6 @@
 import datetime
 import random
-
-from sqlalchemy import desc
+from functools import reduce
 
 from SpiderKeeper.app import db
 from SpiderKeeper.app.spider.model import SpiderStatus, JobExecution, JobInstance, Project, JobPriority
@@ -88,22 +87,26 @@ class SpiderAgent():
     def sync_job_status(self, project):
         for spider_service_instance in self.spider_service_instances:
             job_status = spider_service_instance.get_job_list(project.project_name)
+            service_ids = [item['id'] for item in reduce(lambda x, y: x + y, job_status.values())]
+            job_execution_list = JobExecution.list_job_by_service_ids(service_ids)
+            job_execution_dict = dict(
+                [(job_execution.service_job_execution_id, job_execution) for job_execution in job_execution_list])
             # running
-            for job_execution_dict in job_status[SpiderStatus.RUNNING]:
-                job_execution = JobExecution.find_job_execution_by_service_job_execution_id(job_execution_dict['id'])
+            for job_execution_info in job_status[SpiderStatus.RUNNING]:
+                job_execution = job_execution_dict.get(job_execution_info['id'])
                 if job_execution and job_execution.running_status == SpiderStatus.PENDING:
-                    job_execution.start_time = job_execution_dict['start_time']
+                    job_execution.start_time = job_execution_info['start_time']
                     job_execution.running_status = SpiderStatus.RUNNING
-                    db.session.commit()
 
             # finished
-            for job_execution_dict in job_status[SpiderStatus.FINISHED]:
-                job_execution = JobExecution.find_job_execution_by_service_job_execution_id(job_execution_dict['id'])
+            for job_execution_info in job_status[SpiderStatus.FINISHED]:
+                job_execution = job_execution_dict.get(job_execution_info['id'])
                 if job_execution and job_execution.running_status != SpiderStatus.FINISHED:
-                    job_execution.start_time = job_execution_dict['start_time']
-                    job_execution.end_time = job_execution_dict['end_time']
+                    job_execution.start_time = job_execution_info['start_time']
+                    job_execution.end_time = job_execution_info['end_time']
                     job_execution.running_status = SpiderStatus.FINISHED
-                    db.session.commit()
+            # commit
+            db.session.commit()
 
     def start_spider(self, job_instance):
         project = Project.find_project_by_id(job_instance.project_id)

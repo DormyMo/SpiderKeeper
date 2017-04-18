@@ -139,8 +139,12 @@ class JobExecution(Base):
         }
 
     @classmethod
-    def find_job_execution_by_service_job_execution_id(cls, service_job_execution_id):
+    def find_job_by_service_id(cls, service_job_execution_id):
         return cls.query.filter_by(service_job_execution_id=service_job_execution_id).first()
+
+    @classmethod
+    def list_job_by_service_ids(cls, service_job_execution_ids):
+        return cls.query.filter(cls.service_job_execution_id.in_(service_job_execution_ids)).all()
 
     @classmethod
     def list_jobs(cls, project_id, each_status_limit=100):

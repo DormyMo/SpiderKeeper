@@ -103,6 +103,11 @@ scheduler.add_job(reload_runnable_spider_job_execution, 'interval', seconds=60, 
 
 
 def start_scheduler():
+    job_defaults = {
+        'coalesce': False,
+        'max_instances': 3
+    }
+    scheduler.configure(job_defaults=job_defaults)
     scheduler.start()
 
 
