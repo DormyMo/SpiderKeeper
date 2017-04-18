@@ -23,16 +23,16 @@
         <table class="table table-striped">
             <tr>
                 <th style="width: 10px">#</th>
-                <th style="width: 50px">Month</th>
-                <th style="width: 50px">Day of Month</th>
-                <th style="width: 50px">Day of Week</th>
-                <th style="width: 50px">Hour</th>
+                <th style="width: 30px">Month</th>
+                <th style="width: 30px">Day of Month</th>
+                <th style="width: 30px">Day of Week</th>
+                <th style="width: 30px">Hour</th>
                 <th style="width: 40px">Spider</th>
                 <th style="width: 40px">Priority</th>
                 <th style="width: 40px">Args</th>
                 <th style="width: 40px">Tags</th>
                 <th style="width: 40px">Enabled</th>
-                <th style="width: 40px">Action</th>
+                <th style="width: 100px">Action</th>
             </tr>
             {% for job_instance in job_instance_list %}
             <tr>
@@ -59,7 +59,7 @@
                     <span class="label label-danger">HIGHEST</span>
                 </td>
                 {% endif %}
-                <td>{{ job_instance.spider_arguments }}</td>
+                <td style="font-size: 10px;">{{ job_instance.spider_arguments }}</td>
                 <td>{{ job_instance.tags }}</td>
                 {% if job_instance.enabled %}
                 <td>
