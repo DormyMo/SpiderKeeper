@@ -71,7 +71,7 @@ from SpiderKeeper.app.spider.model import *
 
 
 def init_database():
-    db = SQLAlchemy(app)
+    db.init_app(app)
     db.create_all()
 
 
