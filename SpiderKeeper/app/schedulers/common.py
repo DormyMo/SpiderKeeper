@@ -26,15 +26,19 @@ def sync_spiders():
     app.logger.info('[sync_spiders]')
 
 
-def run_spider_job(job_instance):
+def run_spider_job(job_instance_id):
     '''
     run spider by scheduler
     :param job_instance:
     :return:
     '''
-    agent.start_spider(job_instance)
-    app.logger.info('[run_spider_job][project:%s][spider_name:%s][job_instance_id:%s]' % (
-        job_instance.project_id, job_instance.spider_name, job_instance.id))
+    try:
+        job_instance = JobInstance.find_job_instance_by_id(job_instance_id)
+        agent.start_spider(job_instance)
+        app.logger.info('[run_spider_job][project:%s][spider_name:%s][job_instance_id:%s]' % (
+            job_instance.project_id, job_instance.spider_name, job_instance.id))
+    except Exception as e:
+        app.logger.error('[run_spider_job] ' + str(e))
 
 
 def reload_runnable_spider_job_execution():
@@ -51,7 +55,7 @@ def reload_runnable_spider_job_execution():
         available_job_ids.add(job_id)
         if job_id not in running_job_ids:
             scheduler.add_job(run_spider_job,
-                              args=(job_instance,),
+                              args=(job_instance.id,),
                               trigger='cron',
                               id=job_id,
                               minute=job_instance.cron_minutes,
@@ -59,7 +63,8 @@ def reload_runnable_spider_job_execution():
                               day=job_instance.cron_day_of_month,
                               day_of_week=job_instance.cron_day_of_week,
                               month=job_instance.cron_month,
-                              second=0)
+                              second=0,
+                              max_instances=99)
             app.logger.info('[load_spider_job][project:%s][spider_name:%s][job_instance_id:%s][job_id:%s]' % (
                 job_instance.project_id, job_instance.spider_name, job_instance.id, job_id))
     # remove invalid jobs
