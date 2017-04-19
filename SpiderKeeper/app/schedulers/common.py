@@ -11,9 +11,12 @@ def sync_job_execution_status_job():
     sync job execution running status
     :return:
     '''
-    for project in Project.query.all():
-        app.logger.debug('[sync_job_execution_status][project:%s]' % project.id)
-        agent.sync_job_status(project)
+    try:
+        for project in Project.query.all():
+            app.logger.debug('[sync_job_execution_status][project:%s]' % project.id)
+            agent.sync_job_status(project)
+    except Exception as e:
+        app.logger.error('[sync_job_execution_status][%s]' % str(e))
 
 
 def sync_spiders():
@@ -32,9 +35,13 @@ def run_spider_job(job_instance):
     :param job_instance:
     :return:
     '''
-    agent.start_spider(job_instance)
-    app.logger.info('[run_spider_job][project:%s][spider_name:%s][job_instance_id:%s]' % (
-        job_instance.project_id, job_instance.spider_name, job_instance.id))
+    try:
+        agent.start_spider(job_instance)
+        app.logger.info('[run_spider_job][project:%s][spider_name:%s][job_instance_id:%s]' % (
+            job_instance.project_id, job_instance.spider_name, job_instance.id))
+    except Exception as e:
+        app.logger.error('[run_spider_job][project:%s][spider_name:%s][job_instance_id:%s][%s]' % (
+            job_instance.project_id, job_instance.spider_name, job_instance.id, str(e)))
 
 
 def reload_runnable_spider_job_execution():
@@ -59,7 +66,8 @@ def reload_runnable_spider_job_execution():
                               day=job_instance.cron_day_of_month,
                               day_of_week=job_instance.cron_day_of_week,
                               month=job_instance.cron_month,
-                              second=0)
+                              second=0,
+                              max_instances=99)
             app.logger.info('[load_spider_job][project:%s][spider_name:%s][job_instance_id:%s][job_id:%s]' % (
                 job_instance.project_id, job_instance.spider_name, job_instance.id, job_id))
     # remove invalid jobs
