@@ -11,8 +11,8 @@ def sync_job_execution_status_job():
     :return:
     '''
     for project in Project.query.all():
-        app.logger.debug('[sync_job_execution_status][project:%s]' % project.id)
-        threading.Thread(target=agent.sync_job_status, args=(project,)).start()
+        agent.sync_job_status(project)
+    app.logger.debug('[sync_job_execution_status]')
 
 
 def sync_spiders():
@@ -23,6 +23,7 @@ def sync_spiders():
     for project in Project.query.all():
         spider_instance_list = agent.get_spider_list(project)
         SpiderInstance.update_spider_instances(spider_instance_list)
+    app.logger.info('[sync_spiders]')
 
 
 def run_spider_job(job_instance):
@@ -31,7 +32,7 @@ def run_spider_job(job_instance):
     :param job_instance:
     :return:
     '''
-    threading.Thread(target=agent.start_spider, args=(job_instance,)).start()
+    agent.start_spider(job_instance)
     app.logger.info('[run_spider_job][project:%s][spider_name:%s][job_instance_id:%s]' % (
         job_instance.project_id, job_instance.spider_name, job_instance.id))
 
@@ -66,12 +67,3 @@ def reload_runnable_spider_job_execution():
                                  running_job_ids.difference(available_job_ids)):
         scheduler.remove_job(invalid_job_id)
         app.logger.info('[drop_spider_job][job_id:%s]' % invalid_job_id)
-
-
-def scheduler_error_listener(ev):
-    if ev.exception:
-        app.logger.error('[%s]\n[%s]', ev.job_id, ev.traceback)
-        db.session.rollback()
-        db.session.remove()
-    else:
-        app.logger.error('[%s][missed]' % ev.job_id)
