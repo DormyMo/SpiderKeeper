@@ -2,14 +2,16 @@
 import logging
 import traceback
 
-import SpiderKeeper
 from apscheduler.schedulers.background import BackgroundScheduler
 from flask import Flask
 from flask import jsonify
+from flask.ext.basicauth import BasicAuth
 from flask.ext.restful import Api
 from flask.ext.restful_swagger import swagger
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.exceptions import HTTPException
+
+import SpiderKeeper
 from SpiderKeeper import config
 
 # Define the WSGI application object
@@ -32,6 +34,8 @@ api = swagger.docs(Api(app), apiVersion=SpiderKeeper.__version__, api_spec_url="
 # Define the database object which is imported
 # by modules and controllers
 db = SQLAlchemy(app, session_options=dict(autocommit=False, autoflush=True))
+
+
 @app.teardown_appcontext
 def shutdown_session(exception=None):
     db.session.remove()
@@ -110,7 +114,12 @@ def start_scheduler():
     scheduler.start()
 
 
+def init_basic_auth():
+    basic_auth = BasicAuth(app)
+
+
 def initialize():
     init_database()
     regist_server()
     start_scheduler()
+    init_basic_auth()
