@@ -1,8 +1,7 @@
-import datetime
 import threading
 import time
 
-from SpiderKeeper.app import scheduler, app, agent
+from SpiderKeeper.app import scheduler, app, agent, db
 from SpiderKeeper.app.spider.model import Project, JobInstance, SpiderInstance
 
 
@@ -11,12 +10,9 @@ def sync_job_execution_status_job():
     sync job execution running status
     :return:
     '''
-    try:
-        for project in Project.query.all():
-            app.logger.debug('[sync_job_execution_status][project:%s]' % project.id)
-            agent.sync_job_status(project)
-    except Exception as e:
-        app.logger.error('[sync_job_execution_status][%s]' % str(e))
+    for project in Project.query.all():
+        app.logger.debug('[sync_job_execution_status][project:%s]' % project.id)
+        threading.Thread(target=agent.sync_job_status, args=(project,)).start()
 
 
 def sync_spiders():
@@ -35,13 +31,9 @@ def run_spider_job(job_instance):
     :param job_instance:
     :return:
     '''
-    try:
-        agent.start_spider(job_instance)
-        app.logger.info('[run_spider_job][project:%s][spider_name:%s][job_instance_id:%s]' % (
-            job_instance.project_id, job_instance.spider_name, job_instance.id))
-    except Exception as e:
-        app.logger.error('[run_spider_job][project:%s][spider_name:%s][job_instance_id:%s][%s]' % (
-            job_instance.project_id, job_instance.spider_name, job_instance.id, str(e)))
+    threading.Thread(target=agent.start_spider, args=(job_instance,)).start()
+    app.logger.info('[run_spider_job][project:%s][spider_name:%s][job_instance_id:%s]' % (
+        job_instance.project_id, job_instance.spider_name, job_instance.id))
 
 
 def reload_runnable_spider_job_execution():
@@ -66,8 +58,7 @@ def reload_runnable_spider_job_execution():
                               day=job_instance.cron_day_of_month,
                               day_of_week=job_instance.cron_day_of_week,
                               month=job_instance.cron_month,
-                              second=0,
-                              max_instances=99)
+                              second=0)
             app.logger.info('[load_spider_job][project:%s][spider_name:%s][job_instance_id:%s][job_id:%s]' % (
                 job_instance.project_id, job_instance.spider_name, job_instance.id, job_id))
     # remove invalid jobs
@@ -75,3 +66,12 @@ def reload_runnable_spider_job_execution():
                                  running_job_ids.difference(available_job_ids)):
         scheduler.remove_job(invalid_job_id)
         app.logger.info('[drop_spider_job][job_id:%s]' % invalid_job_id)
+
+
+def scheduler_error_listener(ev):
+    if ev.exception:
+        app.logger.error('[%s]\n[%s]', ev.job_id, ev.traceback)
+        db.session.rollback()
+        db.session.remove()
+    else:
+        app.logger.error('[%s][missed]' % ev.job_id)

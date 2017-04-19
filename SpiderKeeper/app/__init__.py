@@ -2,7 +2,7 @@
 import logging
 import traceback
 
-import SpiderKeeper
+import apscheduler
 from apscheduler.schedulers.background import BackgroundScheduler
 from flask import Flask
 from flask import jsonify
@@ -10,6 +10,8 @@ from flask.ext.restful import Api
 from flask.ext.restful_swagger import swagger
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.exceptions import HTTPException
+
+import SpiderKeeper
 from SpiderKeeper import config
 
 # Define the WSGI application object
@@ -32,8 +34,13 @@ api = swagger.docs(Api(app), apiVersion=SpiderKeeper.__version__, api_spec_url="
 # Define the database object which is imported
 # by modules and controllers
 db = SQLAlchemy(app, session_options=dict(autocommit=False, autoflush=True))
-@app.teardown_appcontext
-def shutdown_session(exception=None):
+
+
+@app.teardown_request
+def teardown_request(exception):
+    if exception:
+        db.session.rollback()
+        db.session.remove()
     db.session.remove()
 
 
@@ -99,11 +106,13 @@ app.register_blueprint(api_spider_bp)
 
 # start sync job status scheduler
 from SpiderKeeper.app.schedulers.common import sync_job_execution_status_job, sync_spiders, \
-    reload_runnable_spider_job_execution
+    reload_runnable_spider_job_execution, scheduler_error_listener
 
-scheduler.add_job(sync_job_execution_status_job, 'interval', seconds=3, id='sys_sync_status')
+scheduler.add_job(sync_job_execution_status_job, 'interval', seconds=5, id='sys_sync_status')
 scheduler.add_job(sync_spiders, 'interval', seconds=10, id='sys_sync_spiders')
 scheduler.add_job(reload_runnable_spider_job_execution, 'interval', seconds=60, id='sys_reload_job')
+scheduler.add_listener(scheduler_error_listener,
+                       apscheduler.events.EVENT_JOB_ERROR | apscheduler.events.EVENT_JOB_MISSED)
 
 
 def start_scheduler():
