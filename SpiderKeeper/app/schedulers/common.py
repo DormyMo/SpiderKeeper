@@ -12,7 +12,6 @@ def sync_job_execution_status_job():
     :return:
     '''
     for project in Project.query.all():
-        time.sleep(3)
         app.logger.debug('[sync_job_execution_status][project:%s]' % project.id)
         agent.sync_job_status(project)
 
