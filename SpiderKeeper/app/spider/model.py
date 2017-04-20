@@ -1,7 +1,5 @@
 import datetime
-
 from sqlalchemy import desc
-
 from SpiderKeeper.app import db, Base
 
 
@@ -52,6 +50,35 @@ class SpiderInstance(Base):
         return dict(spider_instance_id=self.id,
                     spider_name=self.spider_name,
                     project_id=self.project_id)
+
+    @classmethod
+    def list_spider_last_runtime_by_project_id(cls, project_id):
+        sql_last_runtime = '''
+            select * from (select a.spider_name,b.date_created from sk_job_instance as a
+                left join sk_job_execution as b
+                on a.id = b.job_instance_id
+                order by b.date_created desc) as c
+                group by c.spider_name
+            '''
+        sql_avg_runtime = '''
+            select a.spider_name,avg(end_time-start_time) from sk_job_instance as a
+                left join sk_job_execution as b
+                on a.id = b.job_instance_id
+                where b.end_time is not null
+                group by a.spider_name
+            '''
+        last_runtime_list = dict(
+            (spider_name, last_run_time) for spider_name, last_run_time in db.engine.execute(sql_last_runtime))
+        avg_runtime_list = dict(
+            (spider_name, avg_run_time) for spider_name, avg_run_time in db.engine.execute(sql_avg_runtime))
+        res = []
+        for spider in cls.query.filter_by(project_id=project_id).all():
+            last_runtime = last_runtime_list.get(spider.spider_name)
+            res.append(dict(spider.to_dict(),
+                            **{'spider_last_runtime': last_runtime if last_runtime else '-',
+                               'spider_avg_runtime': avg_runtime_list.get(spider.spider_name)
+                               }))
+        return res
 
 
 class JobPriority():
