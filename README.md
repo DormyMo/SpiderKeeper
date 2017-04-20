@@ -1,33 +1,101 @@
-#欢迎使用 SpiderKeeper
-**SpiderKeeper** 是一款基于[scrapyd](https://github.com/scrapy/scrapyd)服务的scrapy爬虫管理程序，实现了对scrapy爬虫的可视化管理，包括爬虫的启动与取消，定时抓取任务的设置和周期执行,并可对在运行爬虫的日志，运行状态进行查看。
+# SpiderKeeper
 
-##截图
-spider管理
-![spider管理](https://raw.githubusercontent.com/DormyMo/SpiderKeeper/master/screenshot/screenshot_1.png)
-实例选择
-![spider管理](https://raw.githubusercontent.com/DormyMo/SpiderKeeper/master/screenshot/screenshot_6.png)
-运行任务
-![spider管理](https://raw.githubusercontent.com/DormyMo/SpiderKeeper/master/screenshot/screenshot_7.png)
-添加定时任务
-![添加定时任务](https://raw.githubusercontent.com/DormyMo/SpiderKeeper/master/screenshot/screenshot_8.png)
-抓取状态
-![抓取状态](https://raw.githubusercontent.com/DormyMo/SpiderKeeper/master/screenshot/screenshot_9.png)
-![抓取状态](https://raw.githubusercontent.com/DormyMo/SpiderKeeper/master/screenshot/screenshot_10.png)
-查看/取消定时任务
-![查看/取消定时任务](https://raw.githubusercontent.com/DormyMo/SpiderKeeper/master/screenshot/screenshot_4.png)
-服务器状态监控
-![spider管理](https://raw.githubusercontent.com/DormyMo/SpiderKeeper/master/screenshot/screenshot_5.png)
+[![Latest Version](http://img.shields.io/pypi/v/SpiderKeeper.svg)](https://pypi.python.org/pypi/SpiderKeeper)
+[![Python Versions](http://img.shields.io/pypi/pyversions/SpiderKeeper.svg)](https://pypi.python.org/pypi/SpiderKeeper)
+[![The MIT License](http://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/DormyMo/SpiderKeeper/blob/master/LICENSE)
+   
+A scalable admin ui for spider service 
 
-##运行
-	
-1.    修改 dist/config/config.json , 配置 DaemonService 服务部署地址 ， 配置 scrapyd 服务地址
-2.    ~ bash start.sh
+## Features
 
-##构建
+- Manage your spiders from a dashboard. Schedule them to run automatically
+- With a single click deploy the scrapy project
+- Show spider running stats
+- Provide api
 
-    1.安装 [node和npm](http://nodejs.org/)
-    2.安装 bower `npm install -g bower`
-    3.安装 grunt `npm install -g grunt`
-    4.$ `bower install`
-    5.$ `npm install`
-    6.Run `grunt build` for build and `grunt serve` for preview.
+
+Current Support spider service
+- [Scrapy](https://github.com/scrapy/scrapy) ( with [scrapyd](https://github.com/scrapy/scrapyd))
+
+## Screenshot
+![job dashboard](https://raw.githubusercontent.com/DormyMo/SpiderKeeper/master/screenshot/screenshot_1.png)
+![periodic job](https://raw.githubusercontent.com/DormyMo/SpiderKeeper/master/screenshot/screenshot_2.png)
+![running stats](https://raw.githubusercontent.com/DormyMo/SpiderKeeper/master/screenshot/screenshot_3.png)
+
+## Getting Started
+
+
+### Installing
+
+
+```
+pip install spiderkeeper
+```
+
+### Deployment
+
+``` 
+
+spiderkeeper [options]
+
+Options:
+
+  -h, --help          show this help message and exit
+  --type=SERVER_TYPE  access spider server type, default:scrapyd
+  --host=HOST         host, default:0.0.0.0
+  --port=PORT         port, default:5000
+  --server=SERVERS    servers (support multiply server), default:http://localhost:6800
+  
+
+example:
+
+spiderkeeper --server=http://localhost:6800
+
+```
+
+## Usage
+
+```
+Visit: 
+
+- web ui : http://localhost:5000
+
+1. Create Project
+
+2. Use [scrapyd-client](https://github.com/scrapy/scrapyd-client) to generate egg file 
+
+   scrapyd-deploy --build-egg output.egg
+
+2. upload egg file (make sure you started scrapyd server)
+
+3. Done & Enjoy it
+
+- api swagger: http://localhost:5000/api.html
+
+```
+
+## TODO
+- [ ] Job dashboard support filter
+- [ ] User Authentication
+- [ ] Collect & Show scrapy crawl stats
+- [ ] Optimize load balancing
+
+## Versioning
+
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/DormyMo/SpiderKeeper/tags). 
+
+## Authors
+
+- *Initial work* - [DormyMo](https://github.com/DormyMo)
+
+See also the list of [contributors](https://github.com/DormyMo/SpiderKeeper/contributors) who participated in this project.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+
+## Contributing
+
+Contributions are welcomed!
+
+![Contact](https://raw.githubusercontent.com/DormyMo/SpiderKeeper/master/screenshot/qqgroup_qrcode.png)

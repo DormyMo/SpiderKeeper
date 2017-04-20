@@ -1,0 +1,234 @@
+{% extends "base.html" %}
+{% block content_header %}
+<h1>Job Dashboard</h1>
+<ol style="float: right;
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 12px;
+    padding: 7px 5px;
+    position: absolute;
+    top: 15px;
+    right: 10px;">
+    <button type="button" class="btn btn-success btn-flat" style="margin-top: -10px;" data-toggle="modal"
+            data-target="#job-run-modal">Run
+    </button>
+</ol>
+{% endblock %}
+{% block content_body %}
+<!--======next job======-->
+<div class="box">
+    <div class="box-header">
+        <h3 class="box-title">Next Jobs</h3>
+        <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+            </button>
+        </div>
+    </div>
+    <div class="box-body">
+        <table class="table table-striped">
+            <tr>
+                <th style="width: 10px">#</th>
+                <th style="width: 30px">Job</th>
+                <th style="width: 160px">Spider</th>
+                <th style="width: 80px">Args</th>
+                <th style="width: 40px">Priority</th>
+                <th style="width: 160px">Wait</th>
+            </tr>
+            {% for job in job_status.PENDING %}
+            <tr>
+                <td>{{ job.job_execution_id }}</td>
+                <td><a href="/project/1/job/periodic#{{ job.job_instance_id }}">{{ job.job_instance_id }}</a></td>
+                <td>{{ job.job_instance.spider_name }}</td>
+                <td style="font-size: 10px;">{{ job.job_instance.spider_arguments }}</td>
+                {% if job.job_instance.priority == -1 %}
+                <td>
+                    <span class="label label-default">LOW</span>
+                </td>
+                {% elif job.job_instance.priority == 0 %}
+                <td>
+                    <span class="label label-info">NORMAL</span>
+                </td>
+                {% elif job.job_instance.priority == 1 %}
+                <td>
+                    <span class="label label-warning">HIGH</span>
+                </td>
+                {% elif job.job_instance.priority == 2 %}
+                <td>
+                    <span class="label label-danger">HIGHEST</span>
+                </td>
+                {% endif %}
+                <td>{{ timedelta(now,job.create_time) }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+
+<!--======running job======-->
+<div class="box">
+    <div class="box-header">
+        <h3 class="box-title">Running Jobs</h3>
+        <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+            </button>
+        </div>
+    </div>
+    <div class="box-body">
+        <table class="table table-striped">
+            <tr>
+                <th style="width: 10px">#</th>
+                <th style="width: 30px">Job</th>
+                <th style="width: 160px">Spider</th>
+                <th style="width: 80px">Args</th>
+                <th style="width: 20px">Priority</th>
+                <th style="width: 40px">Runtime</th>
+                <th style="width: 120px">Started</th>
+                <th style="width: 40px">Log</th>
+                <th style="width: 40px">Running On</th>
+                <th style="width: 40px">Action</th>
+            </tr>
+            {% for job in job_status.RUNNING %}
+            <tr>
+                <td>{{ job.job_execution_id }}</td>
+                <td><a href="/project/1/job/periodic#{{ job.job_instance_id }}">{{ job.job_instance_id }}</a></td>
+                <td>{{ job.job_instance.spider_name }}</td>
+                <td style="font-size: 10px;">{{ job.job_instance.spider_arguments }}</td>
+                {% if job.job_instance.priority == -1 %}
+                <td>
+                    <span class="label label-default">LOW</span>
+                </td>
+                {% elif job.job_instance.priority == 0 %}
+                <td>
+                    <span class="label label-info">NORMAL</span>
+                </td>
+                {% elif job.job_instance.priority == 1 %}
+                <td>
+                    <span class="label label-warning">HIGH</span>
+                </td>
+                {% elif job.job_instance.priority == 2 %}
+                <td>
+                    <span class="label label-danger">HIGHEST</span>
+                </td>
+                {% endif %}
+                <td>{{ timedelta(now,job.start_time) }}</td>
+                <td>{{ job.start_time }}</td>
+                <td><a href="/project/{{ project.id }}/jobexecs/{{ job.job_execution_id }}/log" target="_blank" data-toggle="tooltip" data-placement="top" title="{{ job.service_job_execution_id }}">Log</a></td>
+                <td style="font-size: 10px;">{{ job.running_on }}</td>
+                <td>
+                    <a href="/project/{{ project.id }}/jobexecs/{{ job.job_execution_id }}/stop"><span
+                            class="label label-danger">Stop</span></a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+
+<!--======completed job======-->
+<div class="box">
+    <div class="box-header">
+        <h3 class="box-title">Completed Jobs</h3>
+        <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+            </button>
+        </div>
+    </div>
+    <div class="box-body">
+        <table class="table table-striped">
+            <tr>
+                <th style="width: 10px">#</th>
+                <th style="width: 30px">Job</th>
+                <th style="width: 160px">Spider</th>
+                <th style="width: 80px">Args</th>
+                <th style="width: 20px">Priority</th>
+                <th style="width: 40px">Runtime</th>
+                <th style="width: 120px">Started</th>
+                <th style="width: 10px">Log</th>
+                <th style="width: 10px">Status</th>
+            </tr>
+            {% for job in job_status.COMPLETED %}
+            <tr>
+                <td>{{ job.job_execution_id }}</td>
+                <td><a href="/project/1/job/periodic#{{ job.job_instance_id }}">{{ job.job_instance_id }}</a></td>
+                <td>{{ job.job_instance.spider_name }}</td>
+                <td style="font-size: 10px;">{{ job.job_instance.spider_arguments }}</td>
+                {% if job.job_instance.priority == -1 %}
+                <td>
+                    <span class="label label-default">LOW</span>
+                </td>
+                {% elif job.job_instance.priority == 0 %}
+                <td>
+                    <span class="label label-info">NORMAL</span>
+                </td>
+                {% elif job.job_instance.priority == 1 %}
+                <td>
+                    <span class="label label-warning">HIGH</span>
+                </td>
+                {% elif job.job_instance.priority == 2 %}
+                <td>
+                    <span class="label label-danger">HIGHEST</span>
+                </td>
+                {% endif %}
+                <td>{{ timedelta(job.end_time,job.start_time) }}</td>
+                <td>{{ job.start_time }}</td>
+                <td><a href="/project/{{ project.id }}/jobexecs/{{ job.job_execution_id }}/log" target="_blank" data-toggle="tooltip" data-placement="top" title="{{ job.service_job_execution_id }}">Log</a></td>
+                {% if job.running_status == 2 %}
+                <td>
+                    <span class="label label-success">FINISHED</span>
+                </td>
+                {% else %}
+                <td>
+                    <span class="label label-danger">CANCELED</span>
+                </td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+
+<div class="modal fade" role="dialog" id="job-run-modal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form action="/project/{{ project.id }}/job/add" method="post">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title">Create Project</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Spider</label>
+                        <select class="form-control" name="spider_name">
+                            {% for spider in spider_list %}
+                            <option value="{{ spider.spider_name }}">{{ spider.spider_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Priority</label>
+                        <select class="form-control" name="priority">
+                            <option label="Low" value="number:-1">Low</option>
+                            <option label="Normal" value="0" selected="selected">Normal</option>
+                            <option label="High" value="1">High</option>
+                            <option label="Highest" value="2">Highest</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Args</label>
+                        <input type="text" name="spider_arguments" class="form-control" placeholder="foo=1,bar=2">
+                    </div>
+                    <input type="hidden" name="run_type" value="onetime">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Create</button>
+                </div>
+            </form>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+{% endblock %}

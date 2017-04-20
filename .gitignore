@@ -1,3 +1,10 @@
-node_modules/
-bower_components/
-.tmp/
+.idea/
+*.pyc
+docs/_build
+*egg-info
+.tox
+.coverage
+venv
+dist
+build
+SpiderKeeper.db
