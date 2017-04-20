@@ -606,7 +606,7 @@ def job_switch(project_id, job_instance_id):
 
 @app.route("/project/<project_id>/spider/dashboard")
 def spider_dashboard(project_id):
-    spider_instance_list = SpiderInstance.list_spider_last_runtime_by_project_id(project_id)
+    spider_instance_list = SpiderInstance.list_spiders(project_id)
     return render_template("spider_dashboard.html",
                            spider_instance_list=spider_instance_list)
 

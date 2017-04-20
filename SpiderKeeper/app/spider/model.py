@@ -52,7 +52,7 @@ class SpiderInstance(Base):
                     project_id=self.project_id)
 
     @classmethod
-    def list_spider_last_runtime_by_project_id(cls, project_id):
+    def list_spiders(cls, project_id):
         sql_last_runtime = '''
             select * from (select a.spider_name,b.date_created from sk_job_instance as a
                 left join sk_job_execution as b
