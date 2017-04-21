@@ -64,7 +64,7 @@ def reload_runnable_spider_job_execution():
                               day_of_week=job_instance.cron_day_of_week,
                               month=job_instance.cron_month,
                               second=0,
-                              max_instances=99)
+                              max_instances=999)
             app.logger.info('[load_spider_job][project:%s][spider_name:%s][job_instance_id:%s][job_id:%s]' % (
                 job_instance.project_id, job_instance.spider_name, job_instance.id, job_id))
     # remove invalid jobs
