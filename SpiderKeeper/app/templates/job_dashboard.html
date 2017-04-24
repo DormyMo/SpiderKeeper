@@ -24,22 +24,25 @@
             </button>
         </div>
     </div>
-    <div class="box-body">
+    <div class="box-body table-responsive">
         <table class="table table-striped">
             <tr>
                 <th style="width: 10px">#</th>
                 <th style="width: 30px">Job</th>
                 <th style="width: 160px">Spider</th>
-                <th style="width: 80px">Args</th>
+                <th style="width: 100px">Args</th>
                 <th style="width: 40px">Priority</th>
                 <th style="width: 160px">Wait</th>
             </tr>
             {% for job in job_status.PENDING %}
+            {% if job.job_instance %}
             <tr>
                 <td>{{ job.job_execution_id }}</td>
                 <td><a href="/project/1/job/periodic#{{ job.job_instance_id }}">{{ job.job_instance_id }}</a></td>
                 <td>{{ job.job_instance.spider_name }}</td>
-                <td style="font-size: 10px;">{{ job.job_instance.spider_arguments }}</td>
+                <td class="txt-args" data-toggle="tooltip" data-placement="right"
+                    title="{{ job.job_instance.spider_arguments }}">{{ job.job_instance.spider_arguments }}
+                </td>
                 {% if job.job_instance.priority == -1 %}
                 <td>
                     <span class="label label-default">LOW</span>
@@ -59,6 +62,7 @@
                 {% endif %}
                 <td>{{ timedelta(now,job.create_time) }}</td>
             </tr>
+            {% endif %}
             {% endfor %}
         </table>
     </div>
@@ -73,13 +77,13 @@
             </button>
         </div>
     </div>
-    <div class="box-body">
+    <div class="box-body table-responsive">
         <table class="table table-striped">
             <tr>
                 <th style="width: 10px">#</th>
                 <th style="width: 30px">Job</th>
                 <th style="width: 160px">Spider</th>
-                <th style="width: 80px">Args</th>
+                <th style="width: 100px">Args</th>
                 <th style="width: 20px">Priority</th>
                 <th style="width: 40px">Runtime</th>
                 <th style="width: 120px">Started</th>
@@ -88,11 +92,14 @@
                 <th style="width: 40px">Action</th>
             </tr>
             {% for job in job_status.RUNNING %}
+            {% if job.job_instance %}
             <tr>
                 <td>{{ job.job_execution_id }}</td>
                 <td><a href="/project/1/job/periodic#{{ job.job_instance_id }}">{{ job.job_instance_id }}</a></td>
                 <td>{{ job.job_instance.spider_name }}</td>
-                <td style="font-size: 10px;">{{ job.job_instance.spider_arguments }}</td>
+                <td class="txt-args" data-toggle="tooltip" data-placement="right"
+                    title="{{ job.job_instance.spider_arguments }}">{{ job.job_instance.spider_arguments }}
+                </td>
                 {% if job.job_instance.priority == -1 %}
                 <td>
                     <span class="label label-default">LOW</span>
@@ -112,13 +119,16 @@
                 {% endif %}
                 <td>{{ timedelta(now,job.start_time) }}</td>
                 <td>{{ job.start_time }}</td>
-                <td><a href="/project/{{ project.id }}/jobexecs/{{ job.job_execution_id }}/log" target="_blank" data-toggle="tooltip" data-placement="top" title="{{ job.service_job_execution_id }}">Log</a></td>
+                <td><a href="/project/{{ project.id }}/jobexecs/{{ job.job_execution_id }}/log" target="_blank"
+                       data-toggle="tooltip" data-placement="top" title="{{ job.service_job_execution_id }}">Log</a>
+                </td>
                 <td style="font-size: 10px;">{{ job.running_on }}</td>
                 <td>
                     <a href="/project/{{ project.id }}/jobexecs/{{ job.job_execution_id }}/stop"><span
                             class="label label-danger">Stop</span></a>
                 </td>
             </tr>
+            {% endif %}
             {% endfor %}
         </table>
     </div>
@@ -133,13 +143,13 @@
             </button>
         </div>
     </div>
-    <div class="box-body">
+    <div class="box-body table-responsive">
         <table class="table table-striped">
             <tr>
                 <th style="width: 10px">#</th>
                 <th style="width: 30px">Job</th>
                 <th style="width: 160px">Spider</th>
-                <th style="width: 80px">Args</th>
+                <th style="width: 100px">Args</th>
                 <th style="width: 20px">Priority</th>
                 <th style="width: 40px">Runtime</th>
                 <th style="width: 120px">Started</th>
@@ -147,11 +157,14 @@
                 <th style="width: 10px">Status</th>
             </tr>
             {% for job in job_status.COMPLETED %}
+            {% if job.job_instance %}
             <tr>
                 <td>{{ job.job_execution_id }}</td>
                 <td><a href="/project/1/job/periodic#{{ job.job_instance_id }}">{{ job.job_instance_id }}</a></td>
                 <td>{{ job.job_instance.spider_name }}</td>
-                <td style="font-size: 10px;">{{ job.job_instance.spider_arguments }}</td>
+                <td class="txt-args" data-toggle="tooltip" data-placement="right"
+                    title="{{ job.job_instance.spider_arguments }}">{{ job.job_instance.spider_arguments }}
+                </td>
                 {% if job.job_instance.priority == -1 %}
                 <td>
                     <span class="label label-default">LOW</span>
@@ -171,7 +184,9 @@
                 {% endif %}
                 <td>{{ timedelta(job.end_time,job.start_time) }}</td>
                 <td>{{ job.start_time }}</td>
-                <td><a href="/project/{{ project.id }}/jobexecs/{{ job.job_execution_id }}/log" target="_blank" data-toggle="tooltip" data-placement="top" title="{{ job.service_job_execution_id }}">Log</a></td>
+                <td><a href="/project/{{ project.id }}/jobexecs/{{ job.job_execution_id }}/log" target="_blank"
+                       data-toggle="tooltip" data-placement="top" title="{{ job.service_job_execution_id }}">Log</a>
+                </td>
                 {% if job.running_status == 2 %}
                 <td>
                     <span class="label label-success">FINISHED</span>
@@ -182,6 +197,7 @@
                 </td>
                 {% endif %}
             </tr>
+            {% endif %}
             {% endfor %}
         </table>
     </div>
