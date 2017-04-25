@@ -7,16 +7,20 @@
     <div class="box-header">
         <h3 class="box-title">Periodic jobs (Spiders)</h3>
     </div>
-    <div class="box-body no-padding">
+    <div class="box-body table-responsive">
         <table class="table table-striped">
             <tr>
                 <th style="width: 50px">id</th>
                 <th style="width: 50px">Spider Name</th>
+                <th style="width: 50px">Last Runtime</th>
+                <th style="width: 50px">Avg Runtime</th>
             </tr>
             {% for spider_instance in spider_instance_list %}
             <tr>
                 <td>{{ spider_instance.spider_instance_id }}</td>
                 <td>{{ spider_instance.spider_name }}</td>
+                <td>{{ spider_instance.spider_last_runtime }}</td>
+                <td>{{ readable_time(spider_instance.spider_avg_runtime) }}</td>
             </tr>
             {% endfor %}
         </table>

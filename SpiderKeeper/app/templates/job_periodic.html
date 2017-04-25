@@ -19,7 +19,7 @@
     <div class="box-header">
         <h3 class="box-title">Periodic jobs (Spiders)</h3>
     </div>
-    <div class="box-body">
+    <div class="box-body table-responsive">
         <table class="table table-striped">
             <tr>
                 <th style="width: 10px">#</th>
@@ -29,7 +29,7 @@
                 <th style="width: 30px">Hour</th>
                 <th style="width: 40px">Spider</th>
                 <th style="width: 40px">Priority</th>
-                <th style="width: 40px">Args</th>
+                <th style="width: 100px">Args</th>
                 <th style="width: 40px">Tags</th>
                 <th style="width: 40px">Enabled</th>
                 <th style="width: 100px">Action</th>
@@ -37,7 +37,7 @@
             {% for job_instance in job_instance_list %}
             <tr>
                 <td><a name="{{ job_instance.job_instance_id }}">{{ job_instance.job_instance_id }}</a></td>
-                <td>{{ job_instance.cron_day_of_month }}</td>
+                <td>{{ job_instance.cron_month }}</td>
                 <td>{{ job_instance.cron_day_of_month }}</td>
                 <td>{{ job_instance.cron_day_of_week }}</td>
                 <td>{{ job_instance.cron_hour }}</td>
@@ -59,7 +59,9 @@
                     <span class="label label-danger">HIGHEST</span>
                 </td>
                 {% endif %}
-                <td style="font-size: 10px;">{{ job_instance.spider_arguments }}</td>
+                <td class="txt-args" data-toggle="tooltip" data-placement="right"
+                    title="{{ job_instance.spider_arguments }}">{{ job_instance.spider_arguments }}
+                </td>
                 <td>{{ job_instance.tags }}</td>
                 {% if job_instance.enabled %}
                 <td>

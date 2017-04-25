@@ -476,15 +476,19 @@ def utility_processor():
             end_time = datetime.datetime.strptime(end_time, '%Y-%m-%d %H:%M:%S')
         if type(start_time) == str:
             start_time = datetime.datetime.strptime(start_time, '%Y-%m-%d %H:%M:%S')
-        result = 0
         total_seconds = (end_time - start_time).total_seconds()
+        return readable_time(total_seconds)
+
+    def readable_time(total_seconds):
+        if not total_seconds:
+            return '-'
         if total_seconds / 60 == 0:
             return '%s s' % total_seconds
         if total_seconds / 3600 == 0:
             return '%s m' % int(total_seconds / 60)
         return '%s h %s m' % (int(total_seconds / 3600), int((total_seconds % 3600) / 60))
 
-    return dict(timedelta=timedelta)
+    return dict(timedelta=timedelta, readable_time=readable_time)
 
 
 @app.route("/")
@@ -602,8 +606,7 @@ def job_switch(project_id, job_instance_id):
 
 @app.route("/project/<project_id>/spider/dashboard")
 def spider_dashboard(project_id):
-    spider_instance_list = [spider_instance.to_dict() for spider_instance in
-                            SpiderInstance.query.filter_by(project_id=project_id).all()]
+    spider_instance_list = SpiderInstance.list_spiders(project_id)
     return render_template("spider_dashboard.html",
                            spider_instance_list=spider_instance_list)
 

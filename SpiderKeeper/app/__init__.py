@@ -2,6 +2,7 @@
 import logging
 import traceback
 
+import apscheduler
 from apscheduler.schedulers.background import BackgroundScheduler
 from flask import Flask
 from flask import jsonify
@@ -35,15 +36,15 @@ api = swagger.docs(Api(app), apiVersion=SpiderKeeper.__version__, api_spec_url="
 # by modules and controllers
 db = SQLAlchemy(app, session_options=dict(autocommit=False, autoflush=True))
 
-
-@app.teardown_appcontext
-def shutdown_session(exception=None):
+@app.teardown_request
+def teardown_request(exception):
+    if exception:
+        db.session.rollback()
+        db.session.remove()
     db.session.remove()
-
 
 # Define apscheduler
 scheduler = BackgroundScheduler()
-
 
 class Base(db.Model):
     __abstract__ = True
@@ -105,9 +106,9 @@ app.register_blueprint(api_spider_bp)
 from SpiderKeeper.app.schedulers.common import sync_job_execution_status_job, sync_spiders, \
     reload_runnable_spider_job_execution
 
-scheduler.add_job(sync_job_execution_status_job, 'interval', seconds=3, id='sys_sync_status')
+scheduler.add_job(sync_job_execution_status_job, 'interval', seconds=5, id='sys_sync_status')
 scheduler.add_job(sync_spiders, 'interval', seconds=10, id='sys_sync_spiders')
-scheduler.add_job(reload_runnable_spider_job_execution, 'interval', seconds=60, id='sys_reload_job')
+scheduler.add_job(reload_runnable_spider_job_execution, 'interval', seconds=30, id='sys_reload_job')
 
 
 def start_scheduler():
