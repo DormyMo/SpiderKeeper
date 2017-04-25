@@ -34,6 +34,7 @@ SERVER_TYPE = 'scrapyd'
 SERVERS = ['http://localhost:6800']
 
 # basic auth
+NO_AUTH = False
 BASIC_AUTH_USERNAME = 'admin'
 BASIC_AUTH_PASSWORD = 'admin'
 BASIC_AUTH_FORCE = True

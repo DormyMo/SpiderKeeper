@@ -115,7 +115,8 @@ def start_scheduler():
 
 
 def init_basic_auth():
-    basic_auth = BasicAuth(app)
+    if not app.config.get('NO_AUTH'):
+        basic_auth = BasicAuth(app)
 
 
 def initialize():
