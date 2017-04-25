@@ -76,7 +76,7 @@ Visit:
 
 ## TODO
 - [ ] Job dashboard support filter
-- [ ] User Authentication
+- [x] User Authentication
 - [ ] Collect & Show scrapy crawl stats
 - [ ] Optimize load balancing
 

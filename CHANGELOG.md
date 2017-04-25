@@ -1,4 +1,9 @@
 # SpiderKeeper Changelog
+## 1.1.0 (2017-04-25)
+- support basic auth
+- show spider crawl time info (last_runtime,avg_runtime)
+- optimized for mobile
+
 ## 1.0.3 (2017-04-17)
 - support view log
 
