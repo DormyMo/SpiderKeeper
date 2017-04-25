@@ -40,11 +40,17 @@ spiderkeeper [options]
 
 Options:
 
-  -h, --help          show this help message and exit
-  --type=SERVER_TYPE  access spider server type, default:scrapyd
-  --host=HOST         host, default:0.0.0.0
-  --port=PORT         port, default:5000
-  --server=SERVERS    servers (support multiply server), default:http://localhost:6800
+  -h, --help            show this help message and exit
+  --host=HOST           host, default:0.0.0.0
+  --port=PORT           port, default:5000
+  --username=USERNAME   basic auth username ,default: admin
+  --password=PASSWORD   basic auth password ,default: admin
+  --type=SERVER_TYPE    access spider server type, default: scrapyd
+  --server=SERVERS      servers, default: ['http://localhost:6800']
+  --database-url=DATABASE_URL
+                        SpiderKeeper metadata database default: sqlite:////home/souche/SpiderKeeper.db
+  --no-auth             disable basic auth
+  -v, --verbose         log level
   
 
 example:
