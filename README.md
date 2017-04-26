@@ -104,7 +104,7 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 Contributions are welcomed!
 
-## 反馈
+## 交流反馈
 ![Contact](https://raw.githubusercontent.com/DormyMo/SpiderKeeper/master/screenshot/qqgroup_qrcode.png)
 
 ## 捐赠
