@@ -10,7 +10,7 @@ from flask import flash
 from flask import redirect
 from flask import render_template
 from flask import session
-from flask.ext.restful_swagger import swagger
+from flask_restful_swagger import swagger
 from werkzeug.utils import secure_filename
 
 from SpiderKeeper.app import db, api, agent, app

@@ -43,11 +43,11 @@ class SpiderInstance(Base):
                 db.session.commit()
 
         for spider in cls.query.all():
-            existed_spider = (
+            existed_spider = any(
                 spider.project_id == s.project_id and spider.spider_name == s.spider_name
                 for s in spider_instance_list
             )
-            if not any(existed_spider):
+            if not existed_spider:
                 db.session.delete(spider)
                 db.session.commit()
 

@@ -6,9 +6,9 @@ import apscheduler
 from apscheduler.schedulers.background import BackgroundScheduler
 from flask import Flask
 from flask import jsonify
-from flask.ext.basicauth import BasicAuth
-from flask.ext.restful import Api
-from flask.ext.restful_swagger import swagger
+from flask_basicauth import BasicAuth
+from flask_restful import Api
+from flask_restful_swagger import swagger
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.exceptions import HTTPException
 
@@ -36,6 +36,7 @@ api = swagger.docs(Api(app), apiVersion=SpiderKeeper.__version__, api_spec_url="
 # by modules and controllers
 db = SQLAlchemy(app, session_options=dict(autocommit=False, autoflush=True))
 
+
 @app.teardown_request
 def teardown_request(exception):
     if exception:
@@ -45,6 +46,7 @@ def teardown_request(exception):
 
 # Define apscheduler
 scheduler = BackgroundScheduler()
+
 
 class Base(db.Model):
     __abstract__ = True
