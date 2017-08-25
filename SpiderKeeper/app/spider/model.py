@@ -42,6 +42,15 @@ class SpiderInstance(Base):
                 db.session.add(spider_instance)
                 db.session.commit()
 
+        for spider in cls.query.all():
+            existed_spider = any(
+                spider.project_id == s.project_id and spider.spider_name == s.spider_name
+                for s in spider_instance_list
+            )
+            if not existed_spider:
+                db.session.delete(spider)
+                db.session.commit()
+
     @classmethod
     def list_spider_by_project_id(cls, project_id):
         return cls.query.filter_by(project_id=project_id).all()
