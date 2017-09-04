@@ -596,6 +596,14 @@ def job_remove(project_id, job_instance_id):
     return redirect(request.referrer, code=302)
 
 
+@app.route("/project/<project_id>/jobs/remove")
+def jobs_remove(project_id):
+    for job_instance in JobInstance.query.filter_by(project_id=project_id):
+        db.session.delete(job_instance)
+    db.session.commit()
+    return redirect(request.referrer, code=302)
+
+
 @app.route("/project/<project_id>/job/<job_instance_id>/switch")
 def job_switch(project_id, job_instance_id):
     job_instance = JobInstance.query.filter_by(project_id=project_id, id=job_instance_id).first()
