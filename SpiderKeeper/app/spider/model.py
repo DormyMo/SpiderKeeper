@@ -34,17 +34,17 @@ class SpiderInstance(Base):
     project_id = db.Column(db.INTEGER, nullable=False, index=True)
 
     @classmethod
-    def update_spider_instances(cls, spider_instance_list):
+    def update_spider_instances(cls, project_id, spider_instance_list):
         for spider_instance in spider_instance_list:
-            existed_spider_instance = cls.query.filter_by(project_id=spider_instance.project_id,
+            existed_spider_instance = cls.query.filter_by(project_id=project_id,
                                                           spider_name=spider_instance.spider_name).first()
             if not existed_spider_instance:
                 db.session.add(spider_instance)
                 db.session.commit()
 
-        for spider in cls.query.all():
+        for spider in cls.query.filter_by(project_id=project_id).all():
             existed_spider = any(
-                spider.project_id == s.project_id and spider.spider_name == s.spider_name
+                spider.spider_name == s.spider_name
                 for s in spider_instance_list
             )
             if not existed_spider:

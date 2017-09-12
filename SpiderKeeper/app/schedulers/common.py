@@ -22,7 +22,7 @@ def sync_spiders():
     '''
     for project in Project.query.all():
         spider_instance_list = agent.get_spider_list(project)
-        SpiderInstance.update_spider_instances(spider_instance_list)
+        SpiderInstance.update_spider_instances(project.id, spider_instance_list)
     app.logger.debug('[sync_spiders]')
 
 
