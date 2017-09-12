@@ -8,3 +8,4 @@ venv
 dist
 build
 SpiderKeeper.db
+.python-version

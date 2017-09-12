@@ -3,6 +3,8 @@
 # @Time      : 2017-04-30 18:19
 # @Author    : modm
 import datetime
+import socket
+
 from scrapy.statscollectors import StatsCollector
 
 
@@ -18,7 +20,6 @@ class SpiderKeeperStatsCollector(StatsCollector):
         self.spider_stats[spider.name] = stats
 
     def open_spider(self, spider):
-        import socket;
         super(SpiderKeeperStatsCollector, self).open_spider(spider)
         if hasattr(spider, '_job'):
             _job = spider._job
