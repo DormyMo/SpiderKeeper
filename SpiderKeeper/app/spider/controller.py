@@ -518,6 +518,7 @@ def project_create():
 @app.route("/project/<project_id>/delete")
 def project_delete(project_id):
     project = Project.find_project_by_id(project_id)
+    agent.delete_project(project)
     db.session.delete(project)
     db.session.commit()
     return redirect("/project/manage", code=302)
