@@ -234,6 +234,15 @@
                         <label>Args</label>
                         <input type="text" name="spider_arguments" class="form-control" placeholder="foo=1,bar=2">
                     </div>
+                    <div class="form-group">
+                        <label>Chose Daemon</label>
+                        <select class="form-control" name="daemon">
+                            <option value="auto">auto</option>
+                            {% for server in servers %}
+                            <option value="{{ server }}">{{ server }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
                     <input type="hidden" name="run_type" value="onetime">
                 </div>
                 <div class="modal-footer">
