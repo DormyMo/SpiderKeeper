@@ -592,7 +592,7 @@ def job_log(project_id, job_exec_id):
     res = requests.get(agent.log_url(job_execution))
     res.encoding = 'utf8'
     raw = res.text
-    return render_template("job_log.html", log_lines=raw.split(b'\n'))
+    return render_template("job_log.html", log_lines=raw.split('\n'))
 
 
 @app.route("/project/<project_id>/job/<job_instance_id>/run")
