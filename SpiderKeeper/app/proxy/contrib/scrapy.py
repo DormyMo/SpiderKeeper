@@ -29,6 +29,11 @@ class ScrapydProxy(SpiderServiceProxy):
                 result.append(project)
         return result
 
+    def delete_project(self, project_name):
+        post_data = dict(project=project_name)
+        data = request("post", self._scrapyd_url() + "/delproject.json", data=post_data, return_type="json")
+        return True if data and data['status'] == 'ok' else False
+
     def get_spider_list(self, project_name):
         data = request("get", self._scrapyd_url() + "/listspiders.json?project=%s" % project_name,
                        return_type="json")

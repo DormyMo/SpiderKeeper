@@ -27,6 +27,7 @@
                 <th style="width: 30px">Day of Month</th>
                 <th style="width: 30px">Day of Week</th>
                 <th style="width: 30px">Hour</th>
+                <th style="width: 30px">Minutes</th>
                 <th style="width: 40px">Spider</th>
                 <th style="width: 40px">Priority</th>
                 <th style="width: 100px">Args</th>
@@ -41,6 +42,7 @@
                 <td>{{ job_instance.cron_day_of_month }}</td>
                 <td>{{ job_instance.cron_day_of_week }}</td>
                 <td>{{ job_instance.cron_hour }}</td>
+                <td>{{ job_instance.cron_minutes }}</td>
                 <td>{{ job_instance.spider_name }}</td>
                 {% if job_instance.priority == -1 %}
                 <td>
@@ -93,7 +95,7 @@
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span></button>
-                    <h4 class="modal-title">Create Project</h4>
+                    <h4 class="modal-title">Add Periodic Job</h4>
                 </div>
                 <div class="modal-body">
                     <div class="row">
@@ -178,6 +180,27 @@
                                     <option value="*/15">Every 15 minute</option>
                                     <option value="*/30">Every 30 minute</option>
                                 </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <h4>Advanced Options</h4>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Chose Daemon</label>
+                                <select class="form-control" name="daemon">
+                                    <option value="auto">auto</option>
+                                    {% for server in servers %}
+                                    <option value="{{ server }}">{{ server }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Cron Expressions (m h dom mon dow)</label>
+                                <input type="text" name="cron_exp" class="form-control"
+                                       placeholder="0 * * * * ">
                             </div>
                         </div>
                     </div>

@@ -18,6 +18,13 @@ class SpiderServiceProxy(object):
         '''
         pass
 
+    def delete_project(self, project_name):
+        '''
+
+        :return:
+        '''
+        pass
+
     def get_spider_list(self, *args, **kwargs):
         '''
 
@@ -75,6 +82,10 @@ class SpiderAgent():
         Project.load_project(project_list)
         return [project.to_dict() for project in Project.query.all()]
 
+    def delete_project(self, project):
+        for spider_service_instance in self.spider_service_instances:
+            spider_service_instance.delete_project(project.project_name)
+
     def get_spider_list(self, project):
         spider_instance_list = self.spider_service_instances[0].get_spider_list(project.project_name)
         for spider_instance in spider_instance_list:
@@ -122,9 +133,14 @@ class SpiderAgent():
         threshold = 1 if threshold == 0 else threshold
         candidates = self.spider_service_instances
         leaders = []
-        # TODO optimize some better func to vote the leader
-        for i in range(threshold):
-            leaders.append(random.choice(candidates))
+        if 'daemon' in arguments:
+            for candidate in candidates:
+                if candidate.server == arguments['daemon']:
+                    leaders = [candidate]
+        else:
+            # TODO optimize some better func to vote the leader
+            for i in range(threshold):
+                leaders.append(random.choice(candidates))
         for leader in leaders:
             serviec_job_id = leader.start_spider(project.project_name, spider_name, arguments)
             job_execution = JobExecution()
