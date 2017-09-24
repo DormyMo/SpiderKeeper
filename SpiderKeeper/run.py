@@ -1,4 +1,9 @@
 from SpiderKeeper.command import SkCommand
 
-if __name__ == '__main__':
+
+def main():
     SkCommand().run_from_argv()
+
+
+if __name__ == '__main__':
+    main()
