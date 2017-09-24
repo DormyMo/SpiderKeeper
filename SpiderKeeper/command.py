@@ -79,6 +79,3 @@ class SkCommand():
     def run_from_argv(self):
         self.setup_config()
         self.start_server()
-
-
-SkCommand().run_from_argv()
