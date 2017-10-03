@@ -82,8 +82,8 @@
                 <td>
                     <a href="/project/{{ project.id }}/job/{{ job_instance.job_instance_id }}/run"><span
                             class="label label-info">Run</span></a>
-                    <a href="/project/{{ project.id }}/job/{{ job_instance.job_instance_id }}/remove"><span
-                            class="label label-danger">Remove</span></a>
+                    <a href="{{ url_for('job_remove', job_instance_id=job_instance.job_instance_id) }}">
+                        <span class="label label-danger">Remove</span></a>
                 </td>
             </tr>
             {% endfor %}

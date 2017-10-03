@@ -602,9 +602,9 @@ def job_run(project_id, job_instance_id):
     return redirect(request.referrer, code=302)
 
 
-@app.route("/project/<project_id>/job/<job_instance_id>/remove")
-def job_remove(project_id, job_instance_id):
-    job_instance = JobInstance.query.filter_by(project_id=project_id, id=job_instance_id).first()
+@app.route("/job/<job_instance_id>/remove")
+def job_remove(job_instance_id):
+    job_instance = JobInstance.query.get(job_instance_id)
     db.session.delete(job_instance)
     db.session.commit()
     return redirect(request.referrer, code=302)
