@@ -1,5 +1,6 @@
 import datetime
 from sqlalchemy import desc
+from sqlalchemy.orm import relation
 from SpiderKeeper.app import db, Base
 
 
@@ -152,7 +153,9 @@ class JobExecution(Base):
 
     project_id = db.Column(db.INTEGER, nullable=False, index=True)
     service_job_execution_id = db.Column(db.String(50), nullable=False, index=True)
-    job_instance_id = db.Column(db.INTEGER, nullable=False, index=True)
+    job_instance_id = db.Column(db.INTEGER,
+                                db.ForeignKey('sk_job_instance.id'), nullable=False, index=True)
+    job_instance = relation(JobInstance)
     create_time = db.Column(db.DATETIME)
     start_time = db.Column(db.DATETIME)
     end_time = db.Column(db.DATETIME)
@@ -160,7 +163,6 @@ class JobExecution(Base):
     running_on = db.Column(db.Text)
 
     def to_dict(self):
-        job_instance = JobInstance.query.filter_by(id=self.job_instance_id).first()
         return {
             'project_id': self.project_id,
             'job_execution_id': self.id,
@@ -171,7 +173,7 @@ class JobExecution(Base):
             'end_time': self.end_time.strftime('%Y-%m-%d %H:%M:%S') if self.end_time else None,
             'running_status': self.running_status,
             'running_on': self.running_on,
-            'job_instance': job_instance.to_dict() if job_instance else {}
+            'job_instance': self.job_instance
         }
 
     @classmethod
