@@ -1,9 +1,9 @@
 import datetime
 import random
-from functools import reduce
 
 from SpiderKeeper.app import db
-from SpiderKeeper.app.spider.model import SpiderStatus, JobExecution, JobInstance, Project, JobPriority
+from SpiderKeeper.app.spider.model import SpiderStatus, JobExecution, JobInstance, Project, \
+    JobPriority
 
 
 class SpiderServiceProxy(object):
@@ -87,7 +87,8 @@ class SpiderAgent():
             spider_service_instance.delete_project(project.project_name)
 
     def get_spider_list(self, project):
-        spider_instance_list = self.spider_service_instances[0].get_spider_list(project.project_name)
+        spider_instance_list = self.spider_service_instances[0]\
+            .get_spider_list(project.project_name)
         for spider_instance in spider_instance_list:
             spider_instance.project_id = project.id
         return spider_instance_list
@@ -119,7 +120,7 @@ class SpiderAgent():
             db.session.commit()
 
     def start_spider(self, job_instance):
-        project = Project.find_project_by_id(job_instance.project_id)
+        project = Project.query.get(job_instance.project_id)
         spider_name = job_instance.spider_name
         arguments = {}
         if job_instance.spider_arguments:
@@ -154,7 +155,7 @@ class SpiderAgent():
 
     def cancel_spider(self, job_execution):
         job_instance = JobInstance.find_job_instance_by_id(job_execution.job_instance_id)
-        project = Project.find_project_by_id(job_instance.project_id)
+        project = Project.query.get(job_instance.project_id)
         for spider_service_instance in self.spider_service_instances:
             if spider_service_instance.server == job_execution.running_on:
                 if spider_service_instance.cancel_spider(project.project_name, job_execution.service_job_execution_id):
@@ -171,11 +172,13 @@ class SpiderAgent():
 
     def log_url(self, job_execution):
         job_instance = JobInstance.find_job_instance_by_id(job_execution.job_instance_id)
-        project = Project.find_project_by_id(job_instance.project_id)
+        project = Project.query.get(job_instance.project_id)
         for spider_service_instance in self.spider_service_instances:
             if spider_service_instance.server == job_execution.running_on:
-                return spider_service_instance.log_url(project.project_name, job_instance.spider_name,
-                                                       job_execution.service_job_execution_id)
+                return spider_service_instance.log_url(
+                    project.project_name, job_instance.spider_name,
+                    job_execution.service_job_execution_id
+                )
 
     @property
     def servers(self):
