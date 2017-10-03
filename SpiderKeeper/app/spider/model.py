@@ -19,10 +19,6 @@ class Project(Base):
                 db.session.add(project)
                 db.session.commit()
 
-    @classmethod
-    def find_project_by_id(cls, project_id):
-        return Project.query.filter_by(id=project_id).first()
-
     def to_dict(self):
         return {
             "project_id": self.id,
@@ -39,8 +35,9 @@ class SpiderInstance(Base):
     @classmethod
     def update_spider_instances(cls, project_id, spider_instance_list):
         for spider_instance in spider_instance_list:
-            existed_spider_instance = cls.query.filter_by(project_id=project_id,
-                                                          spider_name=spider_instance.spider_name).first()
+            existed_spider_instance = cls.query.filter_by(
+                project_id=project_id, spider_name=spider_instance.spider_name
+            ).first()
             if not existed_spider_instance:
                 db.session.add(spider_instance)
                 db.session.commit()

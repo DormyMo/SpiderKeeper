@@ -47,8 +47,10 @@ def request(request_type, url, data=None, retry_times=5, return_type="text"):
         res = request_get(url, retry_times)
     if request_type == 'post':
         res = request_post(url, data, retry_times)
-    if not res: return res
-    if return_type == 'text': return res.text
+    if not res:
+        return res
+    if return_type == 'text':
+        return res.text
     if return_type == 'json':
         try:
             res = res.json()
