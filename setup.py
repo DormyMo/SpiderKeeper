@@ -20,6 +20,7 @@ setup(
         'aniso8601==1.2.0',
         'APScheduler==3.3.1',
         'click==6.7',
+        'demjson==2.2.4',
         'Flask==0.12.1',
         'Flask-BasicAuth==0.2.0',
         'Flask-RESTful==0.3.5',

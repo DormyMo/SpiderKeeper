@@ -1,9 +1,11 @@
 import datetime
 import random
-from functools import reduce
+import requests
+import re
 
 from SpiderKeeper.app import db
-from SpiderKeeper.app.spider.model import SpiderStatus, JobExecution, JobInstance, Project, JobPriority
+from SpiderKeeper.app.spider.model import SpiderStatus, JobExecution, JobInstance, Project, \
+    JobPriority
 
 
 class SpiderServiceProxy(object):
@@ -15,6 +17,13 @@ class SpiderServiceProxy(object):
         '''
 
         :return: []
+        '''
+        pass
+
+    def delete_project(self, project_name):
+        '''
+
+        :return:
         '''
         pass
 
@@ -75,6 +84,10 @@ class SpiderAgent():
         Project.load_project(project_list)
         return [project.to_dict() for project in Project.query.all()]
 
+    def delete_project(self, project):
+        for spider_service_instance in self.spider_service_instances:
+            spider_service_instance.delete_project(project.project_name)
+
     def get_spider_list(self, project):
         spider_instance_list = self.spider_service_instances[0].get_spider_list(project.project_name)
         for spider_instance in spider_instance_list:
@@ -104,6 +117,14 @@ class SpiderAgent():
                     job_execution.start_time = job_execution_info['start_time']
                     job_execution.end_time = job_execution_info['end_time']
                     job_execution.running_status = SpiderStatus.FINISHED
+
+                    res = requests.get(self.log_url(job_execution))
+                    res.encoding = 'utf8'
+                    raw = res.text[-4096:]
+                    match = re.findall(job_execution.RAW_STATS_REGEX, raw, re.DOTALL)
+                    if match:
+                        job_execution.raw_stats = match[0]
+                        job_execution.process_raw_stats()
             # commit
             db.session.commit()
 
@@ -122,9 +143,14 @@ class SpiderAgent():
         threshold = 1 if threshold == 0 else threshold
         candidates = self.spider_service_instances
         leaders = []
-        # TODO optimize some better func to vote the leader
-        for i in range(threshold):
-            leaders.append(random.choice(candidates))
+        if 'daemon' in arguments:
+            for candidate in candidates:
+                if candidate.server == arguments['daemon']:
+                    leaders = [candidate]
+        else:
+            # TODO optimize some better func to vote the leader
+            for i in range(threshold):
+                leaders.append(random.choice(candidates))
         for leader in leaders:
             serviec_job_id = leader.start_spider(project.project_name, spider_name, arguments)
             job_execution = JobExecution()

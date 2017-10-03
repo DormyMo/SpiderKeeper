@@ -518,6 +518,7 @@ def project_create():
 @app.route("/project/<project_id>/delete")
 def project_delete(project_id):
     project = Project.find_project_by_id(project_id)
+    agent.delete_project(project)
     db.session.delete(project)
     db.session.commit()
     return redirect("/project/manage", code=302)
@@ -551,6 +552,13 @@ def job_add(project_id):
     job_instance.spider_arguments = request.form['spider_arguments']
     job_instance.priority = request.form.get('priority', 0)
     job_instance.run_type = request.form['run_type']
+    # chose daemon manually
+    if request.form['daemon'] != 'auto':
+        spider_args = []
+        if request.form['spider_arguments']:
+            spider_args = request.form['spider_arguments'].split(",")
+        spider_args.append("daemon={}".format(request.form['daemon']))
+        job_instance.spider_arguments = ','.join(spider_args)
     if job_instance.run_type == JobRunType.ONETIME:
         job_instance.enabled = -1
         db.session.add(job_instance)
@@ -562,6 +570,10 @@ def job_add(project_id):
         job_instance.cron_day_of_month = request.form.get('cron_day_of_month') or '*'
         job_instance.cron_day_of_week = request.form.get('cron_day_of_week') or '*'
         job_instance.cron_month = request.form.get('cron_month') or '*'
+        # set cron exp manually
+        if request.form.get('cron_exp'):
+            job_instance.cron_minutes, job_instance.cron_hour, job_instance.cron_day_of_month, job_instance.cron_day_of_week, job_instance.cron_month = \
+                request.form['cron_exp'].split(' ')
         db.session.add(job_instance)
         db.session.commit()
     return redirect(request.referrer, code=302)
@@ -577,7 +589,9 @@ def job_stop(project_id, job_exec_id):
 @app.route("/project/<project_id>/jobexecs/<job_exec_id>/log")
 def job_log(project_id, job_exec_id):
     job_execution = JobExecution.query.filter_by(project_id=project_id, id=job_exec_id).first()
-    raw = requests.get(agent.log_url(job_execution)).text or ""
+    res = requests.get(agent.log_url(job_execution))
+    res.encoding = 'utf8'
+    raw = res.text
     return render_template("job_log.html", log_lines=raw.split('\n'))
 
 

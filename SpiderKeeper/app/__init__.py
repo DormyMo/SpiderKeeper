@@ -2,7 +2,6 @@
 import logging
 import traceback
 
-import apscheduler
 from apscheduler.schedulers.background import BackgroundScheduler
 from flask import Flask
 from flask import jsonify

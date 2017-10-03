@@ -10,7 +10,7 @@
     top: 15px;
     right: 10px;">
     <button type="button" class="btn btn-success btn-flat" style="margin-top: -10px;" data-toggle="modal"
-            data-target="#job-run-modal">Run
+            data-target="#job-run-modal">RunOnce
     </button>
 </ol>
 {% endblock %}
@@ -153,12 +153,15 @@
                 <th style="width: 20px">Priority</th>
                 <th style="width: 40px">Runtime</th>
                 <th style="width: 120px">Started</th>
+                <th style="width: 10px">Items</th>
+                <th style="width: 10px">Warnings</th>
+                <th style="width: 10px">Errors</th>
                 <th style="width: 10px">Log</th>
                 <th style="width: 10px">Status</th>
             </tr>
             {% for job in job_status.COMPLETED %}
             {% if job.job_instance %}
-            <tr>
+            <tr class="{% if job.has_errors %}danger{% elif job.has_warnings %}warning{% endif %}">
                 <td>{{ job.job_execution_id }}</td>
                 <td><a href="/project/1/job/periodic#{{ job.job_instance_id }}">{{ job.job_instance_id }}</a></td>
                 <td>{{ job.job_instance.spider_name }}</td>
@@ -184,17 +187,20 @@
                 {% endif %}
                 <td>{{ timedelta(job.end_time,job.start_time) }}</td>
                 <td>{{ job.start_time }}</td>
+                <td>{{ job.items_count }}</td>
+                <td>{{ job.warnings_count }}</td>
+                <td>{{ job.errors_count }}</td>
                 <td><a href="/project/{{ project.id }}/jobexecs/{{ job.job_execution_id }}/log" target="_blank"
                        data-toggle="tooltip" data-placement="top" title="{{ job.service_job_execution_id }}">Log</a>
                 </td>
                 {% if job.running_status == 2 %}
-                <td>
-                    <span class="label label-success">FINISHED</span>
-                </td>
-                {% else %}
-                <td>
-                    <span class="label label-danger">CANCELED</span>
-                </td>
+                    <td>
+                        <span class="label label-success">FINISHED</span>
+                    </td>
+                    {% else %}
+                    <td>
+                        <span class="label label-danger">CANCELED</span>
+                    </td>
                 {% endif %}
             </tr>
             {% endif %}
@@ -210,7 +216,7 @@
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span></button>
-                    <h4 class="modal-title">Create Project</h4>
+                    <h4 class="modal-title">Run Spider Once</h4>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
@@ -233,6 +239,15 @@
                     <div class="form-group">
                         <label>Args</label>
                         <input type="text" name="spider_arguments" class="form-control" placeholder="foo=1,bar=2">
+                    </div>
+                    <div class="form-group">
+                        <label>Chose Daemon</label>
+                        <select class="form-control" name="daemon">
+                            <option value="auto">auto</option>
+                            {% for server in servers %}
+                            <option value="{{ server }}">{{ server }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
                     <input type="hidden" name="run_type" value="onetime">
                 </div>
