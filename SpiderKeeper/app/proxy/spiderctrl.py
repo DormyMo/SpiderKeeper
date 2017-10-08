@@ -1,6 +1,7 @@
 import datetime
 import random
 from functools import reduce
+import re
 
 from SpiderKeeper.app import db
 from SpiderKeeper.app.spider.model import SpiderStatus, JobExecution, JobInstance, Project, JobPriority
@@ -118,6 +119,21 @@ class SpiderAgent():
             # commit
             db.session.commit()
 
+    @staticmethod
+    def set_arguments(args):
+        split_args = map(lambda i: i.strip(), args.split(','))
+        arguments = dict()
+        settings = list()
+        pattern = 'setting='
+        for each in split_args:
+            if re.match(pattern, each):
+                settings.append(each.replace(pattern, ''))
+            else:
+                list_of_each = each.split('=')
+                arguments.update({list_of_each[0]: list_of_each[1]})
+        arguments.update({pattern[:-1]: settings})
+        return arguments      
+            
     def start_spider(self, job_instance):
         project = Project.find_project_by_id(job_instance.project_id)
         spider_name = job_instance.spider_name
