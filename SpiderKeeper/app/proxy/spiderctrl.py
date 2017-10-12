@@ -164,7 +164,7 @@ class SpiderAgent():
             db.session.commit()
 
     def cancel_spider(self, job_execution):
-        job_instance = JobInstance.find_job_instance_by_id(job_execution.job_instance_id)
+        job_instance = JobInstance.query.get(job_execution.job_instance_id)
         project = Project.query.get(job_instance.project_id)
         for spider_service_instance in self.spider_service_instances:
             if spider_service_instance.server == job_execution.running_on:
@@ -181,7 +181,7 @@ class SpiderAgent():
         return True
 
     def log_url(self, job_execution):
-        job_instance = JobInstance.find_job_instance_by_id(job_execution.job_instance_id)
+        job_instance = JobInstance.query.get(job_execution.job_instance_id)
         project = Project.query.get(job_instance.project_id)
         for spider_service_instance in self.spider_service_instances:
             if spider_service_instance.server == job_execution.running_on:

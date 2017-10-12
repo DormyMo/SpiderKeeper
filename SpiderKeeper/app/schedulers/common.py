@@ -5,20 +5,20 @@ from SpiderKeeper.app.spider.model import Project, JobInstance, SpiderInstance
 
 
 def sync_job_execution_status_job():
-    '''
+    """
     sync job execution running status
     :return:
-    '''
+    """
     for project in Project.query.all():
         agent.sync_job_status(project)
     app.logger.debug('[sync_job_execution_status]')
 
 
 def sync_spiders():
-    '''
+    """
     sync spiders
     :return:
-    '''
+    """
     for project in Project.query.all():
         spider_instance_list = agent.get_spider_list(project)
         SpiderInstance.update_spider_instances(project.id, spider_instance_list)
@@ -26,13 +26,13 @@ def sync_spiders():
 
 
 def run_spider_job(job_instance_id):
-    '''
+    """
     run spider by scheduler
     :param job_instance_id:
     :return:
-    '''
+    """
     try:
-        job_instance = JobInstance.find_job_instance_by_id(job_instance_id)
+        job_instance = JobInstance.query.get(job_instance_id)
         agent.start_spider(job_instance)
         app.logger.info('[run_spider_job][project:%s][spider_name:%s][job_instance_id:%s]' % (
             job_instance.project_id, job_instance.spider_name, job_instance.id))
@@ -41,10 +41,10 @@ def run_spider_job(job_instance_id):
 
 
 def reload_runnable_spider_job_execution():
-    '''
+    """
     add periodic job to scheduler
     :return:
-    '''
+    """
     running_job_ids = set([job.id for job in scheduler.get_jobs()])
     app.logger.debug('[running_job_ids] %s' % ','.join(running_job_ids))
     available_job_ids = set()

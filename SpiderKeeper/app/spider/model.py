@@ -30,7 +30,7 @@ class SpiderInstance(Base):
     __tablename__ = 'sk_spider'
 
     spider_name = db.Column(db.String(100))
-    project_id = db.Column(db.INTEGER, nullable=False, index=True)
+    project_id = db.Column(db.Integer, nullable=False, index=True)
 
     @classmethod
     def update_spider_instances(cls, project_id, spider_instance_list):
@@ -90,11 +90,11 @@ class SpiderInstance(Base):
         return res
 
 
-class JobPriority():
+class JobPriority:
     LOW, NORMAL, HIGH, HIGHEST = range(-1, 3)
 
 
-class JobRunType():
+class JobRunType:
     ONETIME = 'onetime'
     PERIODIC = 'periodic'
 
@@ -138,27 +138,23 @@ class JobInstance(Base):
     def list_job_instance_by_project_id(cls, project_id):
         return cls.query.filter_by(project_id=project_id).all()
 
-    @classmethod
-    def find_job_instance_by_id(cls, job_instance_id):
-        return cls.query.filter_by(id=job_instance_id).first()
 
-
-class SpiderStatus():
+class SpiderStatus:
     PENDING, RUNNING, FINISHED, CANCELED = range(4)
 
 
 class JobExecution(Base):
     __tablename__ = 'sk_job_execution'
 
-    project_id = db.Column(db.INTEGER, nullable=False, index=True)
+    project_id = db.Column(db.Integer, nullable=False, index=True)
     service_job_execution_id = db.Column(db.String(50), nullable=False, index=True)
-    job_instance_id = db.Column(db.INTEGER,
+    job_instance_id = db.Column(db.Integer,
                                 db.ForeignKey('sk_job_instance.id'), nullable=False, index=True)
     job_instance = relation(JobInstance)
-    create_time = db.Column(db.DATETIME)
-    start_time = db.Column(db.DATETIME)
-    end_time = db.Column(db.DATETIME)
-    running_status = db.Column(db.INTEGER, default=SpiderStatus.PENDING)
+    create_time = db.Column(db.DateTime)
+    start_time = db.Column(db.DateTime)
+    end_time = db.Column(db.DateTime)
+    running_status = db.Column(db.Integer, default=SpiderStatus.PENDING)
     running_on = db.Column(db.Text)
 
     raw_stats = db.Column(db.Text)
