@@ -18,6 +18,7 @@ from SpiderKeeper import config
 app = Flask(__name__)
 # Configurations
 app.config.from_object(config)
+app.jinja_env.globals['sk_version'] = SpiderKeeper.__version__
 
 # Logging
 log = logging.getLogger('werkzeug')

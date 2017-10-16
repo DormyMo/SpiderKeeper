@@ -5,13 +5,13 @@ from setuptools import setup, find_packages
 from SpiderKeeper import __version__, __author__
 
 setup(
-    name='SpiderKeeper',
+    name='SpiderKeeper-2',
     version=__version__,
     description='Admin ui for spider service',
     long_description=
     'Go to https://github.com/DormyMo/SpiderKeeper/ for more information.',
     author=__author__,
-    author_email='modongming91@gmail.com',
+    author_email='nogamemorebrain@gmail.com',
     url='https://github.com/DormyMo/SpiderKeeper/',
     license='MIT',
     include_package_data=True,

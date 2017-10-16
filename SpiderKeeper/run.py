@@ -1,5 +1,4 @@
 import logging
-import os
 from optparse import OptionParser
 
 from SpiderKeeper.app import app, initialize
@@ -20,7 +19,7 @@ def main():
     initialize()
     app.logger.info("SpiderKeeper startd on %s:%s username:%s/password:%s with %s servers:%s" % (
         opts.host, opts.port, opts.username, opts.password, opts.server_type, ','.join(app.config.get('SERVERS', []))))
-    app.run(host=opts.host, port=opts.port, use_reloader=False, threaded=True)
+    app.run(host=opts.host, port=opts.port, use_reloader=True, threaded=True)
 
 
 def parse_opts(config):
