@@ -119,8 +119,10 @@ class JobExecution(Base):
 
     project_id = db.Column(db.Integer, nullable=False, index=True)
     service_job_execution_id = db.Column(db.String(50), nullable=False, index=True)
-    job_instance_id = db.Column(db.Integer,
-                                db.ForeignKey('sk_job_instance.id'), nullable=False, index=True)
+    job_instance_id = db.Column(
+        db.Integer, db.ForeignKey('sk_job_instance.id', ondelete='CASCADE'), nullable=False,
+        index=True
+    )
     job_instance = relation(JobInstance)
     create_time = db.Column(db.DateTime)
     start_time = db.Column(db.DateTime)

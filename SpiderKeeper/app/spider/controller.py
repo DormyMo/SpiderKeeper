@@ -663,6 +663,8 @@ def spider_dashboard(project_id):
     for spider in SpiderInstance.query.filter(SpiderInstance.project_id == project_id).all():
         spider.last_runtime = last_runtime.get(spider.spider_name)
         spider.avg_runtime = avg_runtime.get(spider.spider_name)
+        if spider.avg_runtime is not None:
+            spider.avg_runtime = spider.avg_runtime.total_seconds()
         spiders.append(spider)
     return render_template("spider_dashboard.html", spiders=spiders)
 
