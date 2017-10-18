@@ -60,35 +60,6 @@ class SpiderInstance(Base):
                     spider_name=self.spider_name,
                     project_id=self.project_id)
 
-    @classmethod
-    def list_spiders(cls, project_id):
-        sql_last_runtime = '''
-            select * from (select a.spider_name,b.date_created from sk_job_instance as a
-                left join sk_job_execution as b
-                on a.id = b.job_instance_id
-                order by b.date_created desc) as c
-                group by c.spider_name
-            '''
-        sql_avg_runtime = '''
-            select a.spider_name,avg(end_time-start_time) from sk_job_instance as a
-                left join sk_job_execution as b
-                on a.id = b.job_instance_id
-                where b.end_time is not null
-                group by a.spider_name
-            '''
-        last_runtime_list = dict(
-            (spider_name, last_run_time) for spider_name, last_run_time in db.engine.execute(sql_last_runtime))
-        avg_runtime_list = dict(
-            (spider_name, avg_run_time) for spider_name, avg_run_time in db.engine.execute(sql_avg_runtime))
-        res = []
-        for spider in cls.query.filter_by(project_id=project_id).all():
-            last_runtime = last_runtime_list.get(spider.spider_name)
-            res.append(dict(spider.to_dict(),
-                            **{'spider_last_runtime': last_runtime if last_runtime else '-',
-                               'spider_avg_runtime': avg_runtime_list.get(spider.spider_name)
-                               }))
-        return res
-
 
 class JobPriority:
     LOW, NORMAL, HIGH, HIGHEST = range(-1, 3)
@@ -103,17 +74,17 @@ class JobInstance(Base):
     __tablename__ = 'sk_job_instance'
 
     spider_name = db.Column(db.String(100), nullable=False, index=True)
-    project_id = db.Column(db.INTEGER, nullable=False, index=True)
+    project_id = db.Column(db.Integer, nullable=False, index=True)
     tags = db.Column(db.Text)  # job tag(split by , )
     spider_arguments = db.Column(db.Text)  # job execute arguments(split by , ex.: arg1=foo,arg2=bar)
-    priority = db.Column(db.INTEGER)
+    priority = db.Column(db.Integer)
     desc = db.Column(db.Text)
     cron_minutes = db.Column(db.String(20), default="0")
     cron_hour = db.Column(db.String(20), default="*")
     cron_day_of_month = db.Column(db.String(20), default="*")
     cron_day_of_week = db.Column(db.String(20), default="*")
     cron_month = db.Column(db.String(20), default="*")
-    enabled = db.Column(db.INTEGER, default=0)  # 0/-1
+    enabled = db.Column(db.Integer, default=0)  # 0/-1
     run_type = db.Column(db.String(20))  # periodic/onetime
 
     def to_dict(self):

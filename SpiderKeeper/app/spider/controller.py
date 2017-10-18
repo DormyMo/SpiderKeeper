@@ -5,16 +5,18 @@ import tempfile
 import flask_restful
 import requests
 from flask import Blueprint, request
-from flask import abort
+from flask import abort, url_for
 from flask import flash
 from flask import redirect
 from flask import render_template
 from flask import session
 from flask_restful_swagger import swagger
+from sqlalchemy import func
 from werkzeug.utils import secure_filename
 
 from SpiderKeeper.app import db, api, agent, app
-from SpiderKeeper.app.spider.model import JobInstance, Project, JobExecution, SpiderInstance, JobRunType
+from SpiderKeeper.app.spider.model import JobInstance, Project, JobExecution, SpiderInstance, \
+    JobRunType
 
 api_spider_bp = Blueprint('spider', __name__)
 
@@ -430,13 +432,6 @@ api.add_resource(JobExecutionDetailCtrl, "/api/projects/<project_id>/jobexecs/<j
 '''
 
 
-@app.before_request
-def intercept_no_project():
-    if request.path.find('/project//') > -1:
-        flash("create project first")
-        return redirect("/project/manage", code=302)
-
-
 @app.context_processor
 def inject_common():
     return dict(now=datetime.datetime.now(),
@@ -446,14 +441,22 @@ def inject_common():
 @app.context_processor
 def inject_project():
     project_context = {}
-    project_context['project_list'] = Project.query.all()
-    if project_context['project_list'] and (not session.get('project_id')):
-        project = Project.query.first()
+    project = None
+    projects = Project.query.all()
+    project_context['project_list'] = projects
+    if projects:
+        project = projects[0]
+
+    project_id = session.get('project_id')
+    if isinstance(project_id, int):
+        project = Project.query.get(project_id) or project
+
+    if project:
         session['project_id'] = project.id
-    if session.get('project_id'):
-        project_context['project'] = Project.query.get(session['project_id'])
-        project_context['spider_list'] = [spider_instance.to_dict() for spider_instance in
-                                          SpiderInstance.query.filter_by(project_id=session['project_id']).all()]
+        project_context['project'] = project
+        project_context['spider_list'] = [
+            spider_instance.to_dict() for spider_instance in
+            SpiderInstance.query.filter_by(project_id=project.id).all()]
     else:
         project_context['project'] = {}
     return project_context
@@ -462,13 +465,13 @@ def inject_project():
 @app.context_processor
 def utility_processor():
     def timedelta(end_time, start_time):
-        '''
+        """
 
         :param end_time:
         :param start_time:
         :param unit: s m h
         :return:
-        '''
+        """
         if not end_time or not start_time:
             return ''
         if type(end_time) == str:
@@ -495,11 +498,12 @@ def index():
     project = Project.query.first()
     if project:
         return redirect("/project/%s/job/dashboard" % project.id, code=302)
-    return redirect("/project/manage", code=302)
+    return render_template("index.html")
 
 
-@app.route("/project/<project_id>")
+@app.route("/project/<int:project_id>")
 def project_index(project_id):
+    Project.query.get_or_404(project_id)
     session['project_id'] = project_id
     return redirect("/project/%s/job/dashboard" % project_id, code=302)
 
@@ -514,9 +518,9 @@ def project_create():
     return redirect("/project/%s/spider/deploy" % project.id, code=302)
 
 
-@app.route("/project/<project_id>/delete")
+@app.route("/project/<int:project_id>/delete")
 def project_delete(project_id):
-    project = Project.query.get(project_id)
+    project = Project.query.get_or_404(project_id)
     agent.delete_project(project)
     db.session.delete(project)
     db.session.commit()
@@ -528,21 +532,26 @@ def project_manage():
     return render_template("project_manage.html")
 
 
-@app.route("/project/<project_id>/job/dashboard")
+@app.route("/project/<int:project_id>/job/dashboard")
 def job_dashboard(project_id):
+    Project.query.get_or_404(project_id)
+    session['project_id'] = project_id
     return render_template("job_dashboard.html", job_status=JobExecution.list_jobs(project_id))
 
 
-@app.route("/project/<project_id>/job/periodic")
+@app.route("/project/<int:project_id>/job/periodic")
 def job_periodic(project_id):
+    Project.query.get_or_404(project_id)
+    session['project_id'] = project_id
     job_instance_list = [job_instance.to_dict() for job_instance in
                          JobInstance.query.filter_by(run_type="periodic", project_id=project_id).all()]
     return render_template("job_periodic.html",
                            job_instance_list=job_instance_list)
 
 
-@app.route("/project/<project_id>/job/add", methods=['post'])
+@app.route("/project/<int:project_id>/job/add", methods=['post'])
 def job_add(project_id):
+    Project.query.get_or_404(project_id)
     job_instance = JobInstance()
     job_instance.spider_name = request.form['spider_name']
     job_instance.project_id = project_id
@@ -576,38 +585,38 @@ def job_add(project_id):
     return redirect(request.referrer, code=302)
 
 
-@app.route("/project/<project_id>/jobexecs/<job_exec_id>/stop")
+@app.route("/project/<int:project_id>/jobexecs/<int:job_exec_id>/stop")
 def job_stop(project_id, job_exec_id):
-    job_execution = JobExecution.query.filter_by(project_id=project_id, id=job_exec_id).first()
+    job_execution = JobExecution.query.get_or_404(job_exec_id)
     agent.cancel_spider(job_execution)
     return redirect(request.referrer, code=302)
 
 
-@app.route("/project/<project_id>/jobexecs/<job_exec_id>/log")
+@app.route("/project/<int:project_id>/jobexecs/<int:job_exec_id>/log")
 def job_log(project_id, job_exec_id):
-    job_execution = JobExecution.query.filter_by(project_id=project_id, id=job_exec_id).first()
+    job_execution = JobExecution.query.get_or_404(job_exec_id)
     res = requests.get(agent.log_url(job_execution))
     res.encoding = 'utf8'
     raw = res.text
     return render_template("job_log.html", log_lines=raw.split('\n'))
 
 
-@app.route("/project/<project_id>/job/<job_instance_id>/run")
+@app.route("/project/<int:project_id>/job/<int:job_instance_id>/run")
 def job_run(project_id, job_instance_id):
-    job_instance = JobInstance.query.filter_by(project_id=project_id, id=job_instance_id).first()
+    job_instance = JobInstance.query.get_or_404(job_instance_id)
     agent.start_spider(job_instance)
     return redirect(request.referrer, code=302)
 
 
-@app.route("/job/<job_instance_id>/remove")
+@app.route("/job/<int:job_instance_id>/remove")
 def job_remove(job_instance_id):
-    job_instance = JobInstance.query.get(job_instance_id)
+    job_instance = JobInstance.query.get_or_404(job_instance_id)
     db.session.delete(job_instance)
     db.session.commit()
     return redirect(request.referrer, code=302)
 
 
-@app.route("/project/<project_id>/jobs/remove")
+@app.route("/project/<int:project_id>/jobs/remove")
 def jobs_remove(project_id):
     for job_instance in JobInstance.query.filter_by(project_id=project_id):
         db.session.delete(job_instance)
@@ -615,27 +624,57 @@ def jobs_remove(project_id):
     return redirect(request.referrer, code=302)
 
 
-@app.route("/project/<project_id>/job/<job_instance_id>/switch")
+@app.route("/project/<int:project_id>/job/<int:job_instance_id>/switch")
 def job_switch(project_id, job_instance_id):
-    job_instance = JobInstance.query.filter_by(project_id=project_id, id=job_instance_id).first()
+    job_instance = JobInstance.query.get_or_404(job_instance_id)
     job_instance.enabled = -1 if job_instance.enabled == 0 else 0
     db.session.commit()
     return redirect(request.referrer, code=302)
 
 
-@app.route("/project/<project_id>/spider/dashboard")
+@app.route("/project/<int:project_id>/spider/dashboard")
 def spider_dashboard(project_id):
-    spider_instance_list = SpiderInstance.list_spiders(project_id)
-    return render_template("spider_dashboard.html",
-                           spider_instance_list=spider_instance_list)
+    Project.query.get_or_404(project_id)
+    session['project_id'] = project_id
+    last_runtime_query = db.session.query(
+        SpiderInstance.spider_name,
+        func.Max(JobExecution.date_created).label('last_runtime'),
+    ).outerjoin(JobInstance, JobInstance.spider_name == SpiderInstance.spider_name)\
+        .outerjoin(JobExecution).filter(SpiderInstance.project_id == project_id)\
+        .group_by(SpiderInstance.id)
+
+    last_runtime = dict(
+        (spider_name, last_runtime) for spider_name, last_runtime in last_runtime_query
+    )
+
+    avg_runtime_query = db.session.query(
+        SpiderInstance.spider_name,
+        func.Avg(JobExecution.end_time - JobExecution.start_time).label('avg_runtime'),
+    ).outerjoin(JobInstance, JobInstance.spider_name == SpiderInstance.spider_name)\
+        .outerjoin(JobExecution).filter(SpiderInstance.project_id == project_id)\
+        .filter(JobExecution.end_time != None)\
+        .group_by(SpiderInstance.id)
+
+    avg_runtime = dict(
+        (spider_name, avg_runtime) for spider_name, avg_runtime in avg_runtime_query
+    )
+
+    spiders = []
+    for spider in SpiderInstance.query.filter(SpiderInstance.project_id == project_id).all():
+        spider.last_runtime = last_runtime.get(spider.spider_name)
+        spider.avg_runtime = avg_runtime.get(spider.spider_name)
+        spiders.append(spider)
+    return render_template("spider_dashboard.html", spiders=spiders)
 
 
-@app.route("/project/<project_id>/spider/deploy")
+@app.route("/project/<int:project_id>/spider/deploy")
 def spider_deploy(project_id):
+    Project.query.get_or_404(project_id)
+    session['project_id'] = project_id
     return render_template("spider_deploy.html")
 
 
-@app.route("/project/<project_id>/spider/upload", methods=['post'])
+@app.route("/project/<int:project_id>/spider/upload", methods=['post'])
 def spider_egg_upload(project_id):
     project = Project.query.get(project_id)
     if 'file' not in request.files:
@@ -656,13 +695,17 @@ def spider_egg_upload(project_id):
     return redirect(request.referrer)
 
 
-@app.route("/project/<project_id>/project/stats")
+@app.route("/project/<int:project_id>/project/stats")
 def project_stats(project_id):
+    Project.query.get_or_404(project_id)
+    session['project_id'] = project_id
     run_stats = JobExecution.list_run_stats_by_hours(project_id)
     return render_template("project_stats.html", run_stats=run_stats)
 
 
-@app.route("/project/<project_id>/server/stats")
+@app.route("/project/<int:project_id>/server/stats")
 def service_stats(project_id):
+    Project.query.get_or_404(project_id)
+    session['project_id'] = project_id
     run_stats = JobExecution.list_run_stats_by_hours(project_id)
     return render_template("server_stats.html", run_stats=run_stats)

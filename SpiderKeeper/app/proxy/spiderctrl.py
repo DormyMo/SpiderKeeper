@@ -71,7 +71,7 @@ class SpiderServiceProxy(object):
         return self._server
 
 
-class SpiderAgent():
+class SpiderAgent(object):
     def __init__(self):
         self.spider_service_instances = []
 
@@ -82,7 +82,7 @@ class SpiderAgent():
     def get_project_list(self):
         project_list = self.spider_service_instances[0].get_project_list()
         Project.load_project(project_list)
-        return [project.to_dict() for project in Project.query.all()]
+        return project_list
 
     def delete_project(self, project):
         for spider_service_instance in self.spider_service_instances:

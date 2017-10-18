@@ -15,12 +15,12 @@
                 <th style="width: 50px">Last Runtime</th>
                 <th style="width: 50px">Avg Runtime</th>
             </tr>
-            {% for spider_instance in spider_instance_list %}
+            {% for spider in spiders %}
             <tr>
-                <td>{{ spider_instance.spider_instance_id }}</td>
-                <td>{{ spider_instance.spider_name }}</td>
-                <td>{{ spider_instance.spider_last_runtime }}</td>
-                <td>{{ readable_time(spider_instance.spider_avg_runtime) }}</td>
+                <td>{{ spider.id }}</td>
+                <td>{{ spider.spider_name }}</td>
+                <td>{{ spider.last_runtime if spider.last_runtime else '-' }}</td>
+                <td>{{ readable_time(spider.avg_runtime) }}</td>
             </tr>
             {% endfor %}
         </table>

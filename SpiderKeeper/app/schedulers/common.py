@@ -4,6 +4,15 @@ from SpiderKeeper.app import scheduler, app, agent
 from SpiderKeeper.app.spider.model import Project, JobInstance, SpiderInstance
 
 
+def sync_projects():
+    """
+    sync projects
+    :return:
+    """
+    agent.get_project_list()
+    app.logger.debug('[sync_projects]')
+
+
 def sync_job_execution_status_job():
     """
     sync job execution running status

@@ -106,8 +106,9 @@ app.register_blueprint(api_spider_bp)
 
 # start sync job status scheduler
 from SpiderKeeper.app.schedulers.common import sync_job_execution_status_job, sync_spiders, \
-    reload_runnable_spider_job_execution
+    reload_runnable_spider_job_execution, sync_projects
 
+scheduler.add_job(sync_projects, 'interval', seconds=10, id='sys_sync_projects')
 scheduler.add_job(sync_job_execution_status_job, 'interval', seconds=5, id='sys_sync_status')
 scheduler.add_job(sync_spiders, 'interval', seconds=10, id='sys_sync_spiders')
 scheduler.add_job(reload_runnable_spider_job_execution, 'interval', seconds=30, id='sys_reload_job')
@@ -119,11 +120,13 @@ def start_scheduler():
 
 def init_basic_auth():
     if not app.config.get('NO_AUTH'):
-        basic_auth = BasicAuth(app)
+        BasicAuth(app)
 
 
 def initialize():
     init_database()
     regist_server()
+    sync_projects()
+    sync_spiders()
     start_scheduler()
     init_basic_auth()
