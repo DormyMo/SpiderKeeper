@@ -1,5 +1,4 @@
 # Import flask and template operators
-import logging
 import traceback
 
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -19,15 +18,6 @@ app = Flask(__name__)
 # Configurations
 app.config.from_object(config)
 app.jinja_env.globals['sk_version'] = SpiderKeeper.__version__
-
-# Logging
-log = logging.getLogger('werkzeug')
-log.setLevel(logging.ERROR)
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-handler = logging.StreamHandler()
-handler.setFormatter(formatter)
-app.logger.setLevel(app.config.get('LOG_LEVEL', "INFO"))
-app.logger.addHandler(handler)
 
 # swagger
 api = swagger.docs(Api(app), apiVersion=SpiderKeeper.__version__, api_spec_url="/api",
@@ -55,12 +45,6 @@ class Base(db.Model):
     date_created = db.Column(db.DateTime, default=db.func.current_timestamp())
     date_modified = db.Column(db.DateTime, default=db.func.current_timestamp(),
                               onupdate=db.func.current_timestamp())
-
-
-# Sample HTTP error handling
-# @app.errorhandler(404)
-# def not_found(error):
-#     abort(404)
 
 
 @app.errorhandler(Exception)
@@ -111,7 +95,8 @@ from SpiderKeeper.app.schedulers.common import sync_job_execution_status_job, sy
 scheduler.add_job(sync_projects, 'interval', seconds=10, id='sys_sync_projects')
 scheduler.add_job(sync_job_execution_status_job, 'interval', seconds=5, id='sys_sync_status')
 scheduler.add_job(sync_spiders, 'interval', seconds=10, id='sys_sync_spiders')
-scheduler.add_job(reload_runnable_spider_job_execution, 'interval', seconds=30, id='sys_reload_job')
+scheduler.add_job(reload_runnable_spider_job_execution, 'interval', seconds=30,
+                  id='sys_reload_job')
 
 
 def start_scheduler():

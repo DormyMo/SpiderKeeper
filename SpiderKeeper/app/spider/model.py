@@ -30,7 +30,12 @@ class SpiderInstance(Base):
     __tablename__ = 'sk_spider'
 
     spider_name = db.Column(db.String(100))
-    project_id = db.Column(db.Integer, nullable=False, index=True)
+
+    project_id = db.Column(
+        db.Integer, db.ForeignKey('sk_project.id', ondelete='CASCADE'), nullable=False,
+        index=True
+    )
+    project = relation(Project)
 
     @classmethod
     def update_spider_instances(cls, project_id, spider_instance_list):
@@ -74,7 +79,12 @@ class JobInstance(Base):
     __tablename__ = 'sk_job_instance'
 
     spider_name = db.Column(db.String(100), nullable=False, index=True)
-    project_id = db.Column(db.Integer, nullable=False, index=True)
+    project_id = db.Column(
+        db.Integer, db.ForeignKey('sk_project.id', ondelete='CASCADE'), nullable=False,
+        index=True
+    )
+    project = relation(Project)
+
     tags = db.Column(db.Text)  # job tag(split by , )
     spider_arguments = db.Column(db.Text)  # job execute arguments(split by , ex.: arg1=foo,arg2=bar)
     priority = db.Column(db.Integer)
@@ -117,6 +127,7 @@ class SpiderStatus:
 class JobExecution(Base):
     __tablename__ = 'sk_job_execution'
 
+    # Useless field, that should be removed
     project_id = db.Column(db.Integer, nullable=False, index=True)
     service_job_execution_id = db.Column(db.String(50), nullable=False, index=True)
     job_instance_id = db.Column(
