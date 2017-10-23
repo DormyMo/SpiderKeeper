@@ -80,7 +80,7 @@
                 </td>
                 {% endif %}
                 <td>
-                    <a href="/project/{{ project.id }}/job/{{ job_instance.job_instance_id }}/run"><span
+                    <a href="{{ url_for('job_run', job_instance_id=job_instance.job_instance_id) }}"><span
                             class="label label-info">Run</span></a>
                     <a href="{{ url_for('job_remove', job_instance_id=job_instance.job_instance_id) }}">
                         <span class="label label-danger">Remove</span></a>

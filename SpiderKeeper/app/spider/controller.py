@@ -584,17 +584,14 @@ def job_stop(project_id, job_exec_id):
     return redirect(request.referrer, code=302)
 
 
-@app.route("/project/<int:project_id>/jobexecs/<int:job_exec_id>/log")
-def job_log(project_id, job_exec_id):
+@app.route("/project/jobexecs/<int:job_exec_id>/log")
+def job_log(job_exec_id):
     job_execution = JobExecution.query.get_or_404(job_exec_id)
-    res = requests.get(agent.log_url(job_execution))
-    res.encoding = 'utf8'
-    raw = res.text
-    return render_template("job_log.html", log_lines=raw.split('\n'))
+    return redirect(agent.log_url(job_execution))
 
 
-@app.route("/project/<int:project_id>/job/<int:job_instance_id>/run")
-def job_run(project_id, job_instance_id):
+@app.route("/project/job/<int:job_instance_id>/run")
+def job_run(job_instance_id):
     job_instance = JobInstance.query.get_or_404(job_instance_id)
     agent.start_spider(job_instance)
     return redirect(request.referrer, code=302)
