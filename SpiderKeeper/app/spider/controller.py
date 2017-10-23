@@ -508,27 +508,19 @@ def project_index(project_id):
     return redirect("/project/%s/job/dashboard" % project_id, code=302)
 
 
-@app.route("/project/create", methods=['post'])
-def project_create():
-    project_name = request.form['project_name']
-    project = Project()
-    project.project_name = project_name
-    db.session.add(project)
-    db.session.commit()
-    return redirect("/project/%s/spider/deploy" % project.id, code=302)
-
-
 @app.route("/project/<int:project_id>/delete")
 def project_delete(project_id):
     project = Project.query.get_or_404(project_id)
     agent.delete_project(project)
     db.session.delete(project)
     db.session.commit()
-    return redirect("/project/manage", code=302)
+    return redirect(url_for('index'))
 
 
-@app.route("/project/manage")
-def project_manage():
+@app.route("/project/<int:project_id>/manage")
+def project_manage(project_id):
+    Project.query.get_or_404(project_id)
+    session['project_id'] = project_id
     return render_template("project_manage.html")
 
 

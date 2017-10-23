@@ -100,6 +100,7 @@ class JobInstance(Base):
     def to_dict(self):
         return dict(
             job_instance_id=self.id,
+            project_id=self.project_id,
             spider_name=self.spider_name,
             tags=self.tags.split(',') if self.tags else None,
             spider_arguments=self.spider_arguments,
