@@ -4,7 +4,7 @@ import tempfile
 
 import flask_restful
 import requests
-from flask import Blueprint, request
+from flask import Blueprint, request, Response
 from flask import abort, url_for
 from flask import flash
 from flask import redirect
@@ -587,7 +587,9 @@ def job_stop(project_id, job_exec_id):
 @app.route("/project/jobexecs/<int:job_exec_id>/log")
 def job_log(job_exec_id):
     job_execution = JobExecution.query.get_or_404(job_exec_id)
-    return redirect(agent.log_url(job_execution))
+    res = requests.get(agent.log_url(job_execution))
+    res.encoding = 'utf8'
+    return Response(res.text, content_type='text/plain; charset=utf-8')
 
 
 @app.route("/project/job/<int:job_instance_id>/run")
