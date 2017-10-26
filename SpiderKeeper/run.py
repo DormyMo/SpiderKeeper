@@ -2,6 +2,8 @@ import logging
 from optparse import OptionParser
 
 from SpiderKeeper.app import app, initialize
+from apscheduler.schedulers.background import BackgroundScheduler
+from SpiderKeeper.scheduler.jobs import add_jobs
 
 
 def main():
@@ -17,9 +19,16 @@ def main():
     if opts.verbose:
         app.logger.setLevel(logging.DEBUG)
     initialize()
-    app.logger.info("SpiderKeeper startd on %s:%s username:%s/password:%s with %s servers:%s" % (
-        opts.host, opts.port, opts.username, opts.password, opts.server_type, ','.join(app.config.get('SERVERS', []))))
-    app.run(host=opts.host, port=opts.port, use_reloader=True, threaded=True)
+    scheduler = BackgroundScheduler()
+    add_jobs(scheduler)
+    scheduler.start()
+    app.logger.info(
+        "SpiderKeeper startd on %s:%s username:%s/password:%s with %s servers:%s" % (
+            opts.host, opts.port, opts.username, opts.password, opts.server_type,
+            ','.join(app.config.get('SERVERS', []))
+        )
+    )
+    app.run(host=opts.host, port=opts.port, use_reloader=False, threaded=True)
 
 
 def parse_opts(config):
@@ -52,7 +61,9 @@ def parse_opts(config):
                       action='append',
                       default=[])
     parser.add_option("--database-url",
-                      help='SpiderKeeper metadata database default: %s' % config.get('SQLALCHEMY_DATABASE_URI'),
+                      help='SpiderKeeper metadata database default: %s' % config.get(
+                          'SQLALCHEMY_DATABASE_URI'
+                      ),
                       dest='database_url',
                       default=config.get('SQLALCHEMY_DATABASE_URI'))
 

@@ -9,10 +9,10 @@ setup(
     version=__version__,
     description='Admin ui for spider service',
     long_description=
-    'Go to https://github.com/DormyMo/SpiderKeeper/ for more information.',
+    'Go to https://github.com/kalombos/SpiderKeeper/ for more information.',
     author=__author__,
     author_email='nogamemorebrain@gmail.com',
-    url='https://github.com/DormyMo/SpiderKeeper/',
+    url='https://github.com/kalombos/SpiderKeeper/',
     license='MIT',
     include_package_data=True,
     packages=find_packages(),

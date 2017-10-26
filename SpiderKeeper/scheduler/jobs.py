@@ -1,11 +1,6 @@
 import time
-
-from apscheduler.schedulers.background import BlockingScheduler
 from SpiderKeeper.app import app, agent
 from SpiderKeeper.app.spider.model import Project, JobInstance, SpiderInstance
-
-
-scheduler = BlockingScheduler()
 
 
 def sync_projects():
@@ -53,7 +48,7 @@ def run_spider_job(job_instance_id):
         app.logger.error('[run_spider_job] ' + str(e))
 
 
-def reload_runnable_spider_job_execution():
+def reload_runnable_spider_job_execution(scheduler):
     """
     add periodic job to scheduler
     :return:
@@ -93,8 +88,9 @@ def reload_runnable_spider_job_execution():
         app.logger.info('[drop_spider_job][job_id:%s]' % invalid_job_id)
 
 
-scheduler.add_job(sync_projects, 'interval', seconds=10, id='sys_sync_projects')
-scheduler.add_job(sync_job_execution_status_job, 'interval', seconds=5, id='sys_sync_status')
-scheduler.add_job(sync_spiders, 'interval', seconds=10, id='sys_sync_spiders')
-scheduler.add_job(reload_runnable_spider_job_execution, 'interval', seconds=30,
-                  id='sys_reload_job')
+def add_jobs(scheduler):
+    scheduler.add_job(sync_projects, 'interval', seconds=10, id='sys_sync_projects')
+    scheduler.add_job(sync_job_execution_status_job, 'interval', seconds=5, id='sys_sync_status')
+    scheduler.add_job(sync_spiders, 'interval', seconds=10, id='sys_sync_spiders')
+    scheduler.add_job(reload_runnable_spider_job_execution, 'interval', args=[scheduler],
+                      seconds=30, id='sys_reload_job')

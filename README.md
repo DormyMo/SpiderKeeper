@@ -1,9 +1,9 @@
 # SpiderKeeper-2 
-## This is a fork of [SpiderKeeper](https://github.com/DormyMo/SpiderKeeper)
+### This is a fork of [SpiderKeeper](https://github.com/DormyMo/SpiderKeeper). [Here](https://github.com/kalombos/SpiderKeeper/blob/master/CHANGELOG.md) is the changes
 
-[![Latest Version](http://img.shields.io/pypi/v/SpiderKeeper.svg)](https://pypi.python.org/pypi/SpiderKeeper)
-[![Python Versions](http://img.shields.io/pypi/pyversions/SpiderKeeper.svg)](https://pypi.python.org/pypi/SpiderKeeper)
-[![The MIT License](http://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/DormyMo/SpiderKeeper/blob/master/LICENSE)
+[![Latest Version](http://img.shields.io/pypi/v/SpiderKeeper-2.svg)](https://pypi.python.org/pypi/SpiderKeeper-2)
+[![Python Versions](https://img.shields.io/pypi/pyversions/SpiderKeeper-2.svg)](https://pypi.python.org/pypi/SpiderKeeper-2)
+![The MIT License](http://img.shields.io/badge/license-MIT-blue.svg)
    
 A scalable admin ui for spider service 
 
@@ -79,34 +79,20 @@ Visit:
 
 - api swagger: http://localhost:5000/api.html
 
-```
-
-## TODO
-- [ ] Job dashboard support filter
-- [x] User Authentication
-- [ ] Collect & Show scrapy crawl stats
-- [ ] Optimize load balancing
-
-## Versioning
-
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/DormyMo/SpiderKeeper/tags). 
+``` 
 
 ## Authors
 
 - *Initial work* - [DormyMo](https://github.com/DormyMo)
+- *Fork author* - [kalombo](https://github.com/kalombos/)
 
-See also the list of [contributors](https://github.com/DormyMo/SpiderKeeper/contributors) who participated in this project.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License.
 
 ## Contributing
 
 Contributions are welcomed!
 
-## 交流反馈
-![Contact](https://raw.githubusercontent.com/DormyMo/SpiderKeeper/master/screenshot/qqgroup_qrcode.png)
 
-## 捐赠
-![Contact](https://raw.githubusercontent.com/DormyMo/SpiderKeeper/master/screenshot/donate_wechat.png)
