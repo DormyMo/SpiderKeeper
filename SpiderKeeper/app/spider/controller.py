@@ -482,9 +482,9 @@ def utility_processor():
     def readable_time(total_seconds):
         if not total_seconds:
             return '-'
-        if total_seconds / 60 == 0:
+        if total_seconds < 60:
             return '%s s' % total_seconds
-        if total_seconds / 3600 == 0:
+        if total_seconds < 3600:
             return '%s m' % int(total_seconds / 60)
         return '%s h %s m' % (int(total_seconds / 3600), int((total_seconds % 3600) / 60))
 
