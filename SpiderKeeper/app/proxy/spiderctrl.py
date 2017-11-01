@@ -1,9 +1,11 @@
 import datetime
 import random
-from functools import reduce
+import requests
+import re
 
 from SpiderKeeper.app import db
-from SpiderKeeper.app.spider.model import SpiderStatus, JobExecution, JobInstance, Project, JobPriority
+from SpiderKeeper.app.spider.model import SpiderStatus, JobExecution, JobInstance, Project, \
+    JobPriority
 
 
 class SpiderServiceProxy(object):
@@ -115,6 +117,14 @@ class SpiderAgent():
                     job_execution.start_time = job_execution_info['start_time']
                     job_execution.end_time = job_execution_info['end_time']
                     job_execution.running_status = SpiderStatus.FINISHED
+
+                    res = requests.get(self.log_url(job_execution))
+                    res.encoding = 'utf8'
+                    raw = res.text[-4096:]
+                    match = re.findall(job_execution.RAW_STATS_REGEX, raw, re.DOTALL)
+                    if match:
+                        job_execution.raw_stats = match[0]
+                        job_execution.process_raw_stats()
             # commit
             db.session.commit()
 

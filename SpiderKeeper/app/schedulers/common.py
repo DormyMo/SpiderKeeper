@@ -1,4 +1,3 @@
-import threading
 import time
 
 from SpiderKeeper.app import scheduler, app, agent, db
@@ -29,7 +28,7 @@ def sync_spiders():
 def run_spider_job(job_instance_id):
     '''
     run spider by scheduler
-    :param job_instance:
+    :param job_instance_id:
     :return:
     '''
     try:
