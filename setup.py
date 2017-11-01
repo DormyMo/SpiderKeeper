@@ -5,13 +5,13 @@ from setuptools import setup, find_packages
 from SpiderKeeper import __version__, __author__
 
 setup(
-    name='SpiderKeeper',
+    name='SpiderKeeper-2',
     version=__version__,
     description='Admin ui for spider service',
     long_description=
     'Go to https://github.com/DormyMo/SpiderKeeper/ for more information.',
     author=__author__,
-    author_email='modongming91@gmail.com',
+    author_email='nogamemorebrain@gmail.com',
     url='https://github.com/DormyMo/SpiderKeeper/',
     license='MIT',
     include_package_data=True,
@@ -20,6 +20,7 @@ setup(
         'aniso8601==1.2.0',
         'APScheduler==3.3.1',
         'click==6.7',
+        'demjson==2.2.4',
         'Flask==0.12.1',
         'Flask-BasicAuth==0.2.0',
         'Flask-RESTful==0.3.5',

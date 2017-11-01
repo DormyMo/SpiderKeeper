@@ -59,7 +59,6 @@ class SpiderCtrl(flask_restful.Resource):
             "dataType": 'int'
         }])
     def get(self, project_id):
-        project = Project.find_project_by_id(project_id)
         return [spider_instance.to_dict() for spider_instance in
                 SpiderInstance.query.filter_by(project_id=project_id).all()]
 
@@ -452,7 +451,7 @@ def inject_project():
         project = Project.query.first()
         session['project_id'] = project.id
     if session.get('project_id'):
-        project_context['project'] = Project.find_project_by_id(session['project_id'])
+        project_context['project'] = Project.query.get(session['project_id'])
         project_context['spider_list'] = [spider_instance.to_dict() for spider_instance in
                                           SpiderInstance.query.filter_by(project_id=session['project_id']).all()]
     else:
@@ -517,7 +516,7 @@ def project_create():
 
 @app.route("/project/<project_id>/delete")
 def project_delete(project_id):
-    project = Project.find_project_by_id(project_id)
+    project = Project.query.get(project_id)
     agent.delete_project(project)
     db.session.delete(project)
     db.session.commit()
@@ -536,7 +535,6 @@ def job_dashboard(project_id):
 
 @app.route("/project/<project_id>/job/periodic")
 def job_periodic(project_id):
-    project = Project.find_project_by_id(project_id)
     job_instance_list = [job_instance.to_dict() for job_instance in
                          JobInstance.query.filter_by(run_type="periodic", project_id=project_id).all()]
     return render_template("job_periodic.html",
@@ -545,7 +543,6 @@ def job_periodic(project_id):
 
 @app.route("/project/<project_id>/job/add", methods=['post'])
 def job_add(project_id):
-    project = Project.find_project_by_id(project_id)
     job_instance = JobInstance()
     job_instance.spider_name = request.form['spider_name']
     job_instance.project_id = project_id
@@ -602,10 +599,18 @@ def job_run(project_id, job_instance_id):
     return redirect(request.referrer, code=302)
 
 
-@app.route("/project/<project_id>/job/<job_instance_id>/remove")
-def job_remove(project_id, job_instance_id):
-    job_instance = JobInstance.query.filter_by(project_id=project_id, id=job_instance_id).first()
+@app.route("/job/<job_instance_id>/remove")
+def job_remove(job_instance_id):
+    job_instance = JobInstance.query.get(job_instance_id)
     db.session.delete(job_instance)
+    db.session.commit()
+    return redirect(request.referrer, code=302)
+
+
+@app.route("/project/<project_id>/jobs/remove")
+def jobs_remove(project_id):
+    for job_instance in JobInstance.query.filter_by(project_id=project_id):
+        db.session.delete(job_instance)
     db.session.commit()
     return redirect(request.referrer, code=302)
 
@@ -627,13 +632,12 @@ def spider_dashboard(project_id):
 
 @app.route("/project/<project_id>/spider/deploy")
 def spider_deploy(project_id):
-    project = Project.find_project_by_id(project_id)
     return render_template("spider_deploy.html")
 
 
 @app.route("/project/<project_id>/spider/upload", methods=['post'])
 def spider_egg_upload(project_id):
-    project = Project.find_project_by_id(project_id)
+    project = Project.query.get(project_id)
     if 'file' not in request.files:
         flash('No file part')
         return redirect(request.referrer)
@@ -654,13 +658,11 @@ def spider_egg_upload(project_id):
 
 @app.route("/project/<project_id>/project/stats")
 def project_stats(project_id):
-    project = Project.find_project_by_id(project_id)
     run_stats = JobExecution.list_run_stats_by_hours(project_id)
     return render_template("project_stats.html", run_stats=run_stats)
 
 
 @app.route("/project/<project_id>/server/stats")
 def service_stats(project_id):
-    project = Project.find_project_by_id(project_id)
     run_stats = JobExecution.list_run_stats_by_hours(project_id)
     return render_template("server_stats.html", run_stats=run_stats)

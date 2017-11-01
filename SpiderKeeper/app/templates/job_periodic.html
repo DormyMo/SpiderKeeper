@@ -12,7 +12,10 @@
     <button type="button" class="btn btn-success btn-flat" style="margin-top: -10px;" data-toggle="modal"
             data-target="#job-run-modal">Add Job
     </button>
+    <a type="button" href="{{ url_for('jobs_remove', project_id=project.id) }}" class="btn btn-danger btn-flat" style="margin-top: -10px;">Remove All
+    </a>
 </ol>
+
 {% endblock %}
 {% block content_body %}
 <div class="box">
@@ -79,8 +82,8 @@
                 <td>
                     <a href="/project/{{ project.id }}/job/{{ job_instance.job_instance_id }}/run"><span
                             class="label label-info">Run</span></a>
-                    <a href="/project/{{ project.id }}/job/{{ job_instance.job_instance_id }}/remove"><span
-                            class="label label-danger">Remove</span></a>
+                    <a href="{{ url_for('job_remove', job_instance_id=job_instance.job_instance_id) }}">
+                        <span class="label label-danger">Remove</span></a>
                 </td>
             </tr>
             {% endfor %}

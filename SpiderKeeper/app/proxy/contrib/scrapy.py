@@ -1,4 +1,5 @@
-import datetime, time
+import datetime
+import time
 
 import requests
 
@@ -31,7 +32,9 @@ class ScrapydProxy(SpiderServiceProxy):
 
     def delete_project(self, project_name):
         post_data = dict(project=project_name)
-        data = request("post", self._scrapyd_url() + "/delproject.json", data=post_data, return_type="json")
+        data = request(
+            "post", self._scrapyd_url() + "/delproject.json", data=post_data, return_type="json"
+        )
         return True if data and data['status'] == 'ok' else False
 
     def get_spider_list(self, project_name):
@@ -57,22 +60,32 @@ class ScrapydProxy(SpiderServiceProxy):
                 for item in data[self.spider_status_name_dict[_status]]:
                     start_time, end_time = None, None
                     if item.get('start_time'):
-                        start_time = datetime.datetime.strptime(item['start_time'], '%Y-%m-%d %H:%M:%S.%f')
+                        start_time = datetime.datetime.strptime(
+                            item['start_time'], '%Y-%m-%d %H:%M:%S.%f'
+                        )
                     if item.get('end_time'):
-                        end_time = datetime.datetime.strptime(item['end_time'], '%Y-%m-%d %H:%M:%S.%f')
-                    result[_status].append(dict(id=item['id'], start_time=start_time, end_time=end_time))
+                        end_time = datetime.datetime.strptime(
+                            item['end_time'], '%Y-%m-%d %H:%M:%S.%f'
+                        )
+                    result[_status].append(
+                        dict(id=item['id'], start_time=start_time, end_time=end_time)
+                    )
         return result if not spider_status else result[spider_status]
 
     def start_spider(self, project_name, spider_name, arguments):
         post_data = dict(project=project_name, spider=spider_name)
         post_data.update(arguments)
-        data = request("post", self._scrapyd_url() + "/schedule.json", data=post_data, return_type="json")
+        data = request(
+            "post", self._scrapyd_url() + "/schedule.json", data=post_data, return_type="json"
+        )
         return data['jobid'] if data and data['status'] == 'ok' else None
 
     def cancel_spider(self, project_name, job_id):
         post_data = dict(project=project_name, job=job_id)
-        data = request("post", self._scrapyd_url() + "/cancel.json", data=post_data, return_type="json")
-        return data != None
+        data = request(
+            "post", self._scrapyd_url() + "/cancel.json", data=post_data, return_type="json"
+        )
+        return data is not None
 
     def deploy(self, project_name, file_path):
         with open(file_path, 'rb') as f:
