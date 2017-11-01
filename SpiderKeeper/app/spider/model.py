@@ -1,5 +1,6 @@
 import datetime
 from sqlalchemy import desc
+from sqlalchemy.orm import relation
 from SpiderKeeper.app import db, Base
 
 
@@ -15,10 +16,6 @@ class Project(Base):
             if not existed_project:
                 db.session.add(project)
                 db.session.commit()
-
-    @classmethod
-    def find_project_by_id(cls, project_id):
-        return Project.query.filter_by(id=project_id).first()
 
     def to_dict(self):
         return {
@@ -36,8 +33,9 @@ class SpiderInstance(Base):
     @classmethod
     def update_spider_instances(cls, project_id, spider_instance_list):
         for spider_instance in spider_instance_list:
-            existed_spider_instance = cls.query.filter_by(project_id=project_id,
-                                                          spider_name=spider_instance.spider_name).first()
+            existed_spider_instance = cls.query.filter_by(
+                project_id=project_id, spider_name=spider_instance.spider_name
+            ).first()
             if not existed_spider_instance:
                 db.session.add(spider_instance)
                 db.session.commit()
@@ -152,7 +150,9 @@ class JobExecution(Base):
 
     project_id = db.Column(db.INTEGER, nullable=False, index=True)
     service_job_execution_id = db.Column(db.String(50), nullable=False, index=True)
-    job_instance_id = db.Column(db.INTEGER, nullable=False, index=True)
+    job_instance_id = db.Column(db.INTEGER,
+                                db.ForeignKey('sk_job_instance.id'), nullable=False, index=True)
+    job_instance = relation(JobInstance)
     create_time = db.Column(db.DATETIME)
     start_time = db.Column(db.DATETIME)
     end_time = db.Column(db.DATETIME)
@@ -160,7 +160,6 @@ class JobExecution(Base):
     running_on = db.Column(db.Text)
 
     def to_dict(self):
-        job_instance = JobInstance.query.filter_by(id=self.job_instance_id).first()
         return {
             'project_id': self.project_id,
             'job_execution_id': self.id,
@@ -171,7 +170,7 @@ class JobExecution(Base):
             'end_time': self.end_time.strftime('%Y-%m-%d %H:%M:%S') if self.end_time else None,
             'running_status': self.running_status,
             'running_on': self.running_on,
-            'job_instance': job_instance.to_dict() if job_instance else {}
+            'job_instance': self.job_instance
         }
 
     @classmethod
