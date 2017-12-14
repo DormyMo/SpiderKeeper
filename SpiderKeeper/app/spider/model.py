@@ -131,7 +131,6 @@ class JobInstance(Base):
             cron_month=self.cron_month,
             enabled=self.enabled == 0,
             run_type=self.run_type
-
         )
 
     @classmethod
