@@ -86,12 +86,14 @@
                             </a>
                         </td>
                     </tr>
+                    {% set run_type="periodic" %}
                     {% include "modal_job_edit.html" %}
-                {% endfor %}s
+                {% endfor %}
             </table>
         </div>
     </div>
 
+    {% set run_type="periodic" %}
     {% include "modal_job_add.html" %}
 
 

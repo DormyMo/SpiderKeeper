@@ -9,12 +9,12 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class={{ "col-md-6" if run_type=="periodic" else "col-md-12" }}>
                             <div class="form-group">
                                 <label>Spider</label>
                                 <select class="form-control" name="spider_name">
                                     {% for spider in spider_list %}
-                                    <option value="{{ spider.spider_name }}">{{ spider.spider_name }}</option>
+                                        <option value="{{ spider.spider_name }}">{{ spider.spider_name }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -30,68 +30,70 @@
                             <div class="form-group">
                                 <label>Args</label>
                                 <textarea type="text" name="spider_arguments" class="form-control"
-                                       placeholder="foo=1,bar=2"></textarea>
+                                          placeholder="foo=1,bar=2"></textarea>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Choose Month</label>
-                                <select class="form-control" name="cron_month">
-                                    <option value="*" selected="selected">Every Month</option>
-                                    {% for i in range(1,13) %}
-                                    <option value="{{ i }}">{{ i }}</option>
-                                    {% endfor %}
-                                </select>
+                        {% if run_type=="periodic" %}
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Choose Month</label>
+                                    <select class="form-control" name="cron_month">
+                                        <option value="*" selected="selected">Every Month</option>
+                                        {% for i in range(1,13) %}
+                                            <option value="{{ i }}">{{ i }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Choose Day of Week</label>
+                                    <select class="form-control" name="cron_day_of_week">
+                                        <option value="*" selected="selected">Every day</option>
+                                        <option value="0">Monday</option>
+                                        <option value="1">Tuesday</option>
+                                        <option value="2">Wednesday</option>
+                                        <option value="3">Thursday</option>
+                                        <option value="4">Friday</option>
+                                        <option value="5">Saturday</option>
+                                        <option value="6">Sunday</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Choose Day of Month</label>
+                                    <select class="form-control" name="cron_day_of_month">
+                                        <option value="*" selected="selected">Every day</option>
+                                        {% for i in range(1,32) %}
+                                            <option value="{{ i }}">{{ i }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Choose Hour</label>
+                                    <select class="form-control" name="cron_hour">
+                                        <option value="*" selected="selected">Every Hour</option>
+                                        {% for i in range(0,24) %}
+                                            <option value="{{ i }}">{{ i }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Choose Minutes</label>
+                                    <select class="form-control" name="cron_minutes">
+                                        <option value="0" selected="selected">0</option>
+                                        {% for i in range(5,61,5) %}
+                                            <option value="{{ i }}">{{ i }}</option>
+                                        {% endfor %}
+                                        <option value="*">Every minute</option>
+                                        <option value="*/2">Every 2 minute</option>
+                                        <option value="*/3">Every 3 minute</option>
+                                        <option value="*/4">Every 4 minute</option>
+                                        <option value="*/5">Every 5 minute</option>
+                                        <option value="*/10">Every 10 minute</option>
+                                        <option value="*/15">Every 15 minute</option>
+                                        <option value="*/30">Every 30 minute</option>
+                                    </select>
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label>Choose Day of Week</label>
-                                <select class="form-control" name="cron_day_of_week">
-                                    <option value="*" selected="selected">Every day</option>
-                                    <option value="0">Monday</option>
-                                    <option value="1">Tuesday</option>
-                                    <option value="2">Wednesday</option>
-                                    <option value="3">Thursday</option>
-                                    <option value="4">Friday</option>
-                                    <option value="5">Saturday</option>
-                                    <option value="6">Sunday</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>Choose Day of Month</label>
-                                <select class="form-control" name="cron_day_of_month">
-                                    <option value="*" selected="selected">Every day</option>
-                                    {% for i in range(1,32) %}
-                                    <option value="{{ i }}">{{ i }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>Choose Hour</label>
-                                <select class="form-control" name="cron_hour">
-                                    <option value="*" selected="selected">Every Hour</option>
-                                    {% for i in range(0,24) %}
-                                    <option value="{{ i }}">{{ i }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>Choose Minutes</label>
-                                <select class="form-control" name="cron_minutes">
-                                    <option value="0" selected="selected">0</option>
-                                    {% for i in range(5,61,5) %}
-                                    <option value="{{ i }}">{{ i }}</option>
-                                    {% endfor %}
-                                    <option value="*">Every minute</option>
-                                    <option value="*/2">Every 2 minute</option>
-                                    <option value="*/3">Every 3 minute</option>
-                                    <option value="*/4">Every 4 minute</option>
-                                    <option value="*/5">Every 5 minute</option>
-                                    <option value="*/10">Every 10 minute</option>
-                                    <option value="*/15">Every 15 minute</option>
-                                    <option value="*/30">Every 30 minute</option>
-                                </select>
-                            </div>
-                        </div>
+                        {% endif %}
                         <div class="col-md-12">
                             <h4>Advanced Options</h4>
                         </div>
@@ -101,21 +103,23 @@
                                 <select class="form-control" name="daemon">
                                     <option value="auto">auto</option>
                                     {% for server in servers %}
-                                    <option value="{{ server }}">{{ server }}</option>
+                                        <option value="{{ server }}">{{ server }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Cron Expressions (m h dom mon dow)</label>
-                                <input type="text" name="cron_exp" class="form-control"
-                                       placeholder="0 * * * * ">
+                        {% if run_type=="periodic" %}
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Cron Expressions (m h dom mon dow)</label>
+                                    <input type="text" name="cron_exp" class="form-control"
+                                           placeholder="0 * * * * ">
+                                </div>
                             </div>
-                        </div>
+                        {% endif %}
                     </div>
 
-                    <input type="hidden" name="run_type" value="periodic">
+                    <input type="hidden" name="run_type" value="{{ run_type }}">
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
