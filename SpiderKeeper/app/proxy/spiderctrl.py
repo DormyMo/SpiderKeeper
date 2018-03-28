@@ -126,6 +126,18 @@ class SpiderAgent(object):
                     if match:
                         job_execution.raw_stats = match[0]
                         job_execution.process_raw_stats()
+
+            # delete lost uncompleted jobs
+            all_job_ids = []
+            for job_set in job_status.values():
+                for job in job_set:
+                    all_job_ids.append(job['id'])
+            if all_job_ids:
+                db.session.query(JobExecution).filter(
+                    JobExecution.service_job_execution_id.notin_(all_job_ids)
+                ).filter(JobExecution.running_status != SpiderStatus.FINISHED)\
+                    .filter(JobExecution.running_status != SpiderStatus.CANCELED)\
+                    .delete(synchronize_session='fetch')
             # commit
             db.session.commit()
 
