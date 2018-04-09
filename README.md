@@ -30,7 +30,7 @@ Current Support spider service
 
 
 ```
-pip install spiderkeeper
+pip install spiderkeeper-2
 ```
 
 ### Deployment
