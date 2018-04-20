@@ -37,8 +37,12 @@
             {% for job in job_status.PENDING %}
             {% if job.job_instance %}
             <tr>
-                <td>{{ job.job_execution_id }}</td>
-                <td><a href="/project/1/job/periodic#{{ job.job_instance_id }}">{{ job.job_instance_id }}</a></td>
+                <td>
+                    <a href="/job/{{ job.job_execution_id}}/detail">
+                        {{ job.job_execution_id }}
+                    </a>
+                </td>
+                <td><a href="/project/{{ project.id }}/job/periodic#{{ job.job_instance_id }}">{{ job.job_instance_id }}</a></td>
                 <td>{{ job.job_instance.spider_name }}</td>
                 <td class="txt-args" data-toggle="tooltip" data-placement="right"
                     title="{{ job.job_instance.spider_arguments }}">{{ job.job_instance.spider_arguments }}
@@ -94,8 +98,12 @@
             {% for job in job_status.RUNNING %}
             {% if job.job_instance %}
             <tr>
-                <td>{{ job.job_execution_id }}</td>
-                <td><a href="/project/1/job/periodic#{{ job.job_instance_id }}">{{ job.job_instance_id }}</a></td>
+                <td>
+                    <a href="/job/{{ job.job_execution_id}}/detail">
+                        {{ job.job_execution_id }}
+                    </a>
+                </td>
+                <td><a href="/project/{{ project.id }}/job/periodic#{{ job.job_instance_id }}">{{ job.job_instance_id }}</a></td>
                 <td>{{ job.job_instance.spider_name }}</td>
                 <td class="txt-args" data-toggle="tooltip" data-placement="right"
                     title="{{ job.job_instance.spider_arguments }}">{{ job.job_instance.spider_arguments }}
@@ -159,8 +167,12 @@
             {% for job in job_status.COMPLETED %}
             {% if job.job_instance %}
             <tr>
-                <td>{{ job.job_execution_id }}</td>
-                <td><a href="/project/1/job/periodic#{{ job.job_instance_id }}">{{ job.job_instance_id }}</a></td>
+                <td>
+                    <a href="/job/{{ job.job_execution_id}}/detail">
+                        {{ job.job_execution_id }}
+                    </a>
+                </td>
+                <td><a href="/project/{{ project.id }}/job/periodic#{{ job.job_instance_id }}">{{ job.job_instance_id }}</a></td>
                 <td>{{ job.job_instance.spider_name }}</td>
                 <td class="txt-args" data-toggle="tooltip" data-placement="right"
                     title="{{ job.job_instance.spider_arguments }}">{{ job.job_instance.spider_arguments }}
