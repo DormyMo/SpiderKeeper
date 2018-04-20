@@ -14,6 +14,7 @@ from werkzeug.exceptions import HTTPException
 
 import SpiderKeeper
 from SpiderKeeper import config
+from flask_migrate import Migrate
 
 # Define the WSGI application object
 app = Flask(__name__)
@@ -35,7 +36,7 @@ api = swagger.docs(Api(app), apiVersion=SpiderKeeper.__version__, api_spec_url="
 # Define the database object which is imported
 # by modules and controllers
 db = SQLAlchemy(app, session_options=dict(autocommit=False, autoflush=True))
-
+migrate = Migrate(app, db)
 
 @app.teardown_request
 def teardown_request(exception):
