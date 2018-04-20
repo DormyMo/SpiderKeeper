@@ -13,7 +13,10 @@ def main():
         SQLALCHEMY_DATABASE_URI=opts.database_url,
         BASIC_AUTH_USERNAME=opts.username,
         BASIC_AUTH_PASSWORD=opts.password,
-        NO_AUTH=opts.no_auth
+        NO_AUTH=opts.no_auth,
+        FEED_URI=opts.feed_uri,
+        FEED_FORMAT=opts.feed_format,
+        EXPORT_URI=opts.export_uri,
     ))
     if opts.verbose:
         app.logger.setLevel(logging.DEBUG)
@@ -56,7 +59,18 @@ def parse_opts(config):
                       help='SpiderKeeper metadata database default: %s' % config.get('SQLALCHEMY_DATABASE_URI'),
                       dest='database_url',
                       default=config.get('SQLALCHEMY_DATABASE_URI'))
-
+    parser.add_option("--feed-uri",
+                      help='FEED_URI scrapy setting, default: %s' % config.get('FEED_URI'),
+                      dest='feed_uri',
+                      default=config.get('FEED_URI'))
+    parser.add_option("--feed-format",
+                      help='FEED_FORMAT scrapy setting, default: %s' % config.get('FEED_FORMAT'),
+                      dest='feed_format',
+                      default=config.get('FEED_FORMAT'))
+    parser.add_option("--export-uri",
+                      help='Export uri (use if export uri differs from FEED_URI), default: %s' % config.get('EXPORT_URI'),
+                      dest='export_uri',
+                      default=config.get('EXPORT_URI'))
     parser.add_option("--no-auth",
                       help="disable basic auth",
                       dest='no_auth',
