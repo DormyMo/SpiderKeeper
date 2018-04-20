@@ -153,9 +153,9 @@ class JobExecution(Base):
     project_id = db.Column(db.INTEGER, nullable=False, index=True)
     service_job_execution_id = db.Column(db.String(50), nullable=False, index=True)
     job_instance_id = db.Column(db.INTEGER, nullable=False, index=True)
-    create_time = db.Column(db.DATETIME)
-    start_time = db.Column(db.DATETIME)
-    end_time = db.Column(db.DATETIME)
+    create_time = db.Column(db.DateTime)
+    start_time = db.Column(db.DateTime)
+    end_time = db.Column(db.DateTime)
     running_status = db.Column(db.INTEGER, default=SpiderStatus.PENDING)
     running_on = db.Column(db.Text)
 
