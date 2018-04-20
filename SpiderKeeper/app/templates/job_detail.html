@@ -40,6 +40,7 @@
                 <th style="width: 10px">Log</th>
                 <th style="width: 10px">Status</th>
             </tr>
+        {%  if job %}
             <tr>
                 <td>{{ job.id }}</td>
                 <td><a href="/project/{{ project.id }}/job/periodic#{{ job.job_instance_id }}">{{ job.job_instance_id }}</a></td>
@@ -89,6 +90,7 @@
                     {% endif %}
                 </td>
             </tr>
+        {% endif %}
         </table>
     </div>
 </div>
