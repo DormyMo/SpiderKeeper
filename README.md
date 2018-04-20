@@ -49,6 +49,12 @@ Options:
   --server=SERVERS      servers, default: ['http://localhost:6800']
   --database-url=DATABASE_URL
                         SpiderKeeper metadata database default: sqlite:////home/souche/SpiderKeeper.db
+  --feed-uri=FEED_URI   FEED_URI scrapy setting, default: None
+  --feed-format=FEED_FORMAT
+                        FEED_FORMAT scrapy setting, default: None
+  --export-uri=EXPORT_URI
+                        Export uri (use if export uri differs from FEED_URI),
+                        default: None
   --no-auth             disable basic auth
   -v, --verbose         log level
   
@@ -80,9 +86,8 @@ Visit:
 
 ```
 
-## Feed params
+## Feed options
 
-You may specify the following `scrapy` feed params in `config.py`:
 - `FEED_URI` - path that is used by scrapy to store feed.
 All storages (s3, ftp, local filesystem) are supported.
 - `FEED_FORMAT` - exported file format
