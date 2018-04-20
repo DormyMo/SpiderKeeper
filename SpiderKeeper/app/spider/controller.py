@@ -534,6 +534,17 @@ def job_dashboard(project_id):
     return render_template("job_dashboard.html", job_status=JobExecution.list_jobs(project_id))
 
 
+@app.route("/job/<job_execution_id>/detail")
+def job_detail(job_execution_id):
+    job_execution = JobExecution.query.filter_by(id=job_execution_id).first()
+    job_instance = JobInstance.find_job_instance_by_id(job_execution.job_instance_id)
+    return render_template(
+        'job_detail.html',
+        job=job_execution,
+        job_instance=job_instance,
+    )
+
+
 @app.route("/project/<project_id>/job/periodic")
 def job_periodic(project_id):
     project = Project.find_project_by_id(project_id)

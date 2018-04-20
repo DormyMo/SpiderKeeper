@@ -104,6 +104,8 @@ FEED_FORMAT = 'csv'
 FEED_URI = 's3://bucket/%(name)s/%(job_id)s_%(create_time)s.csv'
 EXPORT_URI = 'https://s3.amazonaws.com/bucket/%(name)s/%(job_id)s_%(create_time)s.csv'
 ```
+If job has export uri (i.e. `FEED_URI` is defined in config.py), `Export` button is displayed on job detail page.
+
 Note: need to install `boto3` for uploading to `s3`.
 
 ## TODO
