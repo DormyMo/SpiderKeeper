@@ -1,7 +1,8 @@
 import datetime
 import random
 
-import SpiderKeeper.config as config
+from flask import current_app
+
 from SpiderKeeper.app import db
 from SpiderKeeper.app.spider.model import SpiderStatus, JobExecution, JobInstance, Project, JobPriority
 
@@ -188,16 +189,19 @@ class SpiderAgent():
             job_execution.export_uri = export_uri
             custom_settings.append(
                 'FEED_URI={}'.format(feed_uri))
-        if config.FEED_FORMAT:
+        feed_format = current_app.config.get('FEED_FORMAT')
+        if feed_format:
             custom_settings.append(
-                'FEED_FORMAT={}'.format(config.FEED_FORMAT)
+                'FEED_FORMAT={}'.format(feed_format)
             )
         return custom_settings
 
     @staticmethod
     def get_feed_uri(job_execution, spider_name, args):
         """Pass params to FEED_URI and EXPORT_URI and return the result."""
-        if not config.FEED_URI:
+        feed_uri = current_app.config.get('FEED_URI')
+        export_uri = current_app.config.get('EXPORT_URI')
+        if not feed_uri:
             return None, None
         params = {
             'name': spider_name,
@@ -206,8 +210,8 @@ class SpiderAgent():
                 job_execution.create_time.strftime('%Y-%m-%d_%H-%M-%S')
         }
         params.update({key: value[0] for key, value in args.items()})
-        export_uri = config.EXPORT_URI if config.EXPORT_URI else config.FEED_URI
-        return config.FEED_URI % params, export_uri % params
+        export_uri = export_uri if export_uri else feed_uri
+        return feed_uri % params, export_uri % params
 
     def cancel_spider(self, job_execution):
         job_instance = JobInstance.find_job_instance_by_id(job_execution.job_instance_id)
