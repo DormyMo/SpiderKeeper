@@ -151,13 +151,14 @@ class JobExecution(Base):
     __tablename__ = 'sk_job_execution'
 
     project_id = db.Column(db.INTEGER, nullable=False, index=True)
-    service_job_execution_id = db.Column(db.String(50), nullable=False, index=True)
+    service_job_execution_id = db.Column(db.String(50), index=True)
     job_instance_id = db.Column(db.INTEGER, nullable=False, index=True)
     create_time = db.Column(db.DATETIME)
     start_time = db.Column(db.DATETIME)
     end_time = db.Column(db.DATETIME)
     running_status = db.Column(db.INTEGER, default=SpiderStatus.PENDING)
     running_on = db.Column(db.Text)
+    export_uri = db.Column(db.Text, nullable=True)
 
     def to_dict(self):
         job_instance = JobInstance.query.filter_by(id=self.job_instance_id).first()
