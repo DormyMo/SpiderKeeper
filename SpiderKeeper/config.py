@@ -1,7 +1,7 @@
 # Statement for enabling the development environment
 import os
 
-DEBUG = True
+DEBUG = False
 
 # Define the application directory
 

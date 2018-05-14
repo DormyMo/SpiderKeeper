@@ -8,6 +8,7 @@ Flask-Migrate==2.1.1
 Flask-RESTful==0.3.5
 flask-restful-swagger==0.19
 Flask-SQLAlchemy==2.2
+Flask-SSLify==0.1.5
 itsdangerous==0.24
 Jinja2==2.9.6
 Mako==1.0.7
