@@ -7,25 +7,38 @@
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <!-- Bootstrap 3.3.6 -->
-    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="/static/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css') }}">
     <!-- Ionicons -->
-    <link rel="stylesheet" href="/static/css/ionicons.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/ionicons.min.css') }}">
     <!-- Theme style -->
-    <link rel="stylesheet" href="/static/css/AdminLTE.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/AdminLTE.min.css') }}">
     <!-- AdminLTE Skins. Choose a skin from the css/skins
          folder instead of downloading all of them to reduce the load. -->
-    <link rel="stylesheet" href="/static/css/skins/skin-black-light.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/skins/skin-black-light.min.css') }}">
     <!--custom css-->
-    <link rel="stylesheet" href="/static/css/app.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
-    <script src="/static/js/html5shiv.min.js"></script>
-    <script src="/static/js/respond.min.js"></script>
+    <script src="{{ url_for('static', filename='js/html5shiv.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/respond.min.js') }}"></script>
     <![endif]-->
+
+    <!-- jQuery 2.2.3 -->
+    <script src="{{ url_for('static', filename='js/jquery-2.2.3.min.js') }}"></script>
+    <!-- Bootstrap 3.3.6 -->
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <!-- SlimScroll -->
+    <script src="{{ url_for('static', filename='js/jquery.slimscroll.min.js') }}"></script>
+    <!-- FastClick -->
+    <script src="{{ url_for('static', filename='js/fastclick.min.js') }}"></script>
+    <!-- AdminLTE App -->
+    <script src="{{ url_for('static', filename='js/AdminLTE.min.js') }}"></script>
+    <!-- AdminLTE for demo purposes -->
+    <script src="{{ url_for('static', filename='js/demo.js') }}"></script>
 </head>
 <body class="hold-transition skin-black-light sidebar-mini">
 <!-- Site wrapper -->
@@ -135,18 +148,7 @@
 </div>
 <!-- ./wrapper -->
 
-<!-- jQuery 2.2.3 -->
-<script src="/static/js/jquery-2.2.3.min.js"></script>
-<!-- Bootstrap 3.3.6 -->
-<script src="/static/js/bootstrap.min.js"></script>
-<!-- SlimScroll -->
-<script src="/static/js/jquery.slimscroll.min.js"></script>
-<!-- FastClick -->
-<script src="/static/js/fastclick.min.js"></script>
-<!-- AdminLTE App -->
-<script src="/static/js/AdminLTE.min.js"></script>
-<!-- AdminLTE for demo purposes -->
-<script src="/static/js/demo.js"></script>
+
 {% block script %}{% endblock %}
 </body>
 </html>
