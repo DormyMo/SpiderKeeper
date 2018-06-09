@@ -40,3 +40,8 @@ NO_AUTH = False
 BASIC_AUTH_USERNAME = 'admin'
 BASIC_AUTH_PASSWORD = 'admin'
 BASIC_AUTH_FORCE = True
+
+# feed params
+FEED_FORMAT = None
+FEED_URI = None
+EXPORT_URI = None

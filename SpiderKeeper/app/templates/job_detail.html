@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block content_header %}
+<h1>Job Dashboard</h1>
+<ol style="float: right;
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 12px;
+    padding: 7px 5px;
+    position: absolute;
+    top: 15px;
+    right: 10px;">
+
+
+{% if job.running_status == 2 and job.export_uri %}
+<a href="{{ job.export_uri }}" type="button" class="btn btn-success btn-flat"
+   style="margin-top: -10px;">
+    Export
+</a>
+{%  endif %}
+
+</ol>
+{% endblock %}
+{% block content_body %}
+
+<!--======completed job======-->
+<div class="box">
+    <div class="box-header">
+        <h3 class="box-title">Job</h3>
+    </div>
+    <div class="box-body table-responsive">
+        <table class="table table-striped">
+            <tr>
+                <th style="width: 10px">#</th>
+                <th style="width: 30px">Job</th>
+                <th style="width: 160px">Spider</th>
+                <th style="width: 100px">Args</th>
+                <th style="width: 20px">Priority</th>
+                <th style="width: 40px">Runtime</th>
+                <th style="width: 120px">Started</th>
+                <th style="width: 10px">Log</th>
+                <th style="width: 10px">Status</th>
+            </tr>
+        {%  if job %}
+            <tr>
+                <td>{{ job.id }}</td>
+                <td><a href="/project/{{ project.id }}/job/periodic#{{ job.job_instance_id }}">{{ job.job_instance_id }}</a></td>
+                <td>{{ job_instance.spider_name }}</td>
+                <td class="txt-args" data-toggle="tooltip" data-placement="right"
+                    title="{{ job_instance.spider_arguments }}">{{ job_instance.spider_arguments }}
+                </td>
+                {% if job_instance.priority == -1 %}
+                <td>
+                    <span class="label label-default">LOW</span>
+                </td>
+                {% elif job_instance.priority == 0 %}
+                <td>
+                    <span class="label label-info">NORMAL</span>
+                </td>
+                {% elif job_instance.priority == 1 %}
+                <td>
+                    <span class="label label-warning">HIGH</span>
+                </td>
+                {% elif job_instance.priority == 2 %}
+                <td>
+                    <span class="label label-danger">HIGHEST</span>
+                </td>
+                {% endif %}
+                <td>
+                    {% if job.running_status in [0, 1] %}
+                        {{ timedelta(now,job.start_time) }}
+                    {% else %}
+                        {{ timedelta(job.end_time,job.start_time) }}
+                    {% endif %}
+                </td>
+                <td>{{ job.start_time }}</td>
+                <td>
+                    <a href="/project/{{ project.id }}/jobexecs/{{ job.id }}/log" target="_blank"
+                       data-toggle="tooltip" data-placement="top"
+                        title="{{ job.service_job_execution_id }}">Log</a>
+                </td>
+                <td>
+                    {% if job.running_status == 0 %}
+                        <span class="label label-info">PENDING</span>
+                    {% elif job.running_status == 1 %}
+                        <span class="label label-info">RUNNING</span>
+                    {% elif job.running_status == 2 %}
+                        <span class="label label-success">FINISHED</span>
+                    {% else %}
+                        <span class="label label-danger">CANCELED</span>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endif %}
+        </table>
+    </div>
+</div>
+{% endblock %}

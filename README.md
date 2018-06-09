@@ -80,6 +80,34 @@ Visit:
 
 ```
 
+## Feed params
+
+You may specify the following `scrapy` feed params in `config.py`:
+- `FEED_URI` - path that is used by scrapy to store feed.
+All storages (s3, ftp, local filesystem) are supported.
+- `FEED_FORMAT` - exported file format
+- `EXPORT_URI` - path where feed can be retrieved from.
+
+`FEED_URI` and `EXPORT_URI` can contain the following params:
+- `%(name)s` - spider name
+- `%(create_time)s` - time of job execution start
+- `%(job_id)s` - job execution id
+- any other params from `Args` set while adding jobs.
+
+If `EXPORT_URI` is not defined, export uri is equal to `FEED_URI`.
+If `FEED_URI` is also not defined, it is not passed to spider. 
+The same is for `FEED_FORMAT`.
+
+Example:
+```
+FEED_FORMAT = 'csv'
+FEED_URI = 's3://bucket/%(name)s/%(job_id)s_%(create_time)s.csv'
+EXPORT_URI = 'https://s3.amazonaws.com/bucket/%(name)s/%(job_id)s_%(create_time)s.csv'
+```
+If job has export uri (i.e. `FEED_URI` is defined in config.py), `Export` button is displayed on job detail page.
+
+Note: need to install `boto3` for uploading to `s3`.
+
 ## TODO
 - [ ] Job dashboard support filter
 - [x] User Authentication
