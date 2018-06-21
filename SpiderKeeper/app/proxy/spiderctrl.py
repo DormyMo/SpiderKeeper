@@ -127,7 +127,7 @@ class SpiderAgent():
         from collections import defaultdict
         arguments = defaultdict(list)
         if job_instance.spider_arguments:
-            for k, v in list(map(lambda x: x.split('=', 1).strip(), job_instance.spider_arguments.split(','))):
+            for k, v in list(map(lambda x: x.split('=', 1), map(lambda x: x.strip(), job_instance.spider_arguments.split(',')))):
                 arguments[k].append(v)
         threshold = 0
         daemon_size = len(self.spider_service_instances)
