@@ -49,6 +49,12 @@ Options:
   --server=SERVERS      servers, default: ['http://localhost:6800']
   --database-url=DATABASE_URL
                         SpiderKeeper metadata database default: sqlite:////home/souche/SpiderKeeper.db
+  --feed-uri=FEED_URI   FEED_URI scrapy setting, default: None
+  --feed-format=FEED_FORMAT
+                        FEED_FORMAT scrapy setting, default: None
+  --export-uri=EXPORT_URI
+                        Export uri (use if export uri differs from FEED_URI),
+                        default: None
   --no-auth             disable basic auth
   -v, --verbose         log level
   
@@ -79,6 +85,31 @@ Visit:
 - api swagger: http://localhost:5000/api.html
 
 ```
+
+## Feed options
+
+- `FEED_URI` - path that is used by scrapy to store feed.
+All storages (s3, ftp, local filesystem) are supported.
+- `FEED_FORMAT` - exported file format
+- `EXPORT_URI` - path where feed can be retrieved from.
+
+`FEED_URI` and `EXPORT_URI` can contain the following params:
+- `%(name)s` - spider name
+- `%(create_time)s` - time of job execution start
+- `%(job_id)s` - job execution id
+- any other params from `Args` set while adding jobs.
+
+If `EXPORT_URI` is not defined, export uri is equal to `FEED_URI`.
+If `FEED_URI` is also not defined, it is not passed to spider. 
+The same is for `FEED_FORMAT`.
+
+Example:
+```
+FEED_FORMAT = 'csv'
+FEED_URI = 's3://bucket/%(name)s/%(job_id)s_%(create_time)s.csv'
+EXPORT_URI = 'https://s3.amazonaws.com/bucket/%(name)s/%(job_id)s_%(create_time)s.csv'
+```
+Note: need to install `boto3` for uploading to `s3`.
 
 ## TODO
 - [ ] Job dashboard support filter

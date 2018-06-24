@@ -1,6 +1,7 @@
 import datetime
 import random
-from functools import reduce
+
+from flask import current_app
 
 from SpiderKeeper.app import db
 from SpiderKeeper.app.spider.model import SpiderStatus, JobExecution, JobInstance, Project, JobPriority
@@ -147,15 +148,70 @@ class SpiderAgent():
             for i in range(threshold):
                 leaders.append(random.choice(candidates))
         for leader in leaders:
-            serviec_job_id = leader.start_spider(project.project_name, spider_name, arguments)
             job_execution = JobExecution()
             job_execution.project_id = job_instance.project_id
-            job_execution.service_job_execution_id = serviec_job_id
             job_execution.job_instance_id = job_instance.id
             job_execution.create_time = datetime.datetime.now()
             job_execution.running_on = leader.server
             db.session.add(job_execution)
             db.session.commit()
+
+            feed_settings = self.get_feed_params(
+                job_execution,
+                spider_name,
+                arguments
+            )
+            if feed_settings:
+                arguments['setting'] = feed_settings
+
+            service_job_id = leader.start_spider(
+                project.project_name,
+                spider_name,
+                arguments
+            )
+
+            job_execution.service_job_execution_id = service_job_id
+            db.session.commit()
+
+    def get_feed_params(self, job_execution, spider_name, args):
+        """Pass FEED_URI and FEED_FORMAT params to spider settings.
+
+        Save EXPORT_URI to db as well.
+
+        """
+        custom_settings = []
+        feed_uri, export_uri = self.get_feed_uri(
+            job_execution,
+            spider_name,
+            args
+        )
+        if feed_uri:
+            job_execution.export_uri = export_uri
+            custom_settings.append(
+                'FEED_URI={}'.format(feed_uri))
+        feed_format = current_app.config.get('FEED_FORMAT')
+        if feed_format:
+            custom_settings.append(
+                'FEED_FORMAT={}'.format(feed_format)
+            )
+        return custom_settings
+
+    @staticmethod
+    def get_feed_uri(job_execution, spider_name, args):
+        """Pass params to FEED_URI and EXPORT_URI and return the result."""
+        feed_uri = current_app.config.get('FEED_URI')
+        export_uri = current_app.config.get('EXPORT_URI')
+        if not feed_uri:
+            return None, None
+        params = {
+            'name': spider_name,
+            'job_id': job_execution.id,
+            'create_time':
+                job_execution.create_time.strftime('%Y-%m-%d_%H-%M-%S')
+        }
+        params.update({key: value[0] for key, value in args.items()})
+        export_uri = export_uri if export_uri else feed_uri
+        return feed_uri % params, export_uri % params
 
     def cancel_spider(self, job_execution):
         job_instance = JobInstance.find_job_instance_by_id(job_execution.job_instance_id)
