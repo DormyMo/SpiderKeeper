@@ -91,7 +91,7 @@
 <div class="modal fade" role="dialog" id="job-run-modal">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form action="/project/{{ project.id }}/job/add" method="post">
+            <form action="/project/{{ project.id }}/job/addlist" method="post">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span></button>
@@ -102,7 +102,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Spider</label>
-                                <select class="form-control" name="spider_name">
+                                <select class="form-control selectpicker" name="spider_name" multiple data-actions-box="true" data-live-search="true">
                                     {% for spider in spider_list %}
                                     <option value="{{ spider.spider_name }}">{{ spider.spider_name }}</option>
                                     {% endfor %}
@@ -218,4 +218,7 @@
     <!-- /.modal-dialog -->
 </div>
 <!-- /.modal -->
+<script>
+    $('.selectpicker').selectpicker({});
+</script>
 {% endblock %}
