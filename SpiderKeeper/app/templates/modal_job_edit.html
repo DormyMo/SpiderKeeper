@@ -1,0 +1,129 @@
+<div class="modal fade" role="dialog" id="job-edit-modal-{{ job_instance.job_instance_id }}">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form action="/project/{{ project.id }}/job/{{ job_instance.job_instance_id }}/edit" method="post">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title">Edit Periodic Job</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Spider</label>
+                                <select class="form-control" name="spider_name">
+                                    {% for spider in spider_list %}
+                                    <option value="{{ spider.spider_name }}" {{ 'selected=selected' if job_instance.spider_name==spider.spider_name else '' }}>{{ spider.spider_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Priority</label>
+                                <select class="form-control" name="priority">
+                                    <option label="Low" value="-1" {{ 'selected=selected' if job_instance.priority==-1 else '' }}>Low</option>
+                                    <option label="Normal" value="0" {{ 'selected=selected' if job_instance.priority==0 else '' }}>Normal</option>
+                                    <option label="High" value="1" {{ 'selected=selected' if job_instance.priority==1 else '' }}>High</option>
+                                    <option label="Highest" value="2" {{ 'selected=selected' if job_instance.priority==2 else '' }}>Highest</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Args</label>
+                                <textarea name="spider_arguments" class="form-control">{{ job_instance.spider_arguments }}</textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Choose Month</label>
+                                <select class="form-control" name="cron_month">
+                                    <option value="*" {{ 'selected=selected' if job_instance.cron_month=='*' else '' }}>Every Month</option>
+                                    {% for i in range(1,13) %}
+                                    <option value="{{ i }}" {{ 'selected=selected' if job_instance.cron_month==i|string else '' }}>{{ i }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Choose Day of Week</label>
+                                <select class="form-control" name="cron_day_of_week">
+                                    <option value="*" {{ 'selected=selected' if job_instance.cron_day_of_week=='*' else '' }}>Every day</option>
+                                    <option value="0" {{ 'selected=selected' if job_instance.cron_day_of_week=='0' else '' }}>Monday</option>
+                                    <option value="1" {{ 'selected=selected' if job_instance.cron_day_of_week=='1' else '' }}>Tuesday</option>
+                                    <option value="2" {{ 'selected=selected' if job_instance.cron_day_of_week=='2' else '' }}>Wednesday</option>
+                                    <option value="3" {{ 'selected=selected' if job_instance.cron_day_of_week=='3' else '' }}>Thursday</option>
+                                    <option value="4" {{ 'selected=selected' if job_instance.cron_day_of_week=='4' else '' }}>Friday</option>
+                                    <option value="5" {{ 'selected=selected' if job_instance.cron_day_of_week=='5' else '' }}>Saturday</option>
+                                    <option value="6" {{ 'selected=selected' if job_instance.cron_day_of_week=='6' else '' }}>Sunday</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Choose Day of Month</label>
+                                <select class="form-control" name="cron_day_of_month">
+                                    <option value="*" {{ 'selected=selected' if job_instance.cron_day_of_month=='*' else '' }}>Every day</option>
+                                    {% for i in range(1,32) %}
+                                    <option value="{{ i }}" {{ 'selected=selected' if job_instance.cron_day_of_month==i|string else '' }}>{{ i }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Choose Hour</label>
+                                <select class="form-control" name="cron_hour">
+                                    <option value="*" {{ 'selected=selected' if job_instance.cron_hour=='*' else '' }}>Every Hour</option>
+                                    {% for i in range(0,24) %}
+                                    <option value="{{ i }}" {{ 'selected=selected' if job_instance.cron_hour==i|string else '' }}>{{ i }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Choose Minutes</label>
+                                <select class="form-control" name="cron_minutes">
+                                    <option value="0"  {{ 'selected=selected' if job_instance.cron_minutes=='0' else '' }}>0</option>
+                                    {% for i in range(5,61,5) %}
+                                    <option value="{{ i }}" {{ 'selected=selected' if job_instance.cron_minutes==i|string else '' }}>{{ i }}</option>
+                                    {% endfor %}
+                                    <option value="*" {{ 'selected=selected' if job_instance.cron_minutes=='*' else '' }}>Every minute</option>
+                                    <option value="*/2" {{ 'selected=selected' if job_instance.cron_minutes=='*/2' else '' }}>Every 2 minute</option>
+                                    <option value="*/3" {{ 'selected=selected' if job_instance.cron_minutes=='*/3' else '' }}>Every 3 minute</option>
+                                    <option value="*/4" {{ 'selected=selected' if job_instance.cron_minutes=='*/4' else '' }}>Every 4 minute</option>
+                                    <option value="*/5" {{ 'selected=selected' if job_instance.cron_minutes=='*/5' else '' }}>Every 5 minute</option>
+                                    <option value="*/10" {{ 'selected=selected' if job_instance.cron_minutes=='*/10' else '' }}>Every 10 minute</option>
+                                    <option value="*/15" {{ 'selected=selected' if job_instance.cron_minutes=='*/15' else '' }}>Every 15 minute</option>
+                                    <option value="*/30" {{ 'selected=selected' if job_instance.cron_minutes=='*/30' else '' }}>Every 30 minute</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <h4>Advanced Options</h4>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Chose Daemon</label>
+                                <select class="form-control" name="daemon">
+                                    <option value="auto" {{ 'selected=selected' if job_instance.daemon=='auto' else '' }}>auto</option>
+                                    {% for server in servers %}
+                                    <option value="{{ server }}" {{ 'selected=selected' if job_instance.daemon==server else '' }}>{{ server }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Cron Expressions (m h dom mon dow)</label>
+                                <input type="text" name="cron_exp" class="form-control"
+                                       placeholder="{{ job_instance.cron_minutes }} {{ job_instance.cron_hour }} {{ job_instance.cron_day_of_month }} {{ job_instance.cron_month }} {{ job_instance.cron_day_of_week }}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <input type="hidden" name="run_type" value="{{ run_type }}">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
