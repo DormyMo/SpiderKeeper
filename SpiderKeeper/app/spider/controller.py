@@ -572,7 +572,7 @@ def job_add(project_id):
         job_instance.cron_month = request.form.get('cron_month') or '*'
         # set cron exp manually
         if request.form.get('cron_exp'):
-            job_instance.cron_minutes, job_instance.cron_hour, job_instance.cron_day_of_month, job_instance.cron_day_of_week, job_instance.cron_month = \
+            job_instance.cron_minutes, job_instance.cron_hour, job_instance.cron_day_of_month, job_instance.cron_month, job_instance.cron_day_of_week = \
                 request.form['cron_exp'].split(' ')
         db.session.add(job_instance)
         db.session.commit()
