@@ -3,9 +3,9 @@ import random
 import requests
 import re
 
-from SpiderKeeper.app import db
-from SpiderKeeper.app.spider.model import SpiderStatus, JobExecution, JobInstance, Project, \
-    JobPriority
+from SpiderKeeper.app.extensions.sqlalchemy import db
+from SpiderKeeper.app.blueprints.dashboard.model import SpiderStatus, JobExecution, JobInstance, \
+    Project, JobPriority
 
 
 class SpiderServiceProxy(object):

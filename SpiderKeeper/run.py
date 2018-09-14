@@ -1,7 +1,7 @@
 import logging
 from optparse import OptionParser
 
-from SpiderKeeper.app import app, initialize
+from SpiderKeeper.app import application as app
 from apscheduler.schedulers.background import BackgroundScheduler
 from SpiderKeeper.scheduler.jobs import add_jobs
 
@@ -18,7 +18,6 @@ def main():
     ))
     if opts.verbose:
         app.logger.setLevel(logging.DEBUG)
-    initialize()
     scheduler = BackgroundScheduler()
     add_jobs(scheduler)
     scheduler.start()
