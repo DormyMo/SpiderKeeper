@@ -1,4 +1,8 @@
 # SpiderKeeper-2 Changelog
+
+## 0.2.5 (2018-09-14)
+- flask application
+
 ## 0.2.0 (2017-10-26)
 - SpiderKeeper was forked to Spiderkeeper-2
 - Add button for removing all periodic jobs
