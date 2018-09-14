@@ -3,7 +3,7 @@ import demjson
 import re
 from sqlalchemy import desc
 from sqlalchemy.orm import relation
-from SpiderKeeper.app import db, Base
+from SpiderKeeper.app.extensions.sqlalchemy import db, Base
 
 
 class Project(Base):

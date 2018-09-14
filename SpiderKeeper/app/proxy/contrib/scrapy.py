@@ -4,7 +4,7 @@ import time
 import requests
 
 from SpiderKeeper.app.proxy.spiderctrl import SpiderServiceProxy
-from SpiderKeeper.app.spider.model import SpiderStatus, Project, SpiderInstance
+from SpiderKeeper.app.blueprints.dashboard.model import SpiderStatus, Project, SpiderInstance
 from SpiderKeeper.app.util.http import request
 
 

@@ -1,8 +1,17 @@
 import time
-from SpiderKeeper.app import app, agent
-from SpiderKeeper.app.spider.model import Project, JobInstance, SpiderInstance
+from SpiderKeeper.app import application as app
+from SpiderKeeper.app.proxy import agent
+from SpiderKeeper.app.blueprints.dashboard.model import Project, JobInstance, SpiderInstance
 
 
+def with_app_context(f):
+    def f_with_context(*args, **kwargs):
+        with app.app_context():
+            f(*args, **kwargs)
+    return f_with_context
+
+
+@with_app_context
 def sync_projects():
     """
     sync projects
@@ -12,6 +21,7 @@ def sync_projects():
     app.logger.debug('[sync_projects]')
 
 
+@with_app_context
 def sync_job_execution_status_job():
     """
     sync job execution running status
@@ -22,6 +32,7 @@ def sync_job_execution_status_job():
     app.logger.debug('[sync_job_execution_status]')
 
 
+@with_app_context
 def sync_spiders():
     """
     sync spiders
@@ -33,6 +44,7 @@ def sync_spiders():
     app.logger.debug('[sync_spiders]')
 
 
+@with_app_context
 def run_spider_job(job_instance_id):
     """
     run spider by scheduler
@@ -48,6 +60,7 @@ def run_spider_job(job_instance_id):
         app.logger.error('[run_spider_job] ' + str(e))
 
 
+@with_app_context
 def reload_runnable_spider_job_execution(scheduler):
     """
     add periodic job to scheduler

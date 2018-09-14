@@ -12,7 +12,7 @@
     <button type="button" class="btn btn-success btn-flat" style="margin-top: -10px;" data-toggle="modal"
             data-target="#job-run-modal">Add Job
     </button>
-    <a type="button" href="{{ url_for('jobs_remove', project_id=project.id) }}" class="btn btn-danger btn-flat" style="margin-top: -10px;">Remove All
+    <a type="button" href="{{ url_for('dashboard.jobs_remove', project_id=project.id) }}" class="btn btn-danger btn-flat" style="margin-top: -10px;">Remove All
     </a>
 </ol>
 
@@ -80,9 +80,9 @@
                 </td>
                 {% endif %}
                 <td>
-                    <a href="{{ url_for('job_run', job_instance_id=job_instance.job_instance_id) }}"><span
+                    <a href="{{ url_for('dashboard.job_run', job_instance_id=job_instance.job_instance_id) }}"><span
                             class="label label-info">Run</span></a>
-                    <a href="{{ url_for('job_remove', job_instance_id=job_instance.job_instance_id) }}">
+                    <a href="{{ url_for('dashboard.job_remove', job_instance_id=job_instance.job_instance_id) }}">
                         <span class="label label-danger">Remove</span></a>
                 </td>
             </tr>
