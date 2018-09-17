@@ -29,7 +29,7 @@ setup(
 
     entry_points={
         'console_scripts': {
-            'spiderkeeper = SpiderKeeper.run:main'
+            'spiderkeeper = SpiderKeeper.scrapyd.scripts.scrapyd_run:main'
         },
     },
 

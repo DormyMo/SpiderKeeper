@@ -1,5 +1,5 @@
 # SpiderKeeper-2 
-### This is a fork of [SpiderKeeper](https://github.com/DormyMo/SpiderKeeper). [Here](https://github.com/kalombos/SpiderKeeper/blob/master/CHANGELOG.md) is the changes
+#### This is a fork of [SpiderKeeper](https://github.com/DormyMo/SpiderKeeper). See [changelog](https://github.com/kalombos/SpiderKeeper/blob/master/CHANGELOG.md) for new features
 
 [![Latest Version](http://img.shields.io/pypi/v/SpiderKeeper-2.svg)](https://pypi.python.org/pypi/SpiderKeeper-2)
 [![Python Versions](https://img.shields.io/pypi/pyversions/SpiderKeeper-2.svg)](https://pypi.python.org/pypi/SpiderKeeper-2)
@@ -13,10 +13,10 @@ A scalable admin ui for spider service
 - With a single click deploy the scrapy project
 - Show spider running stats
 - Provide api
+- Integrated in scrapyd
 
 
-Current Support spider service
-- [Scrapy](https://github.com/scrapy/scrapy) ( with [scrapyd](https://github.com/scrapy/scrapyd))
+
 
 ## Screenshot
 ![job dashboard](https://raw.githubusercontent.com/DormyMo/SpiderKeeper/master/screenshot/screenshot_1.png)
@@ -33,49 +33,18 @@ Current Support spider service
 pip install spiderkeeper-2
 ```
 
-### Deployment
-
-``` 
-
-spiderkeeper [options]
-
-Options:
-
-  -h, --help            show this help message and exit
-  --host=HOST           host, default:0.0.0.0
-  --port=PORT           port, default:5000
-  --username=USERNAME   basic auth username ,default: admin
-  --password=PASSWORD   basic auth password ,default: admin
-  --type=SERVER_TYPE    access spider server type, default: scrapyd
-  --server=SERVERS      servers, default: ['http://localhost:6800']
-  --database-url=DATABASE_URL
-                        SpiderKeeper metadata database default: sqlite:////home/souche/SpiderKeeper.db
-  --no-auth             disable basic auth
-  -v, --verbose         log level
-  
-
-example:
-
-spiderkeeper --server=http://localhost:6800
-
-```
 
 ## Usage
 
-```
-Visit: 
 
-- web ui : http://localhost:5000
 
-1. Create Project
+1. Run ```spiderkeeper```
 
-2. Use [scrapyd-client](https://github.com/scrapy/scrapyd-client) to generate egg file 
+2. Visit http://localhost:5000/
 
-   scrapyd-deploy --build-egg output.egg
+3. upload egg file (make sure you started scrapyd server)
 
-2. upload egg file (make sure you started scrapyd server)
-
-3. Done & Enjoy it
+4. Done & Enjoy it
 
 - api swagger: http://localhost:5000/api.html
 

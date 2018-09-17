@@ -5,7 +5,6 @@ from flask_basicauth import BasicAuth
 from werkzeug.exceptions import HTTPException
 
 import SpiderKeeper
-from SpiderKeeper import config
 from SpiderKeeper.app.blueprints.dashboard.views import dashboard_bp
 from SpiderKeeper.app.blueprints.dashboard.api import api
 from SpiderKeeper.app.blueprints.dashboard.model import Project, SpiderInstance
@@ -44,7 +43,7 @@ def register_blueprints(app):
     app.register_blueprint(dashboard_bp)
 
 
-def create_app():
+def create_flask_application(config):
     # Define the WSGI application object
     app = Flask(__name__)
     # Configurations
@@ -94,7 +93,4 @@ def create_app():
             'msg': str(e),
             'data': None
         })
-
     return app
-
-application = create_app()

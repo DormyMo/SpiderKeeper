@@ -1,27 +1,21 @@
 import time
-from SpiderKeeper.app import application as app
 from SpiderKeeper.app.proxy import agent
 from SpiderKeeper.app.blueprints.dashboard.model import Project, JobInstance, SpiderInstance
+from twisted.logger import Logger
 
 
-def with_app_context(f):
-    def f_with_context(*args, **kwargs):
-        with app.app_context():
-            f(*args, **kwargs)
-    return f_with_context
+logger = Logger()
 
 
-@with_app_context
 def sync_projects():
     """
     sync projects
     :return:
     """
     agent.get_project_list()
-    app.logger.debug('[sync_projects]')
+    logger.debug('[sync_projects]')
 
 
-@with_app_context
 def sync_job_execution_status_job():
     """
     sync job execution running status
@@ -29,10 +23,9 @@ def sync_job_execution_status_job():
     """
     for project in Project.query.all():
         agent.sync_job_status(project)
-    app.logger.debug('[sync_job_execution_status]')
+    logger.debug('[sync_job_execution_status]')
 
 
-@with_app_context
 def sync_spiders():
     """
     sync spiders
@@ -41,10 +34,9 @@ def sync_spiders():
     for project in Project.query.all():
         spider_instance_list = agent.get_spider_list(project)
         SpiderInstance.update_spider_instances(project.id, spider_instance_list)
-    app.logger.debug('[sync_spiders]')
+    logger.debug('[sync_spiders]')
 
 
-@with_app_context
 def run_spider_job(job_instance_id):
     """
     run spider by scheduler
@@ -54,20 +46,19 @@ def run_spider_job(job_instance_id):
     try:
         job_instance = JobInstance.query.get(job_instance_id)
         agent.start_spider(job_instance)
-        app.logger.info('[run_spider_job][project:%s][spider_name:%s][job_instance_id:%s]' % (
+        logger.info('[run_spider_job][project:%s][spider_name:%s][job_instance_id:%s]' % (
             job_instance.project_id, job_instance.spider_name, job_instance.id))
     except Exception as e:
-        app.logger.error('[run_spider_job] ' + str(e))
+        logger.error('[run_spider_job] ' + str(e))
 
 
-@with_app_context
 def reload_runnable_spider_job_execution(scheduler):
     """
     add periodic job to scheduler
     :return:
     """
     running_job_ids = set([job.id for job in scheduler.get_jobs()])
-    app.logger.debug('[running_job_ids] %s' % ','.join(running_job_ids))
+    logger.debug('[running_job_ids] %s' % ','.join(running_job_ids))
     available_job_ids = set()
     # add new job to schedule
     for job_instance in JobInstance.query.filter_by(enabled=0, run_type="periodic").all():
@@ -89,7 +80,7 @@ def reload_runnable_spider_job_execution(scheduler):
                               max_instances=999,
                               misfire_grace_time=60 * 60,
                               coalesce=True)
-            app.logger.info(
+            logger.info(
                 '[load_spider_job][project:%s][spider_name:%s][job_instance_id:%s][job_id:%s]' % (
                     job_instance.project_id, job_instance.spider_name, job_instance.id, job_id
                 )
@@ -98,12 +89,25 @@ def reload_runnable_spider_job_execution(scheduler):
     for invalid_job_id in filter(lambda job_id: job_id.startswith("spider_job_"),
                                  running_job_ids.difference(available_job_ids)):
         scheduler.remove_job(invalid_job_id)
-        app.logger.info('[drop_spider_job][job_id:%s]' % invalid_job_id)
+        logger.info('[drop_spider_job][job_id:%s]' % invalid_job_id)
 
 
-def add_jobs(scheduler):
-    scheduler.add_job(sync_projects, 'interval', seconds=10, id='sys_sync_projects')
-    scheduler.add_job(sync_job_execution_status_job, 'interval', seconds=5, id='sys_sync_status')
-    scheduler.add_job(sync_spiders, 'interval', seconds=10, id='sys_sync_spiders')
-    scheduler.add_job(reload_runnable_spider_job_execution, 'interval', args=[scheduler],
-                      seconds=30, id='sys_reload_job')
+def add_jobs(scheduler, flask_app):
+
+    def with_app_context(f):
+        def f_with_context(*args, **kwargs):
+            with flask_app.app_context():
+                f(*args, **kwargs)
+
+        return f_with_context
+
+    def add_job(job, *args, **kwargs):
+        scheduler.add_job(with_app_context(job), *args, **kwargs)
+
+    add_job(sync_projects, 'interval', seconds=10, id='sys_sync_projects')
+    add_job(sync_job_execution_status_job, 'interval', seconds=5, id='sys_sync_status')
+    add_job(sync_spiders, 'interval', seconds=10, id='sys_sync_spiders')
+    add_job(
+        reload_runnable_spider_job_execution, 'interval', args=[scheduler],
+        seconds=30, id='sys_reload_job'
+    )

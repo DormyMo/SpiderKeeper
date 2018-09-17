@@ -1,7 +1,10 @@
 # SpiderKeeper-2 Changelog
 
+## 0.3.0 (2018-09-14)
+- spiderkeepr was integrated into scrapyd service
+
 ## 0.2.5 (2018-09-14)
-- flask application
+- refactoring flask application
 
 ## 0.2.0 (2017-10-26)
 - SpiderKeeper was forked to Spiderkeeper-2
