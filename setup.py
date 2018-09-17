@@ -25,6 +25,7 @@ setup(
         'Flask-SQLAlchemy==2.3.2',
         'demjson==2.2.4',
         'requests==2.19.1',
+        'scrapyd'
     ],
 
     entry_points={
