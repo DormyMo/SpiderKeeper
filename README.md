@@ -46,7 +46,7 @@ Options:
   --username=USERNAME   basic auth username ,default: admin
   --password=PASSWORD   basic auth password ,default: admin
   --type=SERVER_TYPE    access spider server type, default: scrapyd
-  --server=SERVERS      servers, default: ['http://localhost:6800']
+  --server=SERVERS      servers, default: 'http://localhost:6800'
   --database-url=DATABASE_URL
                         SpiderKeeper metadata database default: sqlite:////home/souche/SpiderKeeper.db
   --no-auth             disable basic auth
