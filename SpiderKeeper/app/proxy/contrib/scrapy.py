@@ -67,7 +67,12 @@ class ScrapydProxy(SpiderServiceProxy):
         post_data = dict(project=project_name, spider=spider_name)
         post_data.update(arguments)
         data = request("post", self._scrapyd_url() + "/schedule.json", data=post_data, return_type="json")
-        return data['jobid'] if data and data['status'] == 'ok' else None
+        if data and data['status'] == 'ok':
+            return data['jobid']
+        else:
+            import time
+            time.sleep(3)
+            return self.start_spider(project_name, spider_name, arguments)
 
     def cancel_spider(self, project_name, job_id):
         post_data = dict(project=project_name, job=job_id)
