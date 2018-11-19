@@ -512,6 +512,7 @@ def project_create():
     project.project_name = project_name
     db.session.add(project)
     db.session.commit()
+    session['project_id'] = project.id
     return redirect("/project/%s/spider/deploy" % project.id, code=302)
 
 
@@ -649,6 +650,8 @@ def spider_egg_upload(project_id):
         file.save(dst)
         agent.deploy(project, dst)
         flash('deploy success!')
+        from SpiderKeeper.app.schedulers.common import sync_spiders
+        sync_spiders()
     return redirect(request.referrer)
 
 
