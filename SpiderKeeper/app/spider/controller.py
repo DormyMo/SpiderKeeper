@@ -1,6 +1,8 @@
 import datetime
 import os
 import tempfile
+import json
+import csv
 
 import flask_restful
 import requests
@@ -10,6 +12,7 @@ from flask import flash
 from flask import redirect
 from flask import render_template
 from flask import session
+from flask import send_from_directory
 from flask_restful_swagger import swagger
 from werkzeug.utils import secure_filename
 
@@ -593,6 +596,48 @@ def job_log(project_id, job_exec_id):
     res.encoding = 'utf8'
     raw = res.text
     return render_template("job_log.html", log_lines=raw.split('\n'))
+
+
+@app.route("/project/<project_id>/jobexecs/<job_exec_id>/items")
+def job_items(project_id, job_exec_id):
+    job_execution = JobExecution.query.filter_by(project_id=project_id, id=job_exec_id).first()
+    res = requests.get(agent.items_url(job_execution))
+    res.encoding = 'utf8'
+    json_data = [ json.loads(s) for s in filter(None, res.text.split('\n'))]
+    return render_template("job_items.html", items=json_data)
+
+
+@app.route("/project/<project_id>/jobexecs/<job_exec_id>/items/download")
+def download_items(project_id, job_exec_id):
+    format = request.args.get('format')
+    if not format in ['json', 'csv']:
+        abort(404)
+
+    job_execution = JobExecution.query.filter_by(project_id=project_id, id=job_exec_id).first()
+
+    job_instance = JobInstance.find_job_instance_by_id(job_execution.job_instance_id)
+    project = Project.find_project_by_id(job_instance.project_id)
+
+    res = requests.get(agent.items_url(job_execution))
+    res.encoding = 'utf8'
+    json_data = [json.loads(s) for s in filter(None, res.text.split('\n'))]
+
+    filename = '{}-{}.{}'.format(project.project_name, job_instance.spider_name, format)
+    if format == 'json':
+        open(os.path.join(app.static_folder, filename), 'w').write(json.dumps(json_data))
+    elif format == 'csv':
+        f = open(os.path.join(app.static_folder, filename), 'w')
+        csvwriter = csv.writer(f)
+        count = 0
+        for item in json_data:
+            if count == 0:
+                header = item.keys()
+                csvwriter.writerow(header)
+                count += 1
+            csvwriter.writerow(item.values())
+        f.close()
+
+    return send_from_directory(app.static_folder, filename, as_attachment=True)
 
 
 @app.route("/project/<project_id>/job/<job_instance_id>/run")

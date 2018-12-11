@@ -12,6 +12,7 @@ A scalable admin ui for spider service
 - With a single click deploy the scrapy project
 - Show spider running stats
 - Provide api
+- Show scraped items and download json/csv
 
 
 Current Support spider service

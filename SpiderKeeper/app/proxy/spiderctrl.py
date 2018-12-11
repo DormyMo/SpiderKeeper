@@ -182,6 +182,14 @@ class SpiderAgent():
                 return spider_service_instance.log_url(project.project_name, job_instance.spider_name,
                                                        job_execution.service_job_execution_id)
 
+    def items_url(self, job_execution):
+        job_instance = JobInstance.find_job_instance_by_id(job_execution.job_instance_id)
+        project = Project.find_project_by_id(job_instance.project_id)
+        for spider_service_instance in self.spider_service_instances:
+            if spider_service_instance.server == job_execution.running_on:
+                return spider_service_instance.items_url(project.project_name, job_instance.spider_name,
+                                                         job_execution.service_job_execution_id)
+
     @property
     def servers(self):
         return [self.spider_service_instance.server for self.spider_service_instance in

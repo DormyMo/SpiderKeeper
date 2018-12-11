@@ -12,3 +12,15 @@
     text-overflow: ellipsis;
     width: 100px;
 }
+
+#table-count {
+    counter-reset: rowNumber;
+}
+
+#table-count #item {
+    counter-increment: rowNumber;
+}
+
+#table-count #item td:first-child::before {
+    content: counter(rowNumber);
+}

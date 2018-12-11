@@ -86,3 +86,6 @@ class ScrapydProxy(SpiderServiceProxy):
 
     def log_url(self, project_name, spider_name, job_id):
         return self._scrapyd_url() + '/logs/%s/%s/%s.log' % (project_name, spider_name, job_id)
+
+    def items_url(self, project_name, spider_name, job_id):
+        return self._scrapyd_url() + '/items/%s/%s/%s.jl' % (project_name, spider_name, job_id)
