@@ -1,16 +1,38 @@
-<html>
-<meta charset="utf-8">
-<style>
-    .p-log {
-        font-size: 12px;
-        line-height: 1.5em;
-        color: #1f0909;
-        text-align: left
-    }
-</style>
-<body style="background-color:#F3F2EE;">
-{% for line in log_lines %}
-<p class="p-log">{{ line }}</p>
-{% endfor %}
-</body>
-</html>
+{% extends "base.html" %}
+{% block content_header %}
+<h1>Job Logs</h1>
+<ol style="float: right;
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 12px;
+    padding: 7px 5px;
+    position: absolute;
+    top: 15px;
+    right: 10px;">
+    <button type="button" class="btn btn-success btn-flat" style="margin-top: -10px;" data-toggle="modal"
+            onclick="location.href='/project/{{ project.id }}/job/dashboard'">< Back
+    </button>
+</ol>
+{% endblock %}
+{% block content_body %}
+<!--======logs======-->
+<div class="box">
+    <div class="box-header">
+        <h3 class="box-title">Job Logs</h3>
+        <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+            </button>
+        </div>
+    </div>
+    <div class="box-body table-responsive">
+        <table class="table table-striped">
+            {% for line in log_lines %}
+            <tr>
+                <td><p class="p-log">{{ line }}</p></td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+
+{% endblock %}

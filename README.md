@@ -1,4 +1,4 @@
-# SpiderKeeper
+# SpiderKeeper fork
 
 [![Latest Version](http://img.shields.io/pypi/v/SpiderKeeper.svg)](https://pypi.python.org/pypi/SpiderKeeper)
 [![Python Versions](http://img.shields.io/pypi/pyversions/SpiderKeeper.svg)](https://pypi.python.org/pypi/SpiderKeeper)
@@ -12,6 +12,7 @@ A scalable admin ui for spider service
 - With a single click deploy the scrapy project
 - Show spider running stats
 - Provide api
+- Show scraped items and download json/csv
 
 
 Current Support spider service
