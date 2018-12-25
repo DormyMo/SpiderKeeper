@@ -63,7 +63,7 @@ class SpiderInstance(Base):
     @classmethod
     def list_spiders(cls, project_id):
         sql_last_runtime = '''
-            select * from (select a.spider_name,b.date_created from sk_job_instance as a
+            select c.spider_name, max(c.date_created) from (select a.spider_name,b.date_created from sk_job_instance as a
                 left join sk_job_execution as b
                 on a.id = b.job_instance_id
                 order by b.date_created desc) as c
