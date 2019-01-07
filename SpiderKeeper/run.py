@@ -1,5 +1,4 @@
 import logging
-import os
 from optparse import OptionParser
 
 from SpiderKeeper.app import app, initialize
