@@ -1,5 +1,4 @@
 # Import flask and template operators
-import logging
 
 from apscheduler.schedulers.background import BackgroundScheduler
 from flask import Flask, request
@@ -17,13 +16,7 @@ app = Flask(__name__)
 app.config.from_object(config)
 
 # Logging
-log = logging.getLogger('werkzeug')
-log.setLevel(logging.ERROR)
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-handler = logging.StreamHandler()
-handler.setFormatter(formatter)
-app.logger.setLevel(app.config.get('LOG_LEVEL', "INFO"))
-app.logger.addHandler(handler)
+app.logger.setLevel(app.config.get('LOG_LEVEL'))
 
 # swagger
 api = swagger.docs(Api(app), apiVersion=SpiderKeeper.__version__, api_spec_url="/api",

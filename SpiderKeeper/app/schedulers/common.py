@@ -1,7 +1,6 @@
-import threading
 import time
 
-from SpiderKeeper.app import scheduler, app, agent, db
+from SpiderKeeper.app import scheduler, app, agent
 from SpiderKeeper.app.spider.model import Project, JobInstance, SpiderInstance
 
 
