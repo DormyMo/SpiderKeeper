@@ -3,8 +3,7 @@ import logging
 import traceback
 
 from apscheduler.schedulers.background import BackgroundScheduler
-from flask import Flask
-from flask import jsonify
+from flask import Flask, request, jsonify
 from flask_basicauth import BasicAuth
 from flask_restful import Api
 from flask_restful_swagger import swagger
@@ -44,6 +43,13 @@ def teardown_request(exception):
     db.session.remove()
 
 
+@app.after_request
+def after_request(response):
+    string = '[{}] {} {} '.format(request.remote_addr, request.url, response.status)
+    print(string)
+    return response
+
+
 # Define apscheduler
 scheduler = BackgroundScheduler()
 
@@ -55,12 +61,6 @@ class Base(db.Model):
     date_created = db.Column(db.DateTime, default=db.func.current_timestamp())
     date_modified = db.Column(db.DateTime, default=db.func.current_timestamp(),
                               onupdate=db.func.current_timestamp())
-
-
-# Sample HTTP error handling
-# @app.errorhandler(404)
-# def not_found(error):
-#     abort(404)
 
 
 @app.errorhandler(Exception)
