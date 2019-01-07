@@ -1,14 +1,12 @@
 # Import flask and template operators
 import logging
-import traceback
 
 from apscheduler.schedulers.background import BackgroundScheduler
-from flask import Flask, request, jsonify
+from flask import Flask, request
 from flask_basicauth import BasicAuth
 from flask_restful import Api
 from flask_restful_swagger import swagger
 from flask_sqlalchemy import SQLAlchemy
-from werkzeug.exceptions import HTTPException
 
 import SpiderKeeper
 from SpiderKeeper import config
@@ -61,20 +59,6 @@ class Base(db.Model):
     date_created = db.Column(db.DateTime, default=db.func.current_timestamp())
     date_modified = db.Column(db.DateTime, default=db.func.current_timestamp(),
                               onupdate=db.func.current_timestamp())
-
-
-@app.errorhandler(Exception)
-def handle_error(e):
-    code = 500
-    if isinstance(e, HTTPException):
-        code = e.code
-    app.logger.error(traceback.print_exc())
-    return jsonify({
-        'code': code,
-        'success': False,
-        'msg': str(e),
-        'data': None
-    })
 
 
 # Build the database:
