@@ -1,5 +1,7 @@
 import datetime
+
 from sqlalchemy import desc
+
 from SpiderKeeper.app import db, Base
 
 
@@ -7,6 +9,7 @@ class Project(Base):
     __tablename__ = 'sk_project'
 
     project_name = db.Column(db.String(50))
+    valid = db.Column(db.Integer)
 
     @classmethod
     def load_project(cls, project_list):
@@ -25,6 +28,10 @@ class Project(Base):
             "project_id": self.id,
             "project_name": self.project_name
         }
+
+    @classmethod
+    def get_valid_project(cls):
+        return cls.query.filter_by(valid=1).all()
 
 
 class SpiderInstance(Base):
@@ -201,7 +208,7 @@ class JobExecution(Base):
         result['COMPLETED'] = [job_execution.to_dict() for job_execution in
                                JobExecution.query.filter(JobExecution.project_id == project_id).filter(
                                    (JobExecution.running_status == SpiderStatus.FINISHED) | (
-                                       JobExecution.running_status == SpiderStatus.CANCELED)).order_by(
+                                           JobExecution.running_status == SpiderStatus.CANCELED)).order_by(
                                    desc(JobExecution.date_modified)).limit(each_status_limit)]
         return result
 

@@ -1,4 +1,5 @@
-import datetime, time
+import datetime
+import time
 
 import requests
 
@@ -72,7 +73,7 @@ class ScrapydProxy(SpiderServiceProxy):
     def cancel_spider(self, project_name, job_id):
         post_data = dict(project=project_name, job=job_id)
         data = request("post", self._scrapyd_url() + "/cancel.json", data=post_data, return_type="json")
-        return data != None
+        return data is not None
 
     def deploy(self, project_name, file_path):
         with open(file_path, 'rb') as f:

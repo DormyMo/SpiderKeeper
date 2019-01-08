@@ -1,7 +1,7 @@
 # Import flask and template operators
 
 from apscheduler.schedulers.background import BackgroundScheduler
-from flask import Flask, request
+from flask import Flask
 from flask_basicauth import BasicAuth
 from flask_restful import Api
 from flask_restful_swagger import swagger
@@ -32,13 +32,6 @@ def teardown_request(exception):
         db.session.rollback()
         db.session.remove()
     db.session.remove()
-
-
-@app.after_request
-def after_request(response):
-    string = '[{}] {} {} '.format(request.remote_addr, request.url, response.status)
-    print(string)
-    return response
 
 
 # Define apscheduler

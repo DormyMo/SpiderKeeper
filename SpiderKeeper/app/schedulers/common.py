@@ -9,7 +9,7 @@ def sync_job_execution_status_job():
     sync job execution running status
     :return:
     '''
-    for project in Project.query.all():
+    for project in Project.get_valid_project():
         agent.sync_job_status(project)
     app.logger.debug('[sync_job_execution_status]')
 
