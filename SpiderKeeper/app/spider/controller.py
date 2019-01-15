@@ -510,6 +510,7 @@ def project_create():
     project_name = request.form['project_name']
     project = Project()
     project.project_name = project_name
+    project.valid = 1
     db.session.add(project)
     db.session.commit()
     return redirect("/project/%s/spider/deploy" % project.id, code=302)
