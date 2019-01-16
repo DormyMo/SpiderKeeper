@@ -33,6 +33,9 @@ def run_spider_job(job_instance_id):
     '''
     try:
         job_instance = JobInstance.find_job_instance_by_id(job_instance_id)
+        if not job_instance:
+            app.logger.error('[run_spider_job] job_instance {} not found'.format(job_instance_id))
+            return
         agent.start_spider(job_instance)
         app.logger.info('[run_spider_job][project:%s][spider_name:%s][job_instance_id:%s]' % (
             job_instance.project_id, job_instance.spider_name, job_instance.id))
