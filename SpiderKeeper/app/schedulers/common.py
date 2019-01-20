@@ -1,7 +1,6 @@
-import threading
 import time
 
-from SpiderKeeper.app import scheduler, app, agent, db
+from SpiderKeeper.app import scheduler, app, agent
 from SpiderKeeper.app.spider.model import Project, JobInstance, SpiderInstance
 
 
@@ -10,7 +9,7 @@ def sync_job_execution_status_job():
     sync job execution running status
     :return:
     '''
-    for project in Project.query.all():
+    for project in Project.get_valid_project():
         agent.sync_job_status(project)
     app.logger.debug('[sync_job_execution_status]')
 
@@ -34,6 +33,9 @@ def run_spider_job(job_instance_id):
     '''
     try:
         job_instance = JobInstance.find_job_instance_by_id(job_instance_id)
+        if not job_instance:
+            app.logger.error('[run_spider_job] job_instance {} not found'.format(job_instance_id))
+            return
         agent.start_spider(job_instance)
         app.logger.info('[run_spider_job][project:%s][spider_name:%s][job_instance_id:%s]' % (
             job_instance.project_id, job_instance.spider_name, job_instance.id))

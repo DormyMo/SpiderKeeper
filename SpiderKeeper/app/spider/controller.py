@@ -60,6 +60,8 @@ class SpiderCtrl(flask_restful.Resource):
         }])
     def get(self, project_id):
         project = Project.find_project_by_id(project_id)
+        if not project:
+            return [{'error_msg': 'project id {} not found'.format(project_id)}]
         return [spider_instance.to_dict() for spider_instance in
                 SpiderInstance.query.filter_by(project_id=project_id).all()]
 
@@ -510,6 +512,7 @@ def project_create():
     project_name = request.form['project_name']
     project = Project()
     project.project_name = project_name
+    project.valid = 1
     db.session.add(project)
     db.session.commit()
     return redirect("/project/%s/spider/deploy" % project.id, code=302)
@@ -536,7 +539,6 @@ def job_dashboard(project_id):
 
 @app.route("/project/<project_id>/job/periodic")
 def job_periodic(project_id):
-    project = Project.find_project_by_id(project_id)
     job_instance_list = [job_instance.to_dict() for job_instance in
                          JobInstance.query.filter_by(run_type="periodic", project_id=project_id).all()]
     return render_template("job_periodic.html",
@@ -546,6 +548,8 @@ def job_periodic(project_id):
 @app.route("/project/<project_id>/job/add", methods=['post'])
 def job_add(project_id):
     project = Project.find_project_by_id(project_id)
+    if not project:
+        flash('project_id {} not found'.format(project_id), 'danger')
     job_instance = JobInstance()
     job_instance.spider_name = request.form['spider_name']
     job_instance.project_id = project_id
@@ -589,6 +593,9 @@ def job_stop(project_id, job_exec_id):
 @app.route("/project/<project_id>/jobexecs/<job_exec_id>/log")
 def job_log(project_id, job_exec_id):
     job_execution = JobExecution.query.filter_by(project_id=project_id, id=job_exec_id).first()
+    if not job_execution:
+        return render_template(
+            "job_log.html", log_lines='project id: {}, job exec id: {}'.format(project_id, job_exec_id))
     res = requests.get(agent.log_url(job_execution))
     res.encoding = 'utf8'
     raw = res.text
@@ -628,6 +635,8 @@ def spider_dashboard(project_id):
 @app.route("/project/<project_id>/spider/deploy")
 def spider_deploy(project_id):
     project = Project.find_project_by_id(project_id)
+    if not project:
+        flash('project_id {} not found'.format(project_id), 'danger')
     return render_template("spider_deploy.html")
 
 
@@ -655,6 +664,8 @@ def spider_egg_upload(project_id):
 @app.route("/project/<project_id>/project/stats")
 def project_stats(project_id):
     project = Project.find_project_by_id(project_id)
+    if not project:
+        flash('project_id {} not found'.format(project_id), 'danger')
     run_stats = JobExecution.list_run_stats_by_hours(project_id)
     return render_template("project_stats.html", run_stats=run_stats)
 
@@ -662,5 +673,7 @@ def project_stats(project_id):
 @app.route("/project/<project_id>/server/stats")
 def service_stats(project_id):
     project = Project.find_project_by_id(project_id)
+    if not project:
+        flash('project_id {} not found'.format(project_id), 'danger')
     run_stats = JobExecution.list_run_stats_by_hours(project_id)
     return render_template("server_stats.html", run_stats=run_stats)
