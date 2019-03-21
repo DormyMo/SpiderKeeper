@@ -120,6 +120,7 @@ class SpiderAgent():
 
     def start_spider(self, job_instance):
         project = Project.find_project_by_id(job_instance.project_id)
+        # job_execution = JobExecution.find_job_by_service_id(job_instance.project_id)
         spider_name = job_instance.spider_name
         arguments = {}
         if job_instance.spider_arguments:
@@ -142,15 +143,24 @@ class SpiderAgent():
             for i in range(threshold):
                 leaders.append(random.choice(candidates))
         for leader in leaders:
+            # add more arguments to scrapyd to run a spider
+            arguments['project_id']= job_instance.project_id
+            arguments['project_name']= project.project_name
+            arguments['job_instance_id']= job_instance.job_instance_id
+            arguments['priority']= job_instance.priority
+            arguments['args']= job_instance.spider_arguments
+            arguments['execute_ip']= leader.server
+            arguments['create_time']= datetime.datetime.now()
             serviec_job_id = leader.start_spider(project.project_name, spider_name, arguments)
             job_execution = JobExecution()
             job_execution.project_id = job_instance.project_id
             job_execution.service_job_execution_id = serviec_job_id
             job_execution.job_instance_id = job_instance.job_instance_id
-            job_execution.create_time = datetime.datetime.now()
+            job_execution.create_time = arguments['create_time']
             job_execution.running_on = leader.server
             db.session.add(job_execution)
             db.session.commit()
+            
 
     def cancel_spider(self, job_execution):
         job_instance = JobInstance.find_job_instance_by_id(job_execution.job_instance_id)
