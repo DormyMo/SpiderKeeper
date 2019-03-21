@@ -55,7 +55,7 @@ def reload_runnable_spider_job_execution():
         available_job_ids.add(job_id)
         if job_id not in running_job_ids:
             scheduler.add_job(run_spider_job,
-                              args=(job_instance.id,),
+                              args=(job_instance.job_instance_id,),
                               trigger='cron',
                               id=job_id,
                               minute=job_instance.cron_minutes,
