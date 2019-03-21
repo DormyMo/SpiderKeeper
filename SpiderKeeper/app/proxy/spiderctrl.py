@@ -89,7 +89,7 @@ class SpiderAgent():
     def get_spider_list(self, project):
         spider_instance_list = self.spider_service_instances[0].get_spider_list(project.project_name)
         for spider_instance in spider_instance_list:
-            spider_instance.project_id = project.id
+            spider_instance.project_id = project.project_id
         return spider_instance_list
 
     def get_daemon_status(self):
@@ -121,14 +121,9 @@ class SpiderAgent():
     def start_spider(self, job_instance):
         project = Project.find_project_by_id(job_instance.project_id)
         spider_name = job_instance.spider_name
-        #arguments = {}
-        #if job_instance.spider_arguments:
-        #    arguments = dict(map(lambda x: x.split("="), job_instance.spider_arguments.split(",")))
-        from collections import defaultdict
-        arguments = defaultdict(list)
+        arguments = {}
         if job_instance.spider_arguments:
-            for k, v in list(map(lambda x: x.split('=', 1), job_instance.spider_arguments.split(','))):
-                arguments[k].append(v)
+            arguments = dict(map(lambda x: x.split("="), job_instance.spider_arguments.split(",")))
         threshold = 0
         daemon_size = len(self.spider_service_instances)
         if job_instance.priority == JobPriority.HIGH:
@@ -151,7 +146,7 @@ class SpiderAgent():
             job_execution = JobExecution()
             job_execution.project_id = job_instance.project_id
             job_execution.service_job_execution_id = serviec_job_id
-            job_execution.job_instance_id = job_instance.id
+            job_execution.job_instance_id = job_instance.job_instance_id
             job_execution.create_time = datetime.datetime.now()
             job_execution.running_on = leader.server
             db.session.add(job_execution)

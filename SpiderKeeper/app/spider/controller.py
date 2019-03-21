@@ -450,7 +450,7 @@ def inject_project():
     project_context['project_list'] = Project.query.all()
     if project_context['project_list'] and (not session.get('project_id')):
         project = Project.query.first()
-        session['project_id'] = project.id
+        session['project_id'] = project.project_id
     if session.get('project_id'):
         project_context['project'] = Project.find_project_by_id(session['project_id'])
         project_context['spider_list'] = [spider_instance.to_dict() for spider_instance in
@@ -482,9 +482,9 @@ def utility_processor():
     def readable_time(total_seconds):
         if not total_seconds:
             return '-'
-        if total_seconds < 60:
+        if total_seconds / 60 == 0:
             return '%s s' % total_seconds
-        if total_seconds < 3600:
+        if total_seconds / 3600 == 0:
             return '%s m' % int(total_seconds / 60)
         return '%s h %s m' % (int(total_seconds / 3600), int((total_seconds % 3600) / 60))
 
@@ -495,7 +495,7 @@ def utility_processor():
 def index():
     project = Project.query.first()
     if project:
-        return redirect("/project/%s/job/dashboard" % project.id, code=302)
+        return redirect("/project/%s/job/dashboard" % project.project_id, code=302)
     return redirect("/project/manage", code=302)
 
 
@@ -512,7 +512,8 @@ def project_create():
     project.project_name = project_name
     db.session.add(project)
     db.session.commit()
-    return redirect("/project/%s/spider/deploy" % project.id, code=302)
+    session['project_id'] = project.project_id
+    return redirect("/project/%s/spider/deploy" % project.project_id, code=302)
 
 
 @app.route("/project/<project_id>/delete")
@@ -597,14 +598,14 @@ def job_log(project_id, job_exec_id):
 
 @app.route("/project/<project_id>/job/<job_instance_id>/run")
 def job_run(project_id, job_instance_id):
-    job_instance = JobInstance.query.filter_by(project_id=project_id, id=job_instance_id).first()
+    job_instance = JobInstance.query.filter_by(project_id=project_id, job_instance_id=job_instance_id).first()
     agent.start_spider(job_instance)
     return redirect(request.referrer, code=302)
 
 
 @app.route("/project/<project_id>/job/<job_instance_id>/remove")
 def job_remove(project_id, job_instance_id):
-    job_instance = JobInstance.query.filter_by(project_id=project_id, id=job_instance_id).first()
+    job_instance = JobInstance.query.filter_by(project_id=project_id, job_instance_id=job_instance_id).first()
     db.session.delete(job_instance)
     db.session.commit()
     return redirect(request.referrer, code=302)
@@ -612,7 +613,7 @@ def job_remove(project_id, job_instance_id):
 
 @app.route("/project/<project_id>/job/<job_instance_id>/switch")
 def job_switch(project_id, job_instance_id):
-    job_instance = JobInstance.query.filter_by(project_id=project_id, id=job_instance_id).first()
+    job_instance = JobInstance.query.filter_by(project_id=project_id, job_instance_id=job_instance_id).first()
     job_instance.enabled = -1 if job_instance.enabled == 0 else 0
     db.session.commit()
     return redirect(request.referrer, code=302)
@@ -649,6 +650,8 @@ def spider_egg_upload(project_id):
         file.save(dst)
         agent.deploy(project, dst)
         flash('deploy success!')
+        from SpiderKeeper.app.schedulers.common import sync_spiders
+        sync_spiders()
     return redirect(request.referrer)
 
 

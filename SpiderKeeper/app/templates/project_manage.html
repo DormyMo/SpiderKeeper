@@ -24,7 +24,7 @@
     </div>
     <div class="box-footer text-black">
         {% if project %}
-        <a href="/project/{{ project.id }}/delete" class="btn btn-block btn-danger btn-flat">Delete Project</a>
+        <a href="/project/{{ project.project_id }}/delete" class="btn btn-block btn-danger btn-flat">Delete Project</a>
         {% else %}
         <a class="btn btn-block btn-info btn-flat" data-toggle="modal"
            data-target="#project-create-modal">Create Project

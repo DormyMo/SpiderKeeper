@@ -58,7 +58,7 @@
                     </a>
                     <ul class="dropdown-menu">
                         {% for project in project_list %}
-                        <li><a href="/project/{{ project.id }}">{{ project.project_name }}</a></li>
+                        <li><a href="/project/{{ project.project_id }}">{{ project.project_name }}</a></li>
                         {% endfor %}
                         <li role="separator" class="divider"></li>
                         <li><a href="#" data-toggle="modal" data-target="#project-create-modal">Create Project</a>
@@ -84,25 +84,25 @@
             </div>
             <ul class="sidebar-menu">
                 <li class="header">JOBS</li>
-                <li><a href="/project/{{ project.id }}/job/dashboard"><i
+                <li><a href="/project/{{ project.project_id }}/job/dashboard"><i
                         class="fa fa-dashboard text-blue"></i>
                     <span>Dashboard</span></a></li>
-                <li><a href="/project/{{ project.id }}/job/periodic"><i class="fa fa-tasks text-green"></i>
+                <li><a href="/project/{{ project.project_id }}/job/periodic"><i class="fa fa-tasks text-green"></i>
                     <span>Periodic Jobs</span></a></li>
                 <li class="header">SPIDERS</li>
-                <li><a href="/project/{{ project.id }}/spider/dashboard"><i class="fa fa-flask text-red"></i>
+                <li><a href="/project/{{ project.project_id }}/spider/dashboard"><i class="fa fa-flask text-red"></i>
                     <span>Dashboard</span></a>
                 </li>
-                <li><a href="/project/{{ project.id }}/spider/deploy"><i class="fa fa-server text-orange"></i>
+                <li><a href="/project/{{ project.project_id }}/spider/deploy"><i class="fa fa-server text-orange"></i>
                     <span>Deploy</span></a></li>
                 <!--<li><a href="#"><i class="fa fa-circle-o text-red"></i> <span>Settings</span></a></li>-->
                 <li class="header">PROJECT</li>
-                <li><a href="/project/{{ project.id }}/project/stats"><i class="fa  fa-area-chart text-gray"></i> <span>Running Stats</span></a>
+                <li><a href="/project/{{ project.project_id }}/project/stats"><i class="fa  fa-area-chart text-gray"></i> <span>Running Stats</span></a>
                 </li>
                 <!--<li><a href="#"><i class="fa fa-circle-o text-red"></i> <span>Members</span></a></li>-->
                 <li><a href="/project/manage"><i class="fa fa-gears text-red"></i> <span>Manage</span></a></li>
                 <li class="header">SERVER</li>
-                <li><a href="/project/{{ project.id }}/server/stats"><i class="fa fa-bolt text-red"></i> <span>Usage Stats</span></a>
+                <li><a href="/project/{{ project.project_id }}/server/stats"><i class="fa fa-bolt text-red"></i> <span>Usage Stats</span></a>
                 </li>
             </ul>
         </section>
