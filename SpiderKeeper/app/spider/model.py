@@ -1,12 +1,16 @@
 import datetime
 from sqlalchemy import desc
 from SpiderKeeper.app import db, Base
-
+import uuid
 
 class Project(Base):
     __tablename__ = 'sk_project'
 
     project_name = db.Column(db.String(50))
+    project_id = db.Column(db.String(16), nullable=False, index=True)
+
+    def __init__(self):
+        self.project_id = str(uuid.uuid4()).replace('-','')[:16]
 
     @classmethod
     def load_project(cls, project_list):
@@ -18,11 +22,11 @@ class Project(Base):
 
     @classmethod
     def find_project_by_id(cls, project_id):
-        return Project.query.filter_by(id=project_id).first()
+        return Project.query.filter_by(project_id=project_id).first()
 
     def to_dict(self):
         return {
-            "project_id": self.id,
+            "project_id": self.project_id,
             "project_name": self.project_name
         }
 
@@ -31,7 +35,7 @@ class SpiderInstance(Base):
     __tablename__ = 'sk_spider'
 
     spider_name = db.Column(db.String(100))
-    project_id = db.Column(db.INTEGER, nullable=False, index=True)
+    project_id = db.Column(db.String(16), nullable=False, index=True)
 
     @classmethod
     def update_spider_instances(cls, project_id, spider_instance_list):
@@ -103,7 +107,8 @@ class JobInstance(Base):
     __tablename__ = 'sk_job_instance'
 
     spider_name = db.Column(db.String(100), nullable=False, index=True)
-    project_id = db.Column(db.INTEGER, nullable=False, index=True)
+    project_id = db.Column(db.String(16), nullable=False, index=True)
+    job_instance_id = db.Column(db.String(16), nullable=False, index=True)
     tags = db.Column(db.Text)  # job tag(split by , )
     spider_arguments = db.Column(db.Text)  # job execute arguments(split by , ex.: arg1=foo,arg2=bar)
     priority = db.Column(db.INTEGER)
@@ -116,9 +121,12 @@ class JobInstance(Base):
     enabled = db.Column(db.INTEGER, default=0)  # 0/-1
     run_type = db.Column(db.String(20))  # periodic/onetime
 
+    def __init__(self):
+        self.job_instance_id = str(uuid.uuid4()).replace('-','')[:16]
+
     def to_dict(self):
         return dict(
-            job_instance_id=self.id,
+            job_instance_id=self.job_instance_id,
             spider_name=self.spider_name,
             tags=self.tags.split(',') if self.tags else None,
             spider_arguments=self.spider_arguments,
@@ -140,7 +148,7 @@ class JobInstance(Base):
 
     @classmethod
     def find_job_instance_by_id(cls, job_instance_id):
-        return cls.query.filter_by(id=job_instance_id).first()
+        return cls.query.filter_by(job_instance_id=job_instance_id).first()
 
 
 class SpiderStatus():
@@ -149,18 +157,19 @@ class SpiderStatus():
 
 class JobExecution(Base):
     __tablename__ = 'sk_job_execution'
-
-    project_id = db.Column(db.INTEGER, nullable=False, index=True)
+    project_id = db.Column(db.String(16), nullable=False, index=True)
+    job_instance_id = db.Column(db.String(16), nullable=False, index=True)
     service_job_execution_id = db.Column(db.String(50), nullable=False, index=True)
-    job_instance_id = db.Column(db.INTEGER, nullable=False, index=True)
     create_time = db.Column(db.DATETIME)
     start_time = db.Column(db.DATETIME)
     end_time = db.Column(db.DATETIME)
     running_status = db.Column(db.INTEGER, default=SpiderStatus.PENDING)
     running_on = db.Column(db.Text)
 
+
+
     def to_dict(self):
-        job_instance = JobInstance.query.filter_by(id=self.job_instance_id).first()
+        job_instance = JobInstance.query.filter_by(job_instance_id=self.job_instance_id).first()
         return {
             'project_id': self.project_id,
             'job_execution_id': self.id,

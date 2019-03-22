@@ -95,7 +95,7 @@
             {% if job.job_instance %}
             <tr>
                 <td>{{ job.job_execution_id }}</td>
-                <td><a href="/project/1/job/periodic#{{ job.job_instance_id }}">{{ job.job_instance_id }}</a></td>
+                <td><a href="/project/{{ project.project_id }}/job/periodic#{{ job.job_instance_id }}">{{ job.job_instance_id }}</a></td>
                 <td>{{ job.job_instance.spider_name }}</td>
                 <td class="txt-args" data-toggle="tooltip" data-placement="right"
                     title="{{ job.job_instance.spider_arguments }}">{{ job.job_instance.spider_arguments }}
@@ -119,12 +119,12 @@
                 {% endif %}
                 <td>{{ timedelta(now,job.start_time) }}</td>
                 <td>{{ job.start_time }}</td>
-                <td><a href="/project/{{ project.id }}/jobexecs/{{ job.job_execution_id }}/log" target="_blank"
+                <td><a href="/project/{{ project.project_id }}/jobexecs/{{ job.job_execution_id }}/log" target="_blank"
                        data-toggle="tooltip" data-placement="top" title="{{ job.service_job_execution_id }}">Log</a>
                 </td>
                 <td style="font-size: 10px;">{{ job.running_on }}</td>
                 <td>
-                    <a href="/project/{{ project.id }}/jobexecs/{{ job.job_execution_id }}/stop"><span
+                    <a href="/project/{{ project.project_id }}/jobexecs/{{ job.job_execution_id }}/stop"><span
                             class="label label-danger">Stop</span></a>
                 </td>
             </tr>
@@ -160,7 +160,7 @@
             {% if job.job_instance %}
             <tr>
                 <td>{{ job.job_execution_id }}</td>
-                <td><a href="/project/1/job/periodic#{{ job.job_instance_id }}">{{ job.job_instance_id }}</a></td>
+                <td><a href="/project/{{ project.project_id }}/job/periodic#{{ job.job_instance_id }}">{{ job.job_instance_id }}</a></td>
                 <td>{{ job.job_instance.spider_name }}</td>
                 <td class="txt-args" data-toggle="tooltip" data-placement="right"
                     title="{{ job.job_instance.spider_arguments }}">{{ job.job_instance.spider_arguments }}
@@ -184,7 +184,7 @@
                 {% endif %}
                 <td>{{ timedelta(job.end_time,job.start_time) }}</td>
                 <td>{{ job.start_time }}</td>
-                <td><a href="/project/{{ project.id }}/jobexecs/{{ job.job_execution_id }}/log" target="_blank"
+                <td><a href="/project/{{ project.project_id }}/jobexecs/{{ job.job_execution_id }}/log" target="_blank"
                        data-toggle="tooltip" data-placement="top" title="{{ job.service_job_execution_id }}">Log</a>
                 </td>
                 {% if job.running_status == 2 %}
@@ -206,7 +206,7 @@
 <div class="modal fade" role="dialog" id="job-run-modal">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form action="/project/{{ project.id }}/job/add" method="post">
+            <form action="/project/{{ project.project_id }}/job/add" method="post">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span></button>
