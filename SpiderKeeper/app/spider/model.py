@@ -79,7 +79,7 @@ class SpiderInstance(Base):
         last_runtime_list = dict(
             (spider_name, last_run_time) for spider_name, last_run_time in db.engine.execute(sql_last_runtime))
         avg_runtime_list = dict(
-            (spider_name, avg_run_time) for spider_name, avg_run_time in db.engine.execute(sql_avg_runtime))
+            (spider_name, avg_run_time.total_seconds()) for spider_name, avg_run_time in db.engine.execute(sql_avg_runtime))
         res = []
         for spider in cls.query.filter_by(project_id=project_id).all():
             last_runtime = last_runtime_list.get(spider.spider_name)
