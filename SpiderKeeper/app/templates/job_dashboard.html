@@ -216,7 +216,7 @@
                     <div class="form-group">
                         <label>Spider</label>
                         <select class="form-control" name="spider_name">
-                            {% for spider in spider_list %}
+                            {% for spider in spider_list|sort('spider_name') %}
                             <option value="{{ spider.spider_name }}">{{ spider.spider_name }}</option>
                             {% endfor %}
                         </select>
