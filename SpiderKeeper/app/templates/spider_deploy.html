@@ -16,11 +16,12 @@
 {% endif %}
 {% endwith %}
 
+<!-- deploy from uploading egg file -->
 <div class="box">
     <form action="/project/{{ project.id }}/spider/upload" method="post" enctype=multipart/form-data>
         <div class="box-body">
             <div class="form-group">
-                <label for="egg-file"><h4>Upload EGG file</h4></label>
+                <label for="egg-file" class="form-label"><h4>Upload EGG file</h4></label>
                 <input type="file" name="file" id="egg-file">
 
                 <p class="help-block">Use <a href="https://github.com/scrapy/scrapyd-client" target="_blank">scrapyd-client</a>
@@ -32,4 +33,25 @@
         </div>
     </form>
 </div>
+<!-- end -->
+
+<!-- deploy from git uri -->
+<div class="box">
+    <form action="/project/{{ project.id }}/spider/sync" method="post" enctype=multipart/form-data>
+        <div class="box-body">
+            <div class="form-group">
+                <label for="project-git-uri" class="form-label"><h4>Project From Git</h4></label>
+                <input type="text" class="form-control" id="project-git-uri" aria-describedby="project-git-uri-helpblock">
+                <p class="help-block" id="project-git-uri-helpblock">uri pointing to your porject.</p>
+                <input type="text" class="form-control" id="project-git-uri-name" aria-describedby="project-git-uri-helpblock">
+                <p class="help-block" id="project-git-uri-helpblock-name">if your project under some folder</p>
+            </div>
+        </div>
+        <div class="box-footer">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </form>
+</div>
+<!-- end -->
+
 {% endblock %}

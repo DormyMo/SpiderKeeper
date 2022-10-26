@@ -12,8 +12,12 @@ from flask import render_template
 from flask import session
 from flask_restful_swagger import swagger
 from werkzeug.utils import secure_filename
+from git import Repo
+from urllib.parse import urlparse
+from os import path
+from pathlib import PurePath
 
-from SpiderKeeper.app import db, api, agent, app
+from SpiderKeeper.app import db, agent, app, api
 from SpiderKeeper.app.spider.model import JobInstance, Project, JobExecution, SpiderInstance, JobRunType
 
 api_spider_bp = Blueprint('spider', __name__)
@@ -139,7 +143,7 @@ class SpiderDetailCtrl(flask_restful.Resource):
         db.session.commit()
         agent.start_spider(job_instance)
         return True
-
+#
 
 JOB_INSTANCE_FIELDS = [column.name for column in JobInstance.__table__.columns]
 JOB_INSTANCE_FIELDS.remove('id')
@@ -416,8 +420,8 @@ class JobExecutionDetailCtrl(flask_restful.Resource):
         if job_execution:
             agent.cancel_spider(job_execution)
             return True
-
-
+#
+#
 api.add_resource(ProjectCtrl, "/api/projects")
 api.add_resource(SpiderCtrl, "/api/projects/<project_id>/spiders")
 api.add_resource(SpiderDetailCtrl, "/api/projects/<project_id>/spiders/<spider_id>")
@@ -651,6 +655,25 @@ def spider_egg_upload(project_id):
         flash('deploy success!')
     return redirect(request.referrer)
 
+@app.route("/project/<project_id>/spider/sync", methods=['post'])
+def spider_git_sync(project_id):
+    project = Project.find_project_by_id(project_id)
+    form = request.form
+    if form['project-git-uri'].strip() == '':
+        flash('No URI provided.')
+        return redirect(request.referrer)
+    git_uri = form['project-git-uri'].strip()
+    tmp_dir = tempfile.gettempdir()
+    Repo.clone_from(git_uri, tmp_dir)
+    # TODO
+    git_root_path = path.join(tmp_dir, PurePath(urlparse(git_uri).path).stem)
+    git_project_name = form['project-git-uri-name']
+    os.chdir(git_root_path)
+    os.system(f"scrapyd-deploy --build-egg output.egg")
+    git_egg_path = path.join(git_root_path, git_project_name, "output.egg")
+    agent.deploy(project, git_egg_path)
+    flash('sync success!')
+    return redirect(request.referrer)
 
 @app.route("/project/<project_id>/project/stats")
 def project_stats(project_id):

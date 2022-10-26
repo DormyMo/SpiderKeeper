@@ -2,12 +2,13 @@
 import logging
 import traceback
 
+import os
 import apscheduler
 from apscheduler.schedulers.background import BackgroundScheduler
-from flask import Flask
+from flask import Flask, request
 from flask import jsonify
-from flask_basicauth import BasicAuth
 from flask_restful import Api
+from flask_basicauth import BasicAuth
 from flask_restful_swagger import swagger
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.exceptions import HTTPException
@@ -69,6 +70,8 @@ def handle_error(e):
     if isinstance(e, HTTPException):
         code = e.code
     app.logger.error(traceback.print_exc())
+    app.logger.error(request.url)
+    app.logger.error(os.getcwd())
     return jsonify({
         'code': code,
         'success': False,
@@ -123,7 +126,8 @@ def init_basic_auth():
 
 
 def initialize():
-    init_database()
-    regist_server()
-    start_scheduler()
-    init_basic_auth()
+    with app.app_context():
+        init_database()
+        regist_server()
+        start_scheduler()
+        init_basic_auth()
