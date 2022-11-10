@@ -31,10 +31,10 @@ def parse_opts(config):
                       dest='host',
                       default='0.0.0.0')
     parser.add_option("--port",
-                      help="port, default:5000",
+                      help="port, default:5001",
                       dest='port',
                       type="int",
-                      default=5000)
+                      default=5001)
     parser.add_option("--username",
                       help="basic auth username ,default: %s" % config.get('BASIC_AUTH_USERNAME'),
                       dest='username',

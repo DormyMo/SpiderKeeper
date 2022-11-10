@@ -589,6 +589,12 @@ def job_stop(project_id, job_exec_id):
     agent.cancel_spider(job_execution)
     return redirect(request.referrer, code=302)
 
+def job_log_stream(template_name, **context):
+    app.update_template_context(context)
+    t = app.jinja_env.get_template(template_name)
+    rv = t.stream(context)
+    rv.enable_buffering(5)
+    return rv
 
 @app.route("/project/<project_id>/jobexecs/<job_exec_id>/log")
 def job_log(project_id, job_exec_id):
@@ -596,7 +602,10 @@ def job_log(project_id, job_exec_id):
     res = requests.get(agent.log_url(job_execution))
     res.encoding = 'utf8'
     raw = res.text
-    return render_template("job_log.html", log_lines=raw.split('\n'))
+    rows = (line for line in raw.split("\n") if line.strip())
+    return app.response_class(job_log_stream("job_log.html",
+                                             log_lines=rows))
+#    return render_template("job_log.html", log_lines=raw.split('\n'))
 
 
 @app.route("/project/<project_id>/job/<job_instance_id>/run")

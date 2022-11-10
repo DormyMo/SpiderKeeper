@@ -1,16 +1,19 @@
 <html>
 <meta charset="utf-8">
-<style>
-    .p-log {
-        font-size: 12px;
-        line-height: 1.5em;
-        color: #1f0909;
-        text-align: left
-    }
-</style>
+<script src="/static/js/highlight.min.js" charset="utf-8"></script>
+<script charset="utf-8">
+    hljs.highlightAll();
+</script>
+<link rel="stylesheet" href="/static/css/hybrid.min.css" type="text/css" media="screen" title="no title" charset="utf-8">
 <body style="background-color:#F3F2EE;">
-{% for line in log_lines %}
-<p class="p-log">{{ line }}</p>
-{% endfor %}
+    <div style="display: flex; height:100vh; width:100vw;">
+        <pre style="display:flex ; min-width:0 ;">
+            <code class="hljs language-bash">
+            {% for line in log_lines %}
+            {{ line }}
+            {% endfor %}
+            </code>
+        </pre>
+    </div>
 </body>
 </html>
