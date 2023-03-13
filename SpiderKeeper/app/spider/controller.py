@@ -10,7 +10,6 @@ from flask import flash
 from flask import redirect
 from flask import render_template
 from flask import session
-from flask_restful_swagger import swagger
 from werkzeug.utils import secure_filename
 
 from SpiderKeeper.app import db, api, agent, app
@@ -24,21 +23,9 @@ api_spider_bp = Blueprint('spider', __name__)
 
 
 class ProjectCtrl(flask_restful.Resource):
-    @swagger.operation(
-        summary='list projects',
-        parameters=[])
     def get(self):
         return [project.to_dict() for project in Project.query.all()]
 
-    @swagger.operation(
-        summary='add project',
-        parameters=[{
-            "name": "project_name",
-            "description": "project name",
-            "required": True,
-            "paramType": "form",
-            "dataType": 'string'
-        }])
     def post(self):
         project_name = request.form['project_name']
         project = Project()
@@ -49,15 +36,6 @@ class ProjectCtrl(flask_restful.Resource):
 
 
 class SpiderCtrl(flask_restful.Resource):
-    @swagger.operation(
-        summary='list spiders',
-        parameters=[{
-            "name": "project_id",
-            "description": "project id",
-            "required": True,
-            "paramType": "path",
-            "dataType": 'int'
-        }])
     def get(self, project_id):
         project = Project.find_project_by_id(project_id)
         return [spider_instance.to_dict() for spider_instance in
@@ -65,64 +43,10 @@ class SpiderCtrl(flask_restful.Resource):
 
 
 class SpiderDetailCtrl(flask_restful.Resource):
-    @swagger.operation(
-        summary='spider detail',
-        parameters=[{
-            "name": "project_id",
-            "description": "project id",
-            "required": True,
-            "paramType": "path",
-            "dataType": 'int'
-        }, {
-            "name": "spider_id",
-            "description": "spider instance id",
-            "required": True,
-            "paramType": "path",
-            "dataType": 'int'
-        }])
     def get(self, project_id, spider_id):
         spider_instance = SpiderInstance.query.filter_by(project_id=project_id, id=spider_id).first()
         return spider_instance.to_dict() if spider_instance else abort(404)
 
-    @swagger.operation(
-        summary='run spider',
-        parameters=[{
-            "name": "project_id",
-            "description": "project id",
-            "required": True,
-            "paramType": "path",
-            "dataType": 'int'
-        }, {
-            "name": "spider_id",
-            "description": "spider instance id",
-            "required": True,
-            "paramType": "path",
-            "dataType": 'int'
-        }, {
-            "name": "spider_arguments",
-            "description": "spider arguments",
-            "required": False,
-            "paramType": "form",
-            "dataType": 'string'
-        }, {
-            "name": "priority",
-            "description": "LOW: -1, NORMAL: 0, HIGH: 1, HIGHEST: 2",
-            "required": False,
-            "paramType": "form",
-            "dataType": 'int'
-        }, {
-            "name": "tags",
-            "description": "spider tags",
-            "required": False,
-            "paramType": "form",
-            "dataType": 'string'
-        }, {
-            "name": "desc",
-            "description": "spider desc",
-            "required": False,
-            "paramType": "form",
-            "dataType": 'string'
-        }])
     def put(self, project_id, spider_id):
         spider_instance = SpiderInstance.query.filter_by(project_id=project_id, id=spider_id).first()
         if not spider_instance: abort(404)
@@ -148,95 +72,10 @@ JOB_INSTANCE_FIELDS.remove('date_modified')
 
 
 class JobCtrl(flask_restful.Resource):
-    @swagger.operation(
-        summary='list job instance',
-        parameters=[{
-            "name": "project_id",
-            "description": "project id",
-            "required": True,
-            "paramType": "path",
-            "dataType": 'int'
-        }])
     def get(self, project_id):
         return [job_instance.to_dict() for job_instance in
                 JobInstance.query.filter_by(run_type="periodic", project_id=project_id).all()]
 
-    @swagger.operation(
-        summary='add job instance',
-        notes="json keys: <br>" + "<br>".join(JOB_INSTANCE_FIELDS),
-        parameters=[{
-            "name": "project_id",
-            "description": "project id",
-            "required": True,
-            "paramType": "path",
-            "dataType": 'int'
-        }, {
-            "name": "spider_name",
-            "description": "spider_name",
-            "required": True,
-            "paramType": "form",
-            "dataType": 'string'
-        }, {
-            "name": "spider_arguments",
-            "description": "spider_arguments,  split by ','",
-            "required": False,
-            "paramType": "form",
-            "dataType": 'string'
-        }, {
-            "name": "desc",
-            "description": "desc",
-            "required": False,
-            "paramType": "form",
-            "dataType": 'string'
-        }, {
-            "name": "tags",
-            "description": "tags , split by ','",
-            "required": False,
-            "paramType": "form",
-            "dataType": 'string'
-        }, {
-            "name": "run_type",
-            "description": "onetime/periodic",
-            "required": False,
-            "paramType": "form",
-            "dataType": 'string'
-        }, {
-            "name": "priority",
-            "description": "LOW: -1, NORMAL: 0, HIGH: 1, HIGHEST: 2",
-            "required": False,
-            "paramType": "form",
-            "dataType": 'int'
-        }, {
-            "name": "cron_minutes",
-            "description": "@see http://apscheduler.readthedocs.io/en/latest/modules/triggers/cron.html",
-            "required": False,
-            "paramType": "form",
-            "dataType": 'string'
-        }, {
-            "name": "cron_hour",
-            "description": "",
-            "required": False,
-            "paramType": "form",
-            "dataType": 'string'
-        }, {
-            "name": "cron_day_of_month",
-            "description": "",
-            "required": False,
-            "paramType": "form",
-            "dataType": 'string'
-        }, {
-            "name": "cron_day_of_week",
-            "description": "",
-            "required": False,
-            "paramType": "form",
-            "dataType": 'string'
-        }, {
-            "name": "cron_month",
-            "description": "",
-            "required": False,
-            "paramType": "form",
-            "dataType": 'string'
-        }])
     def post(self, project_id):
         post_data = request.form
         if post_data:
@@ -260,102 +99,6 @@ class JobCtrl(flask_restful.Resource):
 
 
 class JobDetailCtrl(flask_restful.Resource):
-    @swagger.operation(
-        summary='update job instance',
-        notes="json keys: <br>" + "<br>".join(JOB_INSTANCE_FIELDS),
-        parameters=[{
-            "name": "project_id",
-            "description": "project id",
-            "required": True,
-            "paramType": "path",
-            "dataType": 'int'
-        }, {
-            "name": "job_id",
-            "description": "job instance id",
-            "required": True,
-            "paramType": "path",
-            "dataType": 'int'
-        }, {
-            "name": "spider_name",
-            "description": "spider_name",
-            "required": False,
-            "paramType": "form",
-            "dataType": 'string'
-        }, {
-            "name": "spider_arguments",
-            "description": "spider_arguments,  split by ','",
-            "required": False,
-            "paramType": "form",
-            "dataType": 'string'
-        }, {
-            "name": "desc",
-            "description": "desc",
-            "required": False,
-            "paramType": "form",
-            "dataType": 'string'
-        }, {
-            "name": "tags",
-            "description": "tags , split by ','",
-            "required": False,
-            "paramType": "form",
-            "dataType": 'string'
-        }, {
-            "name": "run_type",
-            "description": "onetime/periodic",
-            "required": False,
-            "paramType": "form",
-            "dataType": 'string'
-        }, {
-            "name": "priority",
-            "description": "LOW: -1, NORMAL: 0, HIGH: 1, HIGHEST: 2",
-            "required": False,
-            "paramType": "form",
-            "dataType": 'int'
-        }, {
-            "name": "cron_minutes",
-            "description": "@see http://apscheduler.readthedocs.io/en/latest/modules/triggers/cron.html",
-            "required": False,
-            "paramType": "form",
-            "dataType": 'string'
-        }, {
-            "name": "cron_hour",
-            "description": "",
-            "required": False,
-            "paramType": "form",
-            "dataType": 'string'
-        }, {
-            "name": "cron_day_of_month",
-            "description": "",
-            "required": False,
-            "paramType": "form",
-            "dataType": 'string'
-        }, {
-            "name": "cron_day_of_week",
-            "description": "",
-            "required": False,
-            "paramType": "form",
-            "dataType": 'string'
-        }, {
-            "name": "cron_month",
-            "description": "",
-            "required": False,
-            "paramType": "form",
-            "dataType": 'string'
-        }, {
-            "name": "enabled",
-            "description": "-1 / 0, default: 0",
-            "required": False,
-            "paramType": "form",
-            "dataType": 'int'
-        }, {
-            "name": "status",
-            "description": "if set to 'run' will run the job",
-            "required": False,
-            "paramType": "form",
-            "dataType": 'int'
-        }
-
-        ])
     def put(self, project_id, job_id):
         post_data = request.form
         if post_data:
@@ -378,39 +121,11 @@ class JobDetailCtrl(flask_restful.Resource):
 
 
 class JobExecutionCtrl(flask_restful.Resource):
-    @swagger.operation(
-        summary='list job execution status',
-        parameters=[{
-            "name": "project_id",
-            "description": "project id",
-            "required": True,
-            "paramType": "path",
-            "dataType": 'int'
-        }])
     def get(self, project_id):
         return JobExecution.list_jobs(project_id)
 
 
 class JobExecutionDetailCtrl(flask_restful.Resource):
-    @swagger.operation(
-        summary='stop job',
-        notes='',
-        parameters=[
-            {
-                "name": "project_id",
-                "description": "project id",
-                "required": True,
-                "paramType": "path",
-                "dataType": 'int'
-            },
-            {
-                "name": "job_exec_id",
-                "description": "job_execution_id",
-                "required": True,
-                "paramType": "path",
-                "dataType": 'string'
-            }
-        ])
     def put(self, project_id, job_exec_id):
         job_execution = JobExecution.query.filter_by(project_id=project_id, id=job_exec_id).first()
         if job_execution:

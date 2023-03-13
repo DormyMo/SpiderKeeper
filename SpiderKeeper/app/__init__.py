@@ -7,7 +7,6 @@ from flask import Flask
 from flask import jsonify
 from flask_basicauth import BasicAuth
 from flask_restful import Api
-from flask_restful_swagger import swagger
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.exceptions import HTTPException
 from flask_sslify import SSLify
@@ -32,9 +31,6 @@ handler.setFormatter(formatter)
 app.logger.setLevel(app.config.get('LOG_LEVEL', "INFO"))
 app.logger.addHandler(handler)
 
-# swagger
-api = swagger.docs(Api(app), apiVersion=SpiderKeeper.__version__, api_spec_url="/api",
-                   description='SpiderKeeper')
 # Define the database object which is imported
 # by modules and controllers
 db = SQLAlchemy(app, session_options=dict(autocommit=False, autoflush=True))
