@@ -1,0 +1,36 @@
+[tool.poetry]
+name = "spiderkeeper"
+version = "0.1.0"
+description = "A scalable admin ui for spider service"
+authors = ["DormyMo <modongming91@gmail.com>", "Saritasa"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+alembic = "^1.10.2"
+aniso8601 = "^9.0.1"
+APScheduler = "^3.10.1"
+click = "^8.1.3"
+Flask = "^2.2.3"
+Flask-BasicAuth = "^0.2.0"
+Flask-Migrate = "^4.0.4"
+Flask-RESTful = "^0.3.9"
+Flask-SQLAlchemy = "^3.0.3"
+Flask-SSLify = "^0.1.5"
+itsdangerous = "^2.1.2"
+Jinja2 = "^3.1.2"
+Mako = "^1.2.4"
+MarkupSafe = "^2.1.2"
+python-dateutil = "^2.8.2"
+python-editor = "^1.0.4"
+pytz = "^2022.7.1"
+requests = "^2.28.2"
+six = "^1.16.0"
+SQLAlchemy = "^2.0.5.post1"
+tzlocal = "^4.2"
+Werkzeug = "^2.2.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
