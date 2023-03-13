@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "A scalable admin ui for spider service"
 authors = ["DormyMo <modongming91@gmail.com>", "Saritasa"]
 readme = "README.md"
+packages = [{include = "SpiderKeeper"}]
 
 [tool.poetry.dependencies]
 python = "^3.9"
